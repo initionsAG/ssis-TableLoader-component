@@ -3,57 +3,55 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Data;
+using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using Microsoft.SqlServer.Dts.Runtime;
+using Microsoft.SqlServer.Dts.Pipeline.Wrapper;
+using System.Data.SqlClient;
 using Microsoft.SqlServer.Dts.Runtime.Design;
 using System.Collections;
-using Microsoft.SqlServer.Dts.Runtime;
-using System.Data.SqlClient;
-using Infragistics.Win.UltraWinEditors;
-using Infragistics.Win.Design;
-using Microsoft.SqlServer.Dts.Pipeline.Wrapper;
-using ComponentFramework.Controls;
 
 namespace ComponentFramework.Gui
 {
-    public partial class IsagConnectionManager : IsagUltraComboEditor
+    /// <summary>
+    /// A user control for choosing an ADO:NET connection manager. 
+    /// It is also possible to create and select a new one.
+    /// 
+    /// </summary>
+    public partial class IsagConnectionManager : UserControl
     {
-
+        public event EventHandler ConnectionManagerChanged;
         public IServiceProvider ServiceProvider { get; set; }
         public Connections ComponentConnections { get; set; }
         public IDTSComponentMetaData100 ComponentMetaData { get; set; }
         public string ConnectionManagerName { get; set; }
-        private List<ConnectionManager> _connectionManagerList = new List<ConnectionManager>();
-
+        private BindingList<ConnectionManager> _connectionManagerList = new BindingList<ConnectionManager>();
+        public string ConnectionManager { get { return ((ConnectionManager) cmbConMgr.SelectedItem).Name; } }
         public SqlConnection SelectedConnection
         {
             get
             {
                 if (HasConnection())
-                    return (SqlConnection)(((ConnectionManager)this.SelectedItem.ListObject).AcquireConnection(null));
+                    return (SqlConnection)(((ConnectionManager)cmbConMgr.SelectedItem).AcquireConnection(null));
                 else return null;
             }
         }
-
-        public IsagConnectionManager(IDTSComponentMetaData100 componentMetaData, IServiceProvider serviceProvider, Connections connections, string connectionManagerName)
+        /// <summary>
+        /// the constructor
+        /// </summary>
+        /// <param name="componentMetaData">the components metadata</param>
+        /// <param name="serviceProvider">"service provider of the component</param>
+        /// <param name="connections">all connections of the component</param>
+        /// <param name="connectionManagerName">the name of the components connection manager</param>
+        public void Initialize(IDTSComponentMetaData100 componentMetaData, IServiceProvider serviceProvider, Connections connections, string connectionManagerName)
         {
-            InitializeComponent();
-
-            this.Dock = DockStyle.Fill;
-            this.ButtonsRight.Add(new EditorButton() {Text = "New", ButtonStyle = Infragistics.Win.UIElementButtonStyle.Office2007RibbonButton});
-            this.DropDownStyle = Infragistics.Win.DropDownStyle.DropDownList;
+            //InitializeComponent();         
 
             ComponentMetaData = componentMetaData;
             ServiceProvider = serviceProvider;
             ComponentConnections = connections;
             ConnectionManagerName = connectionManagerName;
-
-            this.EditorButtonClick += new EditorButtonEventHandler(IsagConnectionManager_EditorButtonClick);
-        }
-
-        protected override void InitLayout()
-        {
-            base.InitLayout();
 
             InitializeConnectionManager();
         }
@@ -65,10 +63,8 @@ namespace ComponentFramework.Gui
                 if (connMgr.CreationName.StartsWith("ADO.NET")) _connectionManagerList.Add(connMgr);
             }
 
-            this.DataSource = _connectionManagerList;
-            this.DisplayMember = "Name";
-            this.ValueMember = "Name";
-            this.DataBind();
+            cmbConMgr.DisplayMember = "Name";
+            cmbConMgr.DataSource = _connectionManagerList;
 
             try
             {
@@ -76,18 +72,29 @@ namespace ComponentFramework.Gui
                 if (connection != null && ComponentConnections.Contains(connection.ConnectionManagerID))
                 {
                     this.Text = ComponentConnections[connection.ConnectionManagerID].Name;
-                }
+                }                
             }
             catch (Exception)
             {
-                
+
                 //Es wurde noch kein ConnectionManager ausgewählt
             }
 
+        }      
+
+        public bool HasConnection()
+        {
+            return cmbConMgr.SelectedItem != null;
         }
 
 
-        private void IsagConnectionManager_EditorButtonClick(object sender, Infragistics.Win.UltraWinEditors.EditorButtonEventArgs e)
+        public IsagConnectionManager()
+        {
+            InitializeComponent();
+        }
+
+
+        private void btnNewConMgr_Click(object sender, EventArgs e)
         {
             IDtsConnectionService connectionService =
                     (IDtsConnectionService)ServiceProvider.GetService(typeof(IDtsConnectionService));
@@ -99,15 +106,14 @@ namespace ComponentFramework.Gui
                 if (connMgr.CreationName.StartsWith("ADO.NET"))
                 {
                     _connectionManagerList.Add(connMgr);
-                    this.DataBind();
-                    this.Text = connMgr.Name;
+                    cmbConMgr.SelectedItem = connMgr;
                 }
             }
         }
 
-        public bool HasConnection()
-        { 
-            return this.SelectedItem.ListObject != null;
+        private void cmbConMgr_SelectedValueChanged(object sender, EventArgs e)
+        {
+            if (this.ConnectionManagerChanged != null) this.ConnectionManagerChanged(sender, e);
         }
     }
 }

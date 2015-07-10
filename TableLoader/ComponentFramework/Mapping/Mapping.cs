@@ -9,9 +9,9 @@ namespace TableLoader.ComponentFramework.Mapping
 {
     public class Mapping
     {
-        private static string IdPropertyName = "CustomID";
+        public static string IdPropertyName = "CustomID";
 
-        private static bool NeedsMapping()
+        public static bool NeedsMapping()
         {
             Assembly asm = Assembly.GetExecutingAssembly();
             FileVersionInfo fvi = FileVersionInfo.GetVersionInfo(asm.Location);

@@ -1,6 +1,6 @@
 ﻿<?xml version='1.0'?>
 <Wix xmlns='http://schemas.microsoft.com/wix/2006/wi'>
-    <Product Id='*' Name='TableLoader 3.1.10.0 for Integration Services 2008' Language='1033'
+    <Product Id='*' Name='TableLoader 3.1.11.0 for Integration Services 2008' Language='1033'
              Version='3.1.10.0' Manufacturer='innovative IT solutions AG' UpgradeCode='88F4A44E-5A15-4E3F-BD7F-E8A331F4ACE4'>
         
 
@@ -13,11 +13,11 @@
         <Upgrade Id="88F4A44E-5A15-4E3F-BD7F-E8A331F4ACE4">
             <UpgradeVersion Minimum="1.0.0"
                             IncludeMinimum="yes"
-                            Maximum="3.1.10"
+                            Maximum="3.1.11"
                             Property="OLDERVERSIONBEINGUPGRADED" />
         </Upgrade>
         <Upgrade Id="88F4A44E-5A15-4E3F-BD7F-E8A331F4ACE4">
-            <UpgradeVersion Minimum="3.1.10"
+            <UpgradeVersion Minimum="3.1.11"
                             OnlyDetect="yes"
                             Property="NEWERVERSIONDETECTED" />
         </Upgrade>
@@ -93,7 +93,7 @@
             <ComponentRef Id='RT_IG_UltraWinTabControl' />
         </Feature>
 
-        <Icon Id="TableLoader.ico" SourceFile="C:\Visual Studio\Visual Studio TFS\initions\BI\SSIS\TableLoader 3\Main\Source\TableLoader\Resources\TableLoader.ico"/>
+        <Icon Id="TableLoader.ico" SourceFile="C:\Visual Studio\Visual Studio TFS\initions-BI\Henry Components\TableLoader\Main\TableLoader\Resources\TableLoader.ico"/>
         <Property Id="ARPPRODUCTICON" Value="TableLoader.ico" />
         <Property Id="ALLUSERS" Value="1" />
 

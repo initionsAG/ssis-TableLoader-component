@@ -212,10 +212,14 @@ namespace TableLoader
     ///     - Nach dem Hinzufügen zum DFT konnte der TL nur im Advanced Editor bearbeitet werden
     /// 11.04.2014, Dennis Weise 
     ///     - Version 3.1.10
+    /// 09.07.2014, Dennis Weise  
+    ///     - PerformUpgrade: Upgrade von 2008 auf 2012/2014 ist nun möglich 
+    /// 09.07.2014, Dennis Weise  
+    ///     - CurrentVersion auf 1 gesetzt
     /// </summary> 
     [DtsPipelineComponent(DisplayName = "TableLoader 3",
         ComponentType = ComponentType.DestinationAdapter,
-        CurrentVersion = 0,
+        CurrentVersion = 1,
         IconResource = "TableLoader.Resources.TableLoader.ico",
         UITypeName = "TableLoader.TableLoaderUI, TableLoader3, Version=1.0.0.0, Culture=neutral, PublicKeyToken=1bfbf132955f2db6")]
     public class TableLoader : PipelineComponent
@@ -965,40 +969,78 @@ namespace TableLoader
             Logging.Events = _events;
         }
 
+        #region PerformUpgrade
+
         /// <summary>
-        /// Upgrade einer vorhandenen TL Instanz:
-        /// 
-        /// - Version setzen FileVerison --> Property Version, DLL CurrentVersion --> ComponentMetaData.Version
-        /// - auf Version mit XML Konfiguration updaten
+        /// Upgrade von SSIS 2008 auf 2012/2014
         /// </summary>
         /// <param name="pipelineVersion"></param>
         public override void PerformUpgrade(int pipelineVersion)
         {
-            //Würde zu Fehler führen: 
-            //base.PerformUpgrade(pipelineVersion);
-
-            DtsPipelineComponentAttribute componentAttr =
-                (DtsPipelineComponentAttribute)Attribute.GetCustomAttribute(this.GetType(), typeof(DtsPipelineComponentAttribute), false);
-            int binaryVersion = componentAttr.CurrentVersion;
-            int metadataVersion = ComponentMetaData.Version;
-
-            System.Reflection.Assembly asm = System.Reflection.Assembly.GetExecutingAssembly();
-            System.Diagnostics.FileVersionInfo fvi = System.Diagnostics.FileVersionInfo.GetVersionInfo(asm.Location);
-
-
-            if (binaryVersion <= metadataVersion)
+            try
             {
-                throw new Exception("The installed TableLoader Version is too old!");
+                if (Mapping.NeedsMapping())
+                {
+                    InitProperties(false);
+
+                    foreach (ColumnConfig config in _IsagCustomProperties.ColumnConfigList)
+                    {
+                        if (string.IsNullOrEmpty(config.CustomId)) config.CustomId = Guid.NewGuid().ToString();
+                        AddInputColumnCustomProperty(config.InputColumnName, config.CustomId, Mapping.IdPropertyName);
+                    }
+
+                    Mapping.UpdateInputIdProperties(this.ComponentMetaData, _IsagCustomProperties);
+                    _IsagCustomProperties.Save(this.ComponentMetaData);
+                }
+
+                DtsPipelineComponentAttribute attr =
+                    (DtsPipelineComponentAttribute)Attribute.GetCustomAttribute(this.GetType(), typeof(DtsPipelineComponentAttribute), false);
+                ComponentMetaData.Version = attr.CurrentVersion;
             }
-            else
+            catch (Exception ex)
             {
-
+                bool cancel = false;
+                this.ComponentMetaData.FireError(0, "DataConverter Upgrade", ex.ToString(), "", 0, out cancel);
+                throw (ex);
             }
-
-
-
-
         }
+
+        /// <summary>
+        ///  Adds a custom property to an input column and sets the value
+        ///  (has no effect if custom property already exists)
+        /// </summary>
+        /// <param name="colName">The name of the input column</param>
+        /// <param name="value">the value of the custom property</param>
+        /// <param name="propertyName">the name of the custom property</param>
+        private void AddInputColumnCustomProperty(string colName, string value, string propertyName)
+        {
+            IDTSInputColumn100 inputCol = this.ComponentMetaData.InputCollection[0].InputColumnCollection[colName];
+            AddCustomProperty(inputCol.CustomPropertyCollection, value, propertyName);
+        }
+
+        /// <summary>
+        ///  Adds a custom property to a CustomPropertyCollection and sets the value
+        ///  (has no effect if custom property already exists)
+        /// </summary>
+        /// <param name="propCollection">the CustomPropertyCollection</param>
+        /// <param name="value">the value of the custom property</param>
+        /// <param name="propertyName">the name of the custom property</param>
+        private void AddCustomProperty(IDTSCustomPropertyCollection100 propCollection, string value, string propertyName)
+        {
+            IDTSCustomProperty100 prop = null;
+            try
+            {
+                //do nothing if custom property exists:
+                prop = propCollection[propertyName];
+            }
+            catch (Exception)
+            {
+                prop = propCollection.New();
+                prop.Name = propertyName;
+                prop.Value = value;
+            }
+        }
+        #endregion
 
 
 

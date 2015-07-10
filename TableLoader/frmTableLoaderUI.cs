@@ -1,24 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.Drawing;
-using System.Text;
 using System.Windows.Forms;
-using Microsoft.SqlServer.Dts.Pipeline.Design;
 using Microsoft.SqlServer.Dts.Pipeline.Wrapper;
 using Microsoft.SqlServer.Dts.Runtime;
-using Microsoft.SqlServer.Dts.Runtime.Design;
-using System.Collections;
 using System.Data.SqlClient;
 using System.Data.OleDb;
 using Infragistics.Win.UltraMessageBox;
 using Infragistics.Win.UltraWinGrid;
 using Infragistics.Win;
-using Infragistics.Win.UltraWinEditors;
 using System.Data.Common;
 using ComponentFramework.Controls;
 using ComponentFramework.Gui;
+using Lookup2.ComponentFramework.Controls;
+using TableLoader.ComponentFramework;
 
 
 
@@ -43,15 +39,13 @@ namespace TableLoader
         private StandardConfiguration _stdConfig;
         //GUI Elemente
         private IsagDataGrid ugMapping = new IsagDataGrid();
-        private IsagConnectionManager _ConnectionManagerMain;
-        private IsagConnectionManager _ConnectionManagerBulk;
-        private IsagUltraComboEditor _cmbTableLoaderType = new IsagUltraComboEditor();
-        private IsagUltraComboEditor _cmbDestinationTable = new IsagUltraComboEditor();
-        private IsagUltraComboEditor _cmbDbCommand = new IsagUltraComboEditor();
-        private IsagUltraComboEditor _cmbTransaction = new IsagUltraComboEditor();
-        //private IsagUltraComboEditor _cmbVariablesPreSql = new IsagUltraComboEditor();
-        //private IsagUltraComboEditor _cmbVariablesPostSql = new IsagUltraComboEditor();
-        //private IsagUltraComboEditor _cmbVariablesCustomCommand = new IsagUltraComboEditor();
+        private IsagConnectionManager _connectionManagerMain = new IsagConnectionManager();
+        private IsagConnectionManager _connectionManagerBulk = new IsagConnectionManager();
+
+        private IsagComboBox _cmbTableLoaderType = new IsagComboBox();
+        private IsagComboBox _cmbDbCommand = new IsagComboBox();
+        private IsagComboBox _cmbTransaction = new IsagComboBox();
+
         private IsagVariableChooser _cmpVariableChooserCustomCommand = new IsagVariableChooser();
         private IsagVariableChooser _cmpVariableChooserLog = new IsagVariableChooser();
         private IsagVariableChooser _cmpVariableChooserPreSql = new IsagVariableChooser();
@@ -60,7 +54,7 @@ namespace TableLoader
         private MenuItem _miLimitOutputColumnNames;
         private IsagUltraComboEditor _cmbStandardConfig = new IsagUltraComboEditor();
         private IsagCheckBox _checkStandardConfigAuto = new IsagCheckBox();
-        private IsagCheckBox _checkDisableTablock = new IsagCheckBox();
+
         private IsagCheckBox _checkExcludePreSqlFromTransaction = new IsagCheckBox();
 
         private DbConnection _configConnection;
@@ -148,7 +142,7 @@ namespace TableLoader
             _checkExcludePreSqlFromTransaction.DataBindings.Add("Checked", _IsagCustomProperties, "ExcludePreSqlFromTransaction");
             _checkExcludePreSqlFromTransaction.DataBindings.Add("Visible", _IsagCustomProperties, "IsTransactionUsed");
             lblExcludePreSqlFromTransaction.DataBindings.Add("Visible", _IsagCustomProperties, "IsTransactionUsed");
-            _checkDisableTablock.DataBindings.Add("Checked", _IsagCustomProperties, "DisableTablock");
+            checkDisableTablock.DataBindings.Add("Checked", _IsagCustomProperties, "DisableTablock");
             _checkUseCustomCommand.DataBindings.Add("Checked", _IsagCustomProperties, "UseCustomMergeCommand");
             tbCustomMergeCommand.DataBindings.Add("Enabled", _IsagCustomProperties, "UseCustomMergeCommand");
             tbCustomMergeCommand.DataBindings.Add("Text", _IsagCustomProperties, "CustomMergeCommand");
@@ -159,13 +153,14 @@ namespace TableLoader
             _cmpVariableChooserCustomCommand.DataBindings.Add("Enabled", _IsagCustomProperties, "UseCustomMergeCommand");
             btnInsertVarCustomCommand.DataBindings.Add("Enabled", _IsagCustomProperties, "UseCustomMergeCommand");
 
-            _cmbTableLoaderType.DataBindings.Add("Value", _IsagCustomProperties, "TlType");
+            
+            _cmbTableLoaderType.DataBindings.Add("SelectedItem", _IsagCustomProperties, "TlType");
             _cmbTableLoaderType.DataBindings.Add("Enabled", _IsagCustomProperties, "NoAutoUpdateStandardConfiguration");
 
             imgHelpTransactions.DataBindings.Add("Visible", _IsagCustomProperties, "IsTransactionAvailable");
             lblTransaction.DataBindings.Add("Visible", _IsagCustomProperties, "IsTransactionAvailable");
             _cmbTransaction.DataBindings.Add("Visible", _IsagCustomProperties, "IsTransactionAvailable");
-            _cmbTransaction.DataBindings.Add("Value", _IsagCustomProperties, "Transaction");
+            _cmbTransaction.DataBindings.Add("SelectedItem", _IsagCustomProperties, "Transaction");
             _cmbTransaction.DataBindings.Add("Enabled", _IsagCustomProperties, "NoAutoUpdateStandardConfiguration");
             _cmbDbCommand.DataBindings.Add("Value", _IsagCustomProperties, "DbCommand");
             _cmbDbCommand.DataBindings.Add("Enabled", _IsagCustomProperties, "NoAutoUpdateStandardConfiguration");
@@ -182,11 +177,11 @@ namespace TableLoader
             lblChunkSizeDbCommand.DataBindings.Add("Visible", _IsagCustomProperties, "IsTransactionAvailable");
 
             tbTimeout.DataBindings.Add("Text", _IsagCustomProperties, "TimeOutDb");
-            //tbTimeout.DataBindings.Add("Enabled", _IsagCustomProperties, "NoAutoUpdateStandardConfiguration");
+            
             tbReattempts.DataBindings.Add("Text", _IsagCustomProperties, "Reattempts");
 
 
-            _ConnectionManagerBulk.DataBindings.Add("Visible", _IsagCustomProperties, "UseExternalTransaction");
+            _connectionManagerBulk.DataBindings.Add("Visible", _IsagCustomProperties, "UseExternalTransaction");
             lblConMgrBulk.DataBindings.Add("Visible", _IsagCustomProperties, "UseExternalTransaction");
 
             tbPreSql.DataBindings.Add("Text", _IsagCustomProperties, "PreSql");
@@ -200,7 +195,7 @@ namespace TableLoader
             numLogLevel.DataBindings.Add("Value", _IsagCustomProperties, "LogLevel");
 
             //DestinationTable Auswahl            
-            _cmbDestinationTable.DataBindings.Add("Value", _IsagCustomProperties, "DestinationTable");
+            _cmbDestinationTable.DataBindings.Add("Text", _IsagCustomProperties, "DestinationTable");
             PopulateDestinationTableName();
 
             //Standard Configuration
@@ -219,26 +214,30 @@ namespace TableLoader
             pnlDGV.Controls.Add(ugMapping);
 
             //ConnectionManager
-            _ConnectionManagerBulk = new IsagConnectionManager(_metadata, _serviceProvider, _connections, Constants.CONNECTION_MANAGER_NAME_BULK);
-            pnlConnMgrBulk.Controls.Add(_ConnectionManagerBulk);
-            _ConnectionManagerMain = new IsagConnectionManager(_metadata, _serviceProvider, _connections, Constants.CONNECTION_MANAGER_NAME_MAIN);
-            pnlConnMgrMain.Controls.Add(_ConnectionManagerMain);
+            _connectionManagerBulk.Initialize(_metadata, _serviceProvider, _connections, Constants.CONNECTION_MANAGER_NAME_BULK);
+            pnlConnMgrBulk.Controls.Add(_connectionManagerBulk);
+            _connectionManagerMain.Initialize(_metadata, _serviceProvider, _connections, Constants.CONNECTION_MANAGER_NAME_MAIN);
+            pnlConnMgrMain.Controls.Add(_connectionManagerMain);
 
             //TableLoader Type
+            _cmbTableLoaderType.DropDownStyle = ComboBoxStyle.DropDownList;
+            _cmbTableLoaderType.UpdateSelectedItemBindingOnSelectedIndexChanged = true;
+            _cmbTableLoaderType.SetItemList(typeof(IsagCustomProperties.TableLoaderType));
             pnlTableLoaderType.Controls.Add(_cmbTableLoaderType);
-            _cmbTableLoaderType.SetValueList(typeof(IsagCustomProperties.TableLoaderType));
-
+            
             //Transaktion
             pnlTransaction.Controls.Add(_cmbTransaction);
-            _cmbTransaction.SetValueList(typeof(IsagCustomProperties.TransactionType));
-
-            //Destination Table
-            pnlDestTable.Controls.Add(_cmbDestinationTable);
+            _cmbTransaction.SetItemList(typeof(IsagCustomProperties.TransactionType));
+            _cmbTransaction.Dock = DockStyle.Fill;
+            _cmbTransaction.DropDownStyle = ComboBoxStyle.DropDownList;           
 
             //DB Command
             pnlDbCommand.Controls.Add(_cmbDbCommand);
-            _cmbDbCommand.SetValueList(typeof(IsagCustomProperties.DbCommandType), IsagCustomProperties.DB_COMMAND_MERGE_STRING_VALUES);
-
+            _cmbDbCommand.Dock = DockStyle.Fill;
+            _cmbDbCommand.DropDownStyle = ComboBoxStyle.DropDownList;
+            ItemDataSource dbCommandItemSource = new ItemDataSource(typeof(IsagCustomProperties.DbCommandType), IsagCustomProperties.DB_COMMAND_MERGE_STRING_VALUES);
+            _cmbDbCommand.SetItemDataSource(dbCommandItemSource);
+       
             //Text Editors
             tbCustomMergeCommand.DataBindings.DefaultDataSourceUpdateMode = DataSourceUpdateMode.OnPropertyChanged;
             tbPreSql.DataBindings.DefaultDataSourceUpdateMode = DataSourceUpdateMode.OnPropertyChanged;
@@ -270,11 +269,7 @@ namespace TableLoader
             _checkStandardConfigAuto.Dock = DockStyle.Fill;
             _checkStandardConfigAuto.Enabled = false;
             pnlCheckStandardConfigAuto.Controls.Add(_checkStandardConfigAuto);
-
-            //Disable Tablock
-            _checkDisableTablock.Dock = DockStyle.Fill;
-            pnlCheckDisableTablock.Controls.Add(_checkDisableTablock);
-
+           
             //Exclude PreSql from transaction
             _checkExcludePreSqlFromTransaction.Dock = DockStyle.Fill;
             pnlExcludePreSqlFromTransaction.Controls.Add(_checkExcludePreSqlFromTransaction);
@@ -359,7 +354,7 @@ namespace TableLoader
         {
             string oldValue = _IsagCustomProperties.DestinationTable;
 
-            _cmbDestinationTable.ValueList.ValueListItems.Clear();
+            _cmbDestinationTable.Items.Clear();
 
             if (GetDesignTimeConnection() != null)
             {
@@ -370,7 +365,7 @@ namespace TableLoader
                 foreach (DataRow row in schema.Rows)
                 {
                     string tableName = row["TABLE_SCHEMA"].ToString() + "." + row["TABLE_NAME"].ToString();
-                    _cmbDestinationTable.ValueList.ValueListItems.Add(tableName);
+                    _cmbDestinationTable.Items.Add(tableName);
 
                     if (!string.IsNullOrEmpty(oldValue) && oldValue != tableName && oldValue.ToUpper() == tableName.ToUpper())
                     {
@@ -379,13 +374,7 @@ namespace TableLoader
                     }
                 }
 
-                _cmbDestinationTable.ValueList.SortStyle = ValueListSortStyle.AscendingByValue;
-                _cmbDestinationTable.LimitToList = true;
-                _cmbDestinationTable.AutoCompleteMode = Infragistics.Win.AutoCompleteMode.Suggest;
-                _cmbDestinationTable.AutoSuggestFilterMode = AutoSuggestFilterMode.Contains;
-                _cmbDestinationTable.DropDownStyle = DropDownStyle.DropDown;
-                _cmbDestinationTable.Nullable = false;
-                _cmbDestinationTable.ShowOverflowIndicator = true;
+                
 
                 conn.Close();
             }
@@ -442,35 +431,31 @@ namespace TableLoader
         /// </summary>
         private void UpdateDbCommandList()
         {
-            //DB Command "Merge" erlaubt?
-            ValueListItem item = _cmbDbCommand.ValueList.FindByDataValue(IsagCustomProperties.DbCommandType.Merge);
-            bool isSql2005 = IsSqlServer2005();
-            if (isSql2005 && item != null)
-            {
-                if (_cmbDbCommand.SelectedItem == item) _cmbDbCommand.SelectedItem = _cmbDbCommand.ValueList.FindByDataValue(IsagCustomProperties.DbCommandType.Merge2005);
-                _cmbDbCommand.ValueList.ValueListItems.Remove(item);
-            }
-            else if (!isSql2005 && item == null) _cmbDbCommand.ValueList.ValueListItems.Add(IsagCustomProperties.DbCommandType.Merge);
+            //DB Command "Merge" is available if SQL Server Version != 2005
+            ItemDataSource items = (ItemDataSource)_cmbDbCommand.DataSource;
+
+            if (IsSqlServer2005()) items.RemoveItem(IsagCustomProperties.DbCommandType.Merge);
+            else items.AddItem(IsagCustomProperties.DbCommandType.Merge);           
 
             UpdateTransactionList();
         }
 
         /// <summary>
-        /// Aktualisiert die Auswahlliste mit den Transaktionen (Beim BulkInsert ist eine externe Transaktion ni´cht erlaubt)
+        /// Aktualisiert die Auswahlliste mit den Transaktionen (Beim BulkInsert ist eine externe Transaktion nicht erlaubt)
         /// </summary>
         private void UpdateTransactionList()
         {
-            ValueListItem item = _cmbTransaction.ValueList.FindByDataValue(IsagCustomProperties.TransactionType.External);
+            bool externalInItems = _cmbTransaction.Items.Contains(IsagCustomProperties.TransactionType.External);
 
             if (_IsagCustomProperties.UseBulkInsert)
             {
-                if (item != null)
-                    _cmbTransaction.ValueList.ValueListItems.Remove(item);
+                if (externalInItems)
+                    _cmbTransaction.Items.Remove(IsagCustomProperties.TransactionType.External);
             }
             else
             {
-                if (item == null)
-                    _cmbTransaction.ValueList.ValueListItems.Add(IsagCustomProperties.TransactionType.External);
+                if (!externalInItems)
+                    _cmbTransaction.Items.Add(IsagCustomProperties.TransactionType.External);
             }
         }
 
@@ -503,11 +488,10 @@ namespace TableLoader
         {
             PopulateOutputColumnList();
 
-            _cmbDbCommand.SelectionChanged += new EventHandler(_DbCommand_SelectionChanged);
-            _cmbDestinationTable.SelectionChanged += new EventHandler(_DestinationTable_SelectionChanged);
-            _ConnectionManagerMain.SelectionChanged += new EventHandler(_ConnectionManagerMain_SelectionChanged);
-            _ConnectionManagerBulk.SelectionChanged += new EventHandler(_ConnectionManagerMain_SelectionChanged);
-            _cmbTransaction.SelectionChanged += new EventHandler(_Transaction_SelectionChanged);
+            _cmbDbCommand.SelectedIndexChanged += new EventHandler(_DbCommand_SelectedIndexChanged);            
+            _connectionManagerMain.ConnectionManagerChanged += new EventHandler(connectionManagerChanged);
+            _connectionManagerBulk.ConnectionManagerChanged += new EventHandler(connectionManagerChanged);
+            _cmbTransaction.SelectedIndexChanged+= new EventHandler(_cmbTransaction_SelectedIndexChanged);
             ugMapping.AfterSelectChange += new AfterSelectChangeEventHandler(ugMapping_AfterSelectChange);
             ugMapping.AfterCellUpdate += new CellEventHandler(ugMapping_AfterCellUpdate);
             _cmbStandardConfig.SelectionChanged += new EventHandler(_cmbStandardConfig_SelectionChanged);
@@ -544,9 +528,9 @@ namespace TableLoader
                     IsagCustomProperties.TransactionType transaction =
                         (IsagCustomProperties.TransactionType)Enum.Parse(typeof(IsagCustomProperties.TransactionType), row["TransactionType"].ToString());
 
-                    _cmbTableLoaderType.Value = tableLoaderType;
-                    _cmbDbCommand.Value = dbCommand;
-                    _cmbTransaction.Value = transaction;
+                    _cmbTableLoaderType.SelectedItem = tableLoaderType;
+                    _cmbDbCommand.SelectedItem = dbCommand;
+                    _cmbTransaction.SelectedItem = transaction;
                     tbChunkSizeBulk.Text = row["ChunkSizeBulk"].ToString();
                     tbChunkSizeDbCommand.Text = row["ChunkSizeDbCommand"].ToString();
                     tbTimeout.Text = row["DbTimeout"].ToString();
@@ -751,14 +735,14 @@ namespace TableLoader
 
         #region StartPage
 
-        private void _ConnectionManagerMain_SelectionChanged(object sender, EventArgs e)
+        private void connectionManagerChanged(object sender, EventArgs e)
         {
             IsagUltraComboEditor control = (IsagUltraComboEditor)sender;
 
-            ReactOnConnectionManagerChanged(control.Equals(_ConnectionManagerMain));
+            ReactOnConnectionManagerChanged(control.Equals(_connectionManagerMain));
         }
 
-        private void _Transaction_SelectionChanged(object sender, EventArgs e)
+        private void _cmbTransaction_SelectedIndexChanged(object sender, EventArgs e)
         {
             UpdateDbCommandList();
         }
@@ -793,14 +777,14 @@ namespace TableLoader
             ShowHelpStandardConfig();
         }
 
-        private void _DbCommand_SelectionChanged(object sender, EventArgs e)
+        private void _DbCommand_SelectedIndexChanged(object sender, EventArgs e)
         {
             UpdateTransactionList();
             AdjustSettingsForMerge();
             DisableDefaultValue();
         }
 
-        private void _DestinationTable_SelectionChanged(object sender, EventArgs e)
+        private void cmbDestinationTable_SelectedIndexChanged(object sender, EventArgs e)
         {
             _IsagCustomProperties.RemoveOutput();
             PopulateOutputColumnList();
@@ -1016,12 +1000,13 @@ namespace TableLoader
 
             if (con != null)
             {
-                _cmbDestinationTable.DataBindings["Value"].ControlUpdateMode = ControlUpdateMode.OnPropertyChanged;
+                //_cmbDestinationTable.DataBindings["Value"].ControlUpdateMode = ControlUpdateMode.OnPropertyChanged;
                 frmCreateTable frm = new frmCreateTable(_IsagCustomProperties, GetDesignTimeConnection());
                 if (frm.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                 {
                     PopulateDestinationTableName();
-                    _cmbDestinationTable.SelectedItem = _cmbDestinationTable.ValueList.FindByDataValue(frm.getTableName());
+                    _cmbDestinationTable.Text = frm.getTableName();
+                    //_cmbDestinationTable.SelectedItem = _cmbDestinationTable.ValueList.FindByDataValue(frm.getTableName());
                 }
 
                 frm.Dispose();
@@ -1125,8 +1110,8 @@ namespace TableLoader
 
             try
             {
-                if (_IsagCustomProperties.UseExternalTransaction) connection = _ConnectionManagerBulk.SelectedConnection;
-                else connection = _ConnectionManagerMain.SelectedConnection;
+                if (_IsagCustomProperties.UseExternalTransaction) connection = _connectionManagerBulk.SelectedConnection;
+                else connection = _connectionManagerMain.SelectedConnection;
 
                 if (connection.State == ConnectionState.Closed) connection.Open();
             }
@@ -1358,7 +1343,7 @@ namespace TableLoader
                 }
 
             }
-            else if (_ConnectionManagerBulk.Value != null && _connections.Contains(_ConnectionManagerBulk.Value.ToString()))
+            else if (_connectionManagerBulk.ConnectionManager != null && _connections.Contains(_connectionManagerBulk.ConnectionManager))
             {
                 try
                 {
@@ -1380,13 +1365,13 @@ namespace TableLoader
                     }
 
                 }
-                con.ConnectionManagerID = _connections[_ConnectionManagerBulk.Value.ToString()].ID;
+                con.ConnectionManagerID = _connections[_connectionManagerBulk.ConnectionManager].ID;
             }
 
             try
             {
                 _metadata.RuntimeConnectionCollection[Constants.CONNECTION_MANAGER_NAME_MAIN].ConnectionManagerID =
-                _connections[_ConnectionManagerMain.Value.ToString()].ID;
+                _connections[_connectionManagerMain.ConnectionManager].ID;
             }
             catch (Exception ex)
             {
@@ -1512,6 +1497,16 @@ namespace TableLoader
             lblLayoutMapping.Visible = (e.Tab == uTabMapping.Tab);
         }
         #endregion
+
+        private void cmbTableLoaderType_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            _cmbTableLoaderType.DataBindings["SelectedItem"].WriteValue(); 
+        }
+
+        private void lbDbCommand_Click(object sender, EventArgs e)
+        {
+
+        }
 
        
 

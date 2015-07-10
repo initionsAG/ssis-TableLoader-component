@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>TableLoader</RootNamespace>
     <AssemblyName>TableLoader3</AssemblyName>
-    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>TableLoader3.snk</AssemblyOriginatorKeyFile>
@@ -37,6 +37,7 @@
     <SccLocalPath>SAK</SccLocalPath>
     <SccAuxPath>SAK</SccAuxPath>
     <SccProvider>SAK</SccProvider>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -96,6 +97,12 @@
     <Compile Include="ComponentFramework\Controls\IsagCheckBox.designer.cs">
       <DependentUpon>IsagCheckBox.cs</DependentUpon>
     </Compile>
+    <Compile Include="ComponentFramework\Controls\IsagComboBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ComponentFramework\Controls\IsagComboBox.designer.cs">
+      <DependentUpon>IsagComboBox.cs</DependentUpon>
+    </Compile>
     <Compile Include="ComponentFramework\Controls\IsagDataGrid.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -115,7 +122,7 @@
       <DependentUpon>frmSelectVariable.cs</DependentUpon>
     </Compile>
     <Compile Include="ComponentFramework\Gui\IsagConnectionManager.cs">
-      <SubType>Component</SubType>
+      <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="ComponentFramework\Gui\IsagConnectionManager.designer.cs">
       <DependentUpon>IsagConnectionManager.cs</DependentUpon>
@@ -126,6 +133,7 @@
     <Compile Include="ComponentFramework\Gui\IsagVariableChooser.designer.cs">
       <DependentUpon>IsagVariableChooser.cs</DependentUpon>
     </Compile>
+    <Compile Include="ComponentFramework\ItemDataSource.cs" />
     <Compile Include="ComponentFramework\Mapping\Mapping.cs" />
     <Compile Include="ComponentMetaDataTools.cs" />
     <Compile Include="Constants.cs" />

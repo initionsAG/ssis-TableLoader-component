@@ -29,15 +29,6 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            Infragistics.Win.Appearance appearance1 = new Infragistics.Win.Appearance();
-            Infragistics.Win.Appearance appearance2 = new Infragistics.Win.Appearance();
-            Infragistics.Win.Appearance appearance3 = new Infragistics.Win.Appearance();
-            Infragistics.Win.UltraWinToolTip.UltraToolTipInfo ultraToolTipInfo1 = new Infragistics.Win.UltraWinToolTip.UltraToolTipInfo("Database Timeout in seconds", Infragistics.Win.ToolTipImage.Default, "", Infragistics.Win.DefaultableBoolean.Default);
-            Infragistics.Win.Appearance appearance4 = new Infragistics.Win.Appearance();
-            Infragistics.Win.UltraWinToolTip.UltraToolTipInfo ultraToolTipInfo2 = new Infragistics.Win.UltraWinToolTip.UltraToolTipInfo("Maximum number of BulkCopy threads", Infragistics.Win.ToolTipImage.Default, null, Infragistics.Win.DefaultableBoolean.Default);
-            Infragistics.Win.Appearance appearance5 = new Infragistics.Win.Appearance();
-            Infragistics.Win.Appearance appearance6 = new Infragistics.Win.Appearance();
-            Infragistics.Win.UltraWinToolTip.UltraToolTipInfo ultraToolTipInfo3 = new Infragistics.Win.UltraWinToolTip.UltraToolTipInfo("Number of rows  used for a single Bulk Copy thread", Infragistics.Win.ToolTipImage.Default, null, Infragistics.Win.DefaultableBoolean.Default);
             Infragistics.Win.UltraWinToolTip.UltraToolTipInfo ultraToolTipInfo4 = new Infragistics.Win.UltraWinToolTip.UltraToolTipInfo("Maximum number of BulkCopy threads", Infragistics.Win.ToolTipImage.Default, null, Infragistics.Win.DefaultableBoolean.Default);
             Infragistics.Win.UltraWinToolTip.UltraToolTipInfo ultraToolTipInfo5 = new Infragistics.Win.UltraWinToolTip.UltraToolTipInfo("Database Timeout in seconds", Infragistics.Win.ToolTipImage.Default, "", Infragistics.Win.DefaultableBoolean.Default);
             Infragistics.Win.UltraWinToolTip.UltraToolTipInfo ultraToolTipInfo6 = new Infragistics.Win.UltraWinToolTip.UltraToolTipInfo("Number of rows  used for a single Bulk Copy thread", Infragistics.Win.ToolTipImage.Default, null, Infragistics.Win.DefaultableBoolean.Default);
@@ -60,24 +51,22 @@
             Infragistics.Win.ValueListItem valueListItem3 = new Infragistics.Win.ValueListItem();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmTableLoaderUI));
             this.uTabConfiguration = new Infragistics.Win.UltraWinTabControl.UltraTabPageControl();
-            this.btnCreateScdTable = new Infragistics.Win.Misc.UltraButton();
-            this.pnlCheckDisableTablock = new System.Windows.Forms.Panel();
+            this.btnCreateTable = new System.Windows.Forms.Button();
+            this.btnAlterTable = new System.Windows.Forms.Button();
+            this.btnCreateScdTable = new System.Windows.Forms.Button();
+            this.tbReattempts = new System.Windows.Forms.TextBox();
+            this.tbMaxThreadCount = new System.Windows.Forms.TextBox();
+            this.tbChunkSizeBulk = new System.Windows.Forms.TextBox();
+            this.tbChunkSizeDbCommand = new System.Windows.Forms.TextBox();
+            this.tbTimeout = new System.Windows.Forms.TextBox();
+            this.checkDisableTablock = new System.Windows.Forms.CheckBox();
+            this.lblConMgrBulk = new System.Windows.Forms.Label();
             this.pnlCheckStandardConfigAuto = new System.Windows.Forms.Panel();
             this.label3 = new System.Windows.Forms.Label();
-            this.btnAlterTable = new Infragistics.Win.Misc.UltraButton();
-            this.btnCreateTable = new Infragistics.Win.Misc.UltraButton();
-            this.lblConMgrBulk = new Infragistics.Win.Misc.UltraLabel();
-            this.tbReattempts = new Infragistics.Win.UltraWinEditors.UltraTextEditor();
-            this.tbTimeout = new Infragistics.Win.UltraWinEditors.UltraTextEditor();
-            this.tbMaxThreadCount = new Infragistics.Win.UltraWinEditors.UltraTextEditor();
-            this.tbChunkSizeDbCommand = new Infragistics.Win.UltraWinEditors.UltraTextEditor();
-            this.tbChunkSizeBulk = new Infragistics.Win.UltraWinEditors.UltraTextEditor();
-            this.pnlTableLoaderType = new System.Windows.Forms.Panel();
             this.pnlTransaction = new System.Windows.Forms.Panel();
             this.pnlCmbStandardConfig = new System.Windows.Forms.Panel();
             this.pnlDbCommand = new System.Windows.Forms.Panel();
             this.lblTlType = new System.Windows.Forms.Label();
-            this.pnlDestTable = new System.Windows.Forms.Panel();
             this.lblTransaction = new System.Windows.Forms.Label();
             this.imgHelpStandardConfig = new System.Windows.Forms.PictureBox();
             this.imgHelpChunkSize = new System.Windows.Forms.PictureBox();
@@ -143,12 +132,10 @@
             this.ultraToolTipManager1 = new Infragistics.Win.UltraWinToolTip.UltraToolTipManager(this.components);
             this.uceLayoutMapping = new Infragistics.Win.UltraWinEditors.UltraComboEditor();
             this.lblLayoutMapping = new System.Windows.Forms.Label();
+            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.pnlTableLoaderType = new System.Windows.Forms.Panel();
+            this._cmbDestinationTable = new Lookup2.ComponentFramework.Controls.IsagComboBox();
             this.uTabConfiguration.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.tbReattempts)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.tbTimeout)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.tbMaxThreadCount)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.tbChunkSizeDbCommand)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.tbChunkSizeBulk)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.imgHelpStandardConfig)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.imgHelpChunkSize)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.imgHelpTransactions)).BeginInit();
@@ -169,24 +156,24 @@
             // 
             // uTabConfiguration
             // 
+            this.uTabConfiguration.Controls.Add(this.btnCreateTable);
+            this.uTabConfiguration.Controls.Add(this.btnAlterTable);
             this.uTabConfiguration.Controls.Add(this.btnCreateScdTable);
-            this.uTabConfiguration.Controls.Add(this.pnlCheckDisableTablock);
+            this.uTabConfiguration.Controls.Add(this.tbReattempts);
+            this.uTabConfiguration.Controls.Add(this.tbMaxThreadCount);
+            this.uTabConfiguration.Controls.Add(this.tbChunkSizeBulk);
+            this.uTabConfiguration.Controls.Add(this.tbChunkSizeDbCommand);
+            this.uTabConfiguration.Controls.Add(this.tbTimeout);
+            this.uTabConfiguration.Controls.Add(this.checkDisableTablock);
+            this.uTabConfiguration.Controls.Add(this._cmbDestinationTable);
+            this.uTabConfiguration.Controls.Add(this.lblConMgrBulk);
             this.uTabConfiguration.Controls.Add(this.pnlCheckStandardConfigAuto);
             this.uTabConfiguration.Controls.Add(this.label3);
-            this.uTabConfiguration.Controls.Add(this.btnAlterTable);
-            this.uTabConfiguration.Controls.Add(this.btnCreateTable);
-            this.uTabConfiguration.Controls.Add(this.lblConMgrBulk);
-            this.uTabConfiguration.Controls.Add(this.tbReattempts);
-            this.uTabConfiguration.Controls.Add(this.tbTimeout);
-            this.uTabConfiguration.Controls.Add(this.tbMaxThreadCount);
-            this.uTabConfiguration.Controls.Add(this.tbChunkSizeDbCommand);
-            this.uTabConfiguration.Controls.Add(this.tbChunkSizeBulk);
             this.uTabConfiguration.Controls.Add(this.pnlTableLoaderType);
             this.uTabConfiguration.Controls.Add(this.pnlTransaction);
             this.uTabConfiguration.Controls.Add(this.pnlCmbStandardConfig);
             this.uTabConfiguration.Controls.Add(this.pnlDbCommand);
             this.uTabConfiguration.Controls.Add(this.lblTlType);
-            this.uTabConfiguration.Controls.Add(this.pnlDestTable);
             this.uTabConfiguration.Controls.Add(this.lblTransaction);
             this.uTabConfiguration.Controls.Add(this.imgHelpStandardConfig);
             this.uTabConfiguration.Controls.Add(this.imgHelpChunkSize);
@@ -207,22 +194,92 @@
             this.uTabConfiguration.Name = "uTabConfiguration";
             this.uTabConfiguration.Size = new System.Drawing.Size(913, 371);
             // 
+            // btnCreateTable
+            // 
+            this.btnCreateTable.Location = new System.Drawing.Point(586, 81);
+            this.btnCreateTable.Name = "btnCreateTable";
+            this.btnCreateTable.Size = new System.Drawing.Size(95, 21);
+            this.btnCreateTable.TabIndex = 26;
+            this.btnCreateTable.Text = "Create Table";
+            this.btnCreateTable.UseVisualStyleBackColor = true;
+            this.btnCreateTable.Click += new System.EventHandler(this.btnCreateTable_Click);
+            // 
+            // btnAlterTable
+            // 
+            this.btnAlterTable.Location = new System.Drawing.Point(687, 81);
+            this.btnAlterTable.Name = "btnAlterTable";
+            this.btnAlterTable.Size = new System.Drawing.Size(95, 21);
+            this.btnAlterTable.TabIndex = 26;
+            this.btnAlterTable.Text = "Alter Table";
+            this.btnAlterTable.UseVisualStyleBackColor = true;
+            this.btnAlterTable.Click += new System.EventHandler(this.btnAlterTable_Click);
+            // 
             // btnCreateScdTable
             // 
             this.btnCreateScdTable.Location = new System.Drawing.Point(586, 108);
             this.btnCreateScdTable.Name = "btnCreateScdTable";
             this.btnCreateScdTable.Size = new System.Drawing.Size(95, 21);
-            this.btnCreateScdTable.TabIndex = 19;
-            this.btnCreateScdTable.Text = "Create SCD ";
+            this.btnCreateScdTable.TabIndex = 26;
+            this.btnCreateScdTable.Text = "Create SCD";
+            this.btnCreateScdTable.UseVisualStyleBackColor = true;
             this.btnCreateScdTable.Click += new System.EventHandler(this.btnCreateScdTable_Click);
             // 
-            // pnlCheckDisableTablock
+            // tbReattempts
             // 
-            this.pnlCheckDisableTablock.BackColor = System.Drawing.Color.Transparent;
-            this.pnlCheckDisableTablock.Location = new System.Drawing.Point(142, 318);
-            this.pnlCheckDisableTablock.Name = "pnlCheckDisableTablock";
-            this.pnlCheckDisableTablock.Size = new System.Drawing.Size(22, 21);
-            this.pnlCheckDisableTablock.TabIndex = 15;
+            this.tbReattempts.Location = new System.Drawing.Point(652, 211);
+            this.tbReattempts.Name = "tbReattempts";
+            this.tbReattempts.Size = new System.Drawing.Size(147, 20);
+            this.tbReattempts.TabIndex = 25;
+            // 
+            // tbMaxThreadCount
+            // 
+            this.tbMaxThreadCount.Location = new System.Drawing.Point(170, 115);
+            this.tbMaxThreadCount.Name = "tbMaxThreadCount";
+            this.tbMaxThreadCount.Size = new System.Drawing.Size(363, 20);
+            this.tbMaxThreadCount.TabIndex = 24;
+            this.toolTip1.SetToolTip(this.tbMaxThreadCount, "Maximum number of BulkCopy threads");
+            // 
+            // tbChunkSizeBulk
+            // 
+            this.tbChunkSizeBulk.Location = new System.Drawing.Point(170, 141);
+            this.tbChunkSizeBulk.Name = "tbChunkSizeBulk";
+            this.tbChunkSizeBulk.Size = new System.Drawing.Size(363, 20);
+            this.tbChunkSizeBulk.TabIndex = 24;
+            this.toolTip1.SetToolTip(this.tbChunkSizeBulk, "Number of rows  used for a single Bulk Copy thread");
+            // 
+            // tbChunkSizeDbCommand
+            // 
+            this.tbChunkSizeDbCommand.Location = new System.Drawing.Point(170, 166);
+            this.tbChunkSizeDbCommand.Name = "tbChunkSizeDbCommand";
+            this.tbChunkSizeDbCommand.Size = new System.Drawing.Size(363, 20);
+            this.tbChunkSizeDbCommand.TabIndex = 24;
+            // 
+            // tbTimeout
+            // 
+            this.tbTimeout.Location = new System.Drawing.Point(170, 211);
+            this.tbTimeout.Name = "tbTimeout";
+            this.tbTimeout.Size = new System.Drawing.Size(363, 20);
+            this.tbTimeout.TabIndex = 24;
+            this.toolTip1.SetToolTip(this.tbTimeout, "Database Timeout in seconds");
+            // 
+            // checkDisableTablock
+            // 
+            this.checkDisableTablock.AutoSize = true;
+            this.checkDisableTablock.Location = new System.Drawing.Point(144, 321);
+            this.checkDisableTablock.Name = "checkDisableTablock";
+            this.checkDisableTablock.Size = new System.Drawing.Size(15, 14);
+            this.checkDisableTablock.TabIndex = 23;
+            this.checkDisableTablock.UseVisualStyleBackColor = true;
+            // 
+            // lblConMgrBulk
+            // 
+            this.lblConMgrBulk.AutoSize = true;
+            this.lblConMgrBulk.BackColor = System.Drawing.Color.Transparent;
+            this.lblConMgrBulk.Location = new System.Drawing.Point(18, 51);
+            this.lblConMgrBulk.Name = "lblConMgrBulk";
+            this.lblConMgrBulk.Size = new System.Drawing.Size(139, 13);
+            this.lblConMgrBulk.TabIndex = 20;
+            this.lblConMgrBulk.Text = "Connection Manager (Bulk):";
             // 
             // pnlCheckStandardConfigAuto
             // 
@@ -241,98 +298,6 @@
             this.label3.Size = new System.Drawing.Size(115, 13);
             this.label3.TabIndex = 18;
             this.label3.Text = "Standard Configuration";
-            // 
-            // btnAlterTable
-            // 
-            this.btnAlterTable.Location = new System.Drawing.Point(687, 81);
-            this.btnAlterTable.Name = "btnAlterTable";
-            this.btnAlterTable.Size = new System.Drawing.Size(95, 21);
-            this.btnAlterTable.TabIndex = 17;
-            this.btnAlterTable.Text = "Alter Table";
-            this.btnAlterTable.Click += new System.EventHandler(this.btnAlterTable_Click);
-            // 
-            // btnCreateTable
-            // 
-            this.btnCreateTable.Location = new System.Drawing.Point(586, 81);
-            this.btnCreateTable.Name = "btnCreateTable";
-            this.btnCreateTable.Size = new System.Drawing.Size(95, 21);
-            this.btnCreateTable.TabIndex = 17;
-            this.btnCreateTable.Text = "Create Table";
-            this.btnCreateTable.Click += new System.EventHandler(this.btnCreateTable_Click);
-            // 
-            // lblConMgrBulk
-            // 
-            appearance1.BackColor = System.Drawing.Color.Transparent;
-            this.lblConMgrBulk.Appearance = appearance1;
-            this.lblConMgrBulk.Location = new System.Drawing.Point(18, 52);
-            this.lblConMgrBulk.Name = "lblConMgrBulk";
-            this.lblConMgrBulk.Size = new System.Drawing.Size(145, 13);
-            this.lblConMgrBulk.TabIndex = 16;
-            this.lblConMgrBulk.Text = "Connection Manager (Bulk):";
-            // 
-            // tbReattempts
-            // 
-            appearance2.BackColor = System.Drawing.SystemColors.Window;
-            this.tbReattempts.Appearance = appearance2;
-            this.tbReattempts.BackColor = System.Drawing.SystemColors.Window;
-            this.tbReattempts.Location = new System.Drawing.Point(652, 211);
-            this.tbReattempts.Name = "tbReattempts";
-            this.tbReattempts.Size = new System.Drawing.Size(147, 21);
-            this.tbReattempts.TabIndex = 15;
-            // 
-            // tbTimeout
-            // 
-            appearance3.BackColor = System.Drawing.SystemColors.Window;
-            this.tbTimeout.Appearance = appearance3;
-            this.tbTimeout.BackColor = System.Drawing.SystemColors.Window;
-            this.tbTimeout.Location = new System.Drawing.Point(170, 211);
-            this.tbTimeout.Name = "tbTimeout";
-            this.tbTimeout.Size = new System.Drawing.Size(363, 21);
-            this.tbTimeout.TabIndex = 15;
-            ultraToolTipInfo1.ToolTipText = "Database Timeout in seconds";
-            this.ultraToolTipManager1.SetUltraToolTip(this.tbTimeout, ultraToolTipInfo1);
-            // 
-            // tbMaxThreadCount
-            // 
-            appearance4.BackColor = System.Drawing.SystemColors.Window;
-            this.tbMaxThreadCount.Appearance = appearance4;
-            this.tbMaxThreadCount.BackColor = System.Drawing.SystemColors.Window;
-            this.tbMaxThreadCount.Location = new System.Drawing.Point(170, 114);
-            this.tbMaxThreadCount.Name = "tbMaxThreadCount";
-            this.tbMaxThreadCount.Size = new System.Drawing.Size(363, 21);
-            this.tbMaxThreadCount.TabIndex = 15;
-            ultraToolTipInfo2.ToolTipText = "Maximum number of BulkCopy threads";
-            this.ultraToolTipManager1.SetUltraToolTip(this.tbMaxThreadCount, ultraToolTipInfo2);
-            // 
-            // tbChunkSizeDbCommand
-            // 
-            appearance5.BackColor = System.Drawing.SystemColors.Window;
-            this.tbChunkSizeDbCommand.Appearance = appearance5;
-            this.tbChunkSizeDbCommand.BackColor = System.Drawing.SystemColors.Window;
-            this.tbChunkSizeDbCommand.Location = new System.Drawing.Point(170, 165);
-            this.tbChunkSizeDbCommand.Name = "tbChunkSizeDbCommand";
-            this.tbChunkSizeDbCommand.Size = new System.Drawing.Size(363, 21);
-            this.tbChunkSizeDbCommand.TabIndex = 15;
-            // 
-            // tbChunkSizeBulk
-            // 
-            appearance6.BackColor = System.Drawing.SystemColors.Window;
-            this.tbChunkSizeBulk.Appearance = appearance6;
-            this.tbChunkSizeBulk.BackColor = System.Drawing.SystemColors.Window;
-            this.tbChunkSizeBulk.Location = new System.Drawing.Point(170, 140);
-            this.tbChunkSizeBulk.Name = "tbChunkSizeBulk";
-            this.tbChunkSizeBulk.Size = new System.Drawing.Size(363, 21);
-            this.tbChunkSizeBulk.TabIndex = 15;
-            ultraToolTipInfo3.ToolTipText = "Number of rows  used for a single Bulk Copy thread";
-            this.ultraToolTipManager1.SetUltraToolTip(this.tbChunkSizeBulk, ultraToolTipInfo3);
-            // 
-            // pnlTableLoaderType
-            // 
-            this.pnlTableLoaderType.BackColor = System.Drawing.Color.Transparent;
-            this.pnlTableLoaderType.Location = new System.Drawing.Point(652, 21);
-            this.pnlTableLoaderType.Name = "pnlTableLoaderType";
-            this.pnlTableLoaderType.Size = new System.Drawing.Size(147, 21);
-            this.pnlTableLoaderType.TabIndex = 14;
             // 
             // pnlTransaction
             // 
@@ -367,14 +332,6 @@
             this.lblTlType.Size = new System.Drawing.Size(50, 13);
             this.lblTlType.TabIndex = 12;
             this.lblTlType.Text = "TL Type:";
-            // 
-            // pnlDestTable
-            // 
-            this.pnlDestTable.BackColor = System.Drawing.Color.Transparent;
-            this.pnlDestTable.Location = new System.Drawing.Point(170, 81);
-            this.pnlDestTable.Name = "pnlDestTable";
-            this.pnlDestTable.Size = new System.Drawing.Size(363, 21);
-            this.pnlDestTable.TabIndex = 14;
             // 
             // lblTransaction
             // 
@@ -454,11 +411,12 @@
             // 
             this.lbDbCommand.AutoSize = true;
             this.lbDbCommand.BackColor = System.Drawing.Color.Transparent;
-            this.lbDbCommand.Location = new System.Drawing.Point(18, 242);
+            this.lbDbCommand.Location = new System.Drawing.Point(17, 242);
             this.lbDbCommand.Name = "lbDbCommand";
             this.lbDbCommand.Size = new System.Drawing.Size(72, 13);
             this.lbDbCommand.TabIndex = 2;
             this.lbDbCommand.Text = "DB Command";
+            this.lbDbCommand.Click += new System.EventHandler(this.lbDbCommand_Click);
             // 
             // label11
             // 
@@ -506,7 +464,7 @@
             // 
             this.label2.AutoSize = true;
             this.label2.BackColor = System.Drawing.Color.Transparent;
-            this.label2.Location = new System.Drawing.Point(18, 322);
+            this.label2.Location = new System.Drawing.Point(17, 321);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(84, 13);
             this.label2.TabIndex = 2;
@@ -1114,6 +1072,28 @@
             this.lblLayoutMapping.TabIndex = 5;
             this.lblLayoutMapping.Text = "Layout";
             // 
+            // pnlTableLoaderType
+            // 
+            this.pnlTableLoaderType.BackColor = System.Drawing.Color.Transparent;
+            this.pnlTableLoaderType.Location = new System.Drawing.Point(652, 21);
+            this.pnlTableLoaderType.Name = "pnlTableLoaderType";
+            this.pnlTableLoaderType.Size = new System.Drawing.Size(147, 21);
+            this.pnlTableLoaderType.TabIndex = 14;
+            // 
+            // _cmbDestinationTable
+            // 
+            this._cmbDestinationTable.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
+            this._cmbDestinationTable.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
+            this._cmbDestinationTable.EnableDoubleBinding = false;
+            this._cmbDestinationTable.FormattingEnabled = true;
+            this._cmbDestinationTable.Location = new System.Drawing.Point(170, 82);
+            this._cmbDestinationTable.Name = "_cmbDestinationTable";
+            this._cmbDestinationTable.Size = new System.Drawing.Size(363, 21);
+            this._cmbDestinationTable.Sorted = true;
+            this._cmbDestinationTable.TabIndex = 22;
+            this._cmbDestinationTable.UpdateSelectedItemBindingOnSelectedIndexChanged = true;
+            this._cmbDestinationTable.SelectedIndexChanged += new System.EventHandler(this.cmbDestinationTable_SelectedIndexChanged);
+            // 
             // frmTableLoaderUI
             // 
             this.AcceptButton = this.btnOK;
@@ -1134,11 +1114,6 @@
             this.Load += new System.EventHandler(this.frmTableLoaderUI_Load);
             this.uTabConfiguration.ResumeLayout(false);
             this.uTabConfiguration.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.tbReattempts)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.tbTimeout)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.tbMaxThreadCount)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.tbChunkSizeDbCommand)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.tbChunkSizeBulk)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.imgHelpStandardConfig)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.imgHelpChunkSize)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.imgHelpTransactions)).EndInit();
@@ -1193,14 +1168,9 @@
         private System.Windows.Forms.Label label14;
         private System.Windows.Forms.Label label17;
         private System.Windows.Forms.Label lblChunkSizeBulk;
-        private Infragistics.Win.UltraWinEditors.UltraTextEditor tbTimeout;
-        private Infragistics.Win.UltraWinEditors.UltraTextEditor tbChunkSizeBulk;
         private System.Windows.Forms.Panel pnlDbCommand;
-        private System.Windows.Forms.Panel pnlDestTable;
         private System.Windows.Forms.Label lbDbCommand;
         private System.Windows.Forms.Panel pnlTransaction;
-        private Infragistics.Win.Misc.UltraLabel lblConMgrBulk;
-        private Infragistics.Win.Misc.UltraButton btnCreateTable;
         private Infragistics.Win.FormattedLinkLabel.UltraFormattedTextEditor tbPreSql;
         private Infragistics.Win.UltraWinEditors.UltraTextEditor ultraTextEditor1;
         private Infragistics.Win.FormattedLinkLabel.UltraFormattedTextEditor tbPostSql;
@@ -1218,8 +1188,6 @@
         private Infragistics.Win.FormattedLinkLabel.UltraFormattedTextEditor tbCustomMergeCommand;
         private System.Windows.Forms.Label lblWarning;
         private System.Windows.Forms.PictureBox imgHelpChunkSize;
-        private Infragistics.Win.Misc.UltraButton btnAlterTable;
-        private Infragistics.Win.UltraWinEditors.UltraTextEditor tbMaxThreadCount;
         private System.Windows.Forms.Label lblMaxThreadCount;
         private Infragistics.Win.Misc.UltraButton btnInsertVarCustomCommand;
         private System.Windows.Forms.Panel pnlVariablesCustomCommand;
@@ -1235,19 +1203,30 @@
         private Infragistics.Win.UltraWinEditors.UltraNumericEditor numLogLevel;
         private Infragistics.Win.UltraWinToolTip.UltraToolTipManager ultraToolTipManager1;
         private System.Windows.Forms.PictureBox imgHelpStandardConfig;
-        private System.Windows.Forms.Panel pnlTableLoaderType;
         private System.Windows.Forms.Label lblTlType;
-        private Infragistics.Win.UltraWinEditors.UltraTextEditor tbChunkSizeDbCommand;
         private System.Windows.Forms.Label lblChunkSizeDbCommand;
-        private Infragistics.Win.UltraWinEditors.UltraTextEditor tbReattempts;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Panel pnlVariableChooserLog;
-        private System.Windows.Forms.Panel pnlCheckDisableTablock;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Panel pnlExcludePreSqlFromTransaction;
         private System.Windows.Forms.Label lblExcludePreSqlFromTransaction;
-        private Infragistics.Win.Misc.UltraButton btnCreateScdTable;
         private Infragistics.Win.UltraWinEditors.UltraComboEditor uceLayoutMapping;
         private System.Windows.Forms.Label lblLayoutMapping;
+        private System.Windows.Forms.Label lblConMgrBulk;
+        private System.Windows.Forms.CheckBox checkDisableTablock;
+        private System.Windows.Forms.TextBox tbTimeout;
+        private System.Windows.Forms.ToolTip toolTip1;
+        private System.Windows.Forms.TextBox tbChunkSizeDbCommand;
+        private System.Windows.Forms.TextBox tbChunkSizeBulk;
+        private System.Windows.Forms.TextBox tbMaxThreadCount;
+        private System.Windows.Forms.TextBox tbReattempts;
+        private System.Windows.Forms.Button btnCreateScdTable;
+        private System.Windows.Forms.Button btnCreateTable;
+        private System.Windows.Forms.Button btnAlterTable;
+        private Lookup2.ComponentFramework.Controls.IsagComboBox _cmbDestinationTable;
+        private System.Windows.Forms.Panel pnlTableLoaderType;
+       
+  
+       
     }
 }
