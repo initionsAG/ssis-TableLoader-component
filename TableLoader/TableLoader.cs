@@ -6,8 +6,8 @@ using Microsoft.SqlServer.Dts.Pipeline.Wrapper;
 using System.Data.SqlClient;
 using Microsoft.SqlServer.Dts.Runtime.Wrapper;
 using System.Data;
-using System.Transactions;
-using System.EnterpriseServices;
+//using System.Transactions;
+//using System.EnterpriseServices;
 using System.Windows.Forms;
 using Microsoft.SqlServer.Dts.Runtime;
 using System.Collections;
@@ -217,11 +217,32 @@ namespace TableLoader
     /// 09.07.2014, Dennis Weise  
     ///     - CurrentVersion auf 1 gesetzt
     /// </summary> 
-    [DtsPipelineComponent(DisplayName = "TableLoader 3",
+   
+#if     (SQL2008)
+   [DtsPipelineComponent(DisplayName = "TableLoader 3",
         ComponentType = ComponentType.DestinationAdapter,
         CurrentVersion = 1,
         IconResource = "TableLoader.Resources.TableLoader.ico",
         UITypeName = "TableLoader.TableLoaderUI, TableLoader3, Version=1.0.0.0, Culture=neutral, PublicKeyToken=1bfbf132955f2db6")]
+#elif   (SQL2012)
+     [DtsPipelineComponent(DisplayName = "TableLoader 3",
+        ComponentType = ComponentType.DestinationAdapter,
+        CurrentVersion = 0,
+        IconResource = "TableLoader.Resources.TableLoader.ico",
+        UITypeName = "TableLoader.TableLoaderUI, TableLoader4, Version=1.0.0.0, Culture=neutral, PublicKeyToken=bb59c1475df39544")]
+#elif   (SQL2014)
+      [DtsPipelineComponent(DisplayName = "TableLoader 3",
+        ComponentType = ComponentType.DestinationAdapter,
+        CurrentVersion = 1,
+        IconResource = "TableLoader.Resources.TableLoader.ico",
+        UITypeName = "TableLoader.TableLoaderUI, TableLoader5, Version=1.0.0.0, Culture=neutral, PublicKeyToken=d6e3dd235db59be7")]
+#else
+     [DtsPipelineComponent(DisplayName = "TableLoader 3",
+        ComponentType = ComponentType.DestinationAdapter,
+        CurrentVersion = 1,
+        IconResource = "TableLoader.Resources.TableLoader.ico",
+        UITypeName = "TableLoader.TableLoaderUI, TableLoader3, Version=1.0.0.0, Culture=neutral, PublicKeyToken=1bfbf132955f2db6")]
+#endif
     public class TableLoader : PipelineComponent
     {
 

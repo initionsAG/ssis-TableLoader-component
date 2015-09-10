@@ -113,7 +113,7 @@ namespace ComponentFramework.Gui
 
         private void cmbConMgr_SelectedValueChanged(object sender, EventArgs e)
         {
-            if (this.ConnectionManagerChanged != null) this.ConnectionManagerChanged(sender, e);
+            if (this.ConnectionManagerChanged != null) this.ConnectionManagerChanged(this, e);
         }
     }
 }

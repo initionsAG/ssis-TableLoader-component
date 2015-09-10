@@ -5,7 +5,6 @@ using System.Data;
 using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
-using Infragistics.Win;
 
 namespace TableLoader
 {
@@ -29,42 +28,13 @@ namespace TableLoader
             tbValue.Text = functionValue;
             _outputColumnDataType = outputColumnDataType;
 
-            ValueList valueList = new ValueList();
-            foreach (string columnName in inputColumnNameList) valueList.ValueListItems.Add(columnName);
-            cbColumnList.ValueList =  valueList;
+            cbColumnList.Items.AddRange(inputColumnNameList);
             cbColumnList.Text = inputColumnName;
         }
 
         private string GetInputReference()
         {
             return "@(" + cbColumnList.Text + ")";
-
-            //string inputReference = "";
-
-            //switch (_dbCommand)
-            //{
-            //    case IsagCustomProperties.DbCommandType.Merge:
-            //        inputReference = "src." + _inputColumnName;
-            //        break;
-            //    case IsagCustomProperties.DbCommandType.Merge2005:
-            //        inputReference = "src." + _inputColumnName;
-            //        break;
-            //    case IsagCustomProperties.DbCommandType.UpdateTblInsertRow:
-            //        inputReference = "@" + _inputColumnName;
-            //        break;
-            //    case IsagCustomProperties.DbCommandType.UpdateRowInsertRow:
-            //        inputReference = "@" + _inputColumnName;
-            //        break;
-            //    case IsagCustomProperties.DbCommandType.BulkInsert:
-            //        break;
-            //    case IsagCustomProperties.DbCommandType.Insert:
-            //        inputReference = _inputColumnName;
-            //        break;
-            //    default:
-            //        break;
-            //}
-
-            //return inputReference;
         }
         private void btnInsertInputColumn_Click(object sender, EventArgs e)
         {
@@ -78,8 +48,7 @@ namespace TableLoader
 
         private void Insert(string value) 
         {
-            System.Windows.Forms.Clipboard.SetDataObject(value, true);
-            tbValue.EditInfo.Paste();
+            tbValue.Text = tbValue.Text.Insert(tbValue.SelectionStart, value);
         }
     }
 }

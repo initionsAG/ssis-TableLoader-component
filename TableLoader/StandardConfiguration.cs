@@ -7,7 +7,6 @@ using Microsoft.SqlServer.Dts.Runtime;
 using System.Data.OleDb;
 using System.Data.SqlClient;
 using System.Windows.Forms;
-using Infragistics.Win;
 using Microsoft.SqlServer.Dts.Pipeline.Wrapper;
 using Microsoft.SqlServer.Dts.Runtime.Wrapper;
 
@@ -129,24 +128,24 @@ namespace TableLoader
 
         }
 
-        public ValueList GetStandardConfigurationAsValueList()
+        public List<string> GetStandardConfigurationList()
         {
             if (HasConnection)
             {
                 DataTable dt = GetStandardConfigurationAsDataTable();
 
-                ValueList valueList = new ValueList();
-                valueList.ValueListItems.Add(new ValueListItem(""));
+                List<string> itemList = new List<string>();
+                itemList.Add("");
 
                 foreach (DataRow row in dt.Rows)
                 {
-                    valueList.ValueListItems.Add(new ValueListItem(row["Name"].ToString()));
+                    itemList.Add(row["Name"].ToString());
                 }
 
-                return valueList;
+                return itemList;
             }
 
-            return new ValueList();
+            return new List<string>();
         }
 
         public Dictionary<string, DataRow> GetStandardConfigurationAsDictionary()

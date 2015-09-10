@@ -29,28 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            Infragistics.Win.UltraWinToolTip.UltraToolTipInfo ultraToolTipInfo4 = new Infragistics.Win.UltraWinToolTip.UltraToolTipInfo("Maximum number of BulkCopy threads", Infragistics.Win.ToolTipImage.Default, null, Infragistics.Win.DefaultableBoolean.Default);
-            Infragistics.Win.UltraWinToolTip.UltraToolTipInfo ultraToolTipInfo5 = new Infragistics.Win.UltraWinToolTip.UltraToolTipInfo("Database Timeout in seconds", Infragistics.Win.ToolTipImage.Default, "", Infragistics.Win.DefaultableBoolean.Default);
-            Infragistics.Win.UltraWinToolTip.UltraToolTipInfo ultraToolTipInfo6 = new Infragistics.Win.UltraWinToolTip.UltraToolTipInfo("Number of rows  used for a single Bulk Copy thread", Infragistics.Win.ToolTipImage.Default, null, Infragistics.Win.DefaultableBoolean.Default);
-            Infragistics.Win.Appearance appearance7 = new Infragistics.Win.Appearance();
-            Infragistics.Win.Appearance appearance8 = new Infragistics.Win.Appearance();
-            Infragistics.Win.Appearance appearance9 = new Infragistics.Win.Appearance();
-            Infragistics.Win.Appearance appearance10 = new Infragistics.Win.Appearance();
-            Infragistics.Win.Appearance appearance11 = new Infragistics.Win.Appearance();
-            Infragistics.Win.Appearance appearance12 = new Infragistics.Win.Appearance();
-            Infragistics.Win.Appearance appearance13 = new Infragistics.Win.Appearance();
-            Infragistics.Win.UltraWinTabControl.UltraTab ultraTab1 = new Infragistics.Win.UltraWinTabControl.UltraTab();
-            Infragistics.Win.UltraWinTabControl.UltraTab ultraTab2 = new Infragistics.Win.UltraWinTabControl.UltraTab();
-            Infragistics.Win.UltraWinTabControl.UltraTab ultraTab3 = new Infragistics.Win.UltraWinTabControl.UltraTab();
-            Infragistics.Win.UltraWinTabControl.UltraTab ultraTab4 = new Infragistics.Win.UltraWinTabControl.UltraTab();
-            Infragistics.Win.UltraWinTabControl.UltraTab ultraTab5 = new Infragistics.Win.UltraWinTabControl.UltraTab();
-            Infragistics.Win.UltraWinTabControl.UltraTab ultraTab6 = new Infragistics.Win.UltraWinTabControl.UltraTab();
-            Infragistics.Win.UltraWinTabControl.UltraTab ultraTab7 = new Infragistics.Win.UltraWinTabControl.UltraTab();
-            Infragistics.Win.ValueListItem valueListItem1 = new Infragistics.Win.ValueListItem();
-            Infragistics.Win.ValueListItem valueListItem2 = new Infragistics.Win.ValueListItem();
-            Infragistics.Win.ValueListItem valueListItem3 = new Infragistics.Win.ValueListItem();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmTableLoaderUI));
-            this.uTabConfiguration = new Infragistics.Win.UltraWinTabControl.UltraTabPageControl();
             this.btnCreateTable = new System.Windows.Forms.Button();
             this.btnAlterTable = new System.Windows.Forms.Button();
             this.btnCreateScdTable = new System.Windows.Forms.Button();
@@ -59,12 +38,14 @@
             this.tbChunkSizeBulk = new System.Windows.Forms.TextBox();
             this.tbChunkSizeDbCommand = new System.Windows.Forms.TextBox();
             this.tbTimeout = new System.Windows.Forms.TextBox();
+            this._checkStandardConfigAuto = new System.Windows.Forms.CheckBox();
             this.checkDisableTablock = new System.Windows.Forms.CheckBox();
             this.lblConMgrBulk = new System.Windows.Forms.Label();
-            this.pnlCheckStandardConfigAuto = new System.Windows.Forms.Panel();
             this.label3 = new System.Windows.Forms.Label();
+            this.pnlTableLoaderType = new System.Windows.Forms.Panel();
             this.pnlTransaction = new System.Windows.Forms.Panel();
             this.pnlCmbStandardConfig = new System.Windows.Forms.Panel();
+            this.pnlDestinationTanble = new System.Windows.Forms.Panel();
             this.pnlDbCommand = new System.Windows.Forms.Panel();
             this.lblTlType = new System.Windows.Forms.Label();
             this.lblTransaction = new System.Windows.Forms.Label();
@@ -73,7 +54,6 @@
             this.imgHelpTransactions = new System.Windows.Forms.PictureBox();
             this.pnlConnMgrBulk = new System.Windows.Forms.Panel();
             this.pnlConnMgrMain = new System.Windows.Forms.Panel();
-            this.lblWarning = new System.Windows.Forms.Label();
             this.lbDbCommand = new System.Windows.Forms.Label();
             this.label11 = new System.Windows.Forms.Label();
             this.label14 = new System.Windows.Forms.Label();
@@ -83,192 +63,152 @@
             this.label1 = new System.Windows.Forms.Label();
             this.label17 = new System.Windows.Forms.Label();
             this.lblChunkSizeBulk = new System.Windows.Forms.Label();
-            this.uTabMapping = new Infragistics.Win.UltraWinTabControl.UltraTabPageControl();
-            this.btnAddRow = new Infragistics.Win.Misc.UltraButton();
-            this.btnRemoveRow = new Infragistics.Win.Misc.UltraButton();
-            this.btnSelect = new Infragistics.Win.Misc.UltraButton();
-            this.btnDeSelect = new Infragistics.Win.Misc.UltraButton();
-            this.tbPrefixOutput = new Infragistics.Win.UltraWinEditors.UltraTextEditor();
+            this.tbPrefixOutput = new System.Windows.Forms.TextBox();
+            this.tbPrefixInput = new System.Windows.Forms.TextBox();
             this.btnAutoMap = new System.Windows.Forms.Button();
-            this.tbPrefixInput = new Infragistics.Win.UltraWinEditors.UltraTextEditor();
+            this.btnSelect = new System.Windows.Forms.Button();
+            this.btnDeSelect = new System.Windows.Forms.Button();
+            this.btnRemoveRow = new System.Windows.Forms.Button();
+            this.btnAddRow = new System.Windows.Forms.Button();
             this.pnlDGV = new System.Windows.Forms.Panel();
             this.label5 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
-            this.uTabPreSqlStatement = new Infragistics.Win.UltraWinTabControl.UltraTabPageControl();
-            this.pnlExcludePreSqlFromTransaction = new System.Windows.Forms.Panel();
+            this.tbPreSql = new System.Windows.Forms.TextBox();
+            this._checkExcludePreSqlFromTransaction = new System.Windows.Forms.CheckBox();
+            this.btnInsertTruncatePreSql = new System.Windows.Forms.Button();
+            this.btnInsertVariablePreSql = new System.Windows.Forms.Button();
+            this.lblVariablesPreSql = new System.Windows.Forms.Label();
             this.lblExcludePreSqlFromTransaction = new System.Windows.Forms.Label();
-            this.btnInsertTruncatePreSql = new Infragistics.Win.Misc.UltraButton();
-            this.btnInsertVariablePreSql = new Infragistics.Win.Misc.UltraButton();
             this.pnlVariablesPreSql = new System.Windows.Forms.Panel();
-            this.lblVariablesPreSql = new Infragistics.Win.Misc.UltraLabel();
-            this.tbPreSql = new Infragistics.Win.FormattedLinkLabel.UltraFormattedTextEditor();
-            this.ultraTextEditor1 = new Infragistics.Win.UltraWinEditors.UltraTextEditor();
-            this.uTabPostSqlStatement = new Infragistics.Win.UltraWinTabControl.UltraTabPageControl();
-            this.btnInsertVariablePostSql = new Infragistics.Win.Misc.UltraButton();
+            this.tbPostSql = new System.Windows.Forms.TextBox();
+            this.lblVariablesPostSql = new System.Windows.Forms.Label();
+            this.btnInsertVariablePostSql = new System.Windows.Forms.Button();
             this.pnlVariablesPostSql = new System.Windows.Forms.Panel();
-            this.lblVariablesPostSql = new Infragistics.Win.Misc.UltraLabel();
-            this.tbPostSql = new Infragistics.Win.FormattedLinkLabel.UltraFormattedTextEditor();
-            this.uTabSqlPreview = new Infragistics.Win.UltraWinTabControl.UltraTabPageControl();
-            this.btnSqlPreview = new Infragistics.Win.Misc.UltraButton();
-            this.tbSqlPreview = new Infragistics.Win.FormattedLinkLabel.UltraFormattedTextEditor();
-            this.uTabCustomCommand = new Infragistics.Win.UltraWinTabControl.UltraTabPageControl();
-            this.pnlUseCustomCommand = new System.Windows.Forms.Panel();
-            this.btnInsertVarCustomCommand = new Infragistics.Win.Misc.UltraButton();
+            this.tbSqlPreview = new System.Windows.Forms.TextBox();
+            this.btnSqlPreview = new System.Windows.Forms.Button();
+            this._checkUseCustomCommand = new System.Windows.Forms.CheckBox();
+            this.btnInsertDefaultMergeCommand = new System.Windows.Forms.Button();
+            this.label4 = new System.Windows.Forms.Label();
+            this.tbCustomMergeCommand = new System.Windows.Forms.TextBox();
+            this.btnInsertVarCustomCommand = new System.Windows.Forms.Button();
             this.pnlVariablesCustomCommand = new System.Windows.Forms.Panel();
-            this.ultraLabel1 = new Infragistics.Win.Misc.UltraLabel();
-            this.tbCustomMergeCommand = new Infragistics.Win.FormattedLinkLabel.UltraFormattedTextEditor();
-            this.btnInsertDefaultMergeCommand = new Infragistics.Win.Misc.UltraButton();
-            this.ultraTabPageControl1 = new Infragistics.Win.UltraWinTabControl.UltraTabPageControl();
+            this.label7 = new System.Windows.Forms.Label();
+            this.numLogLevel1 = new System.Windows.Forms.DomainUpDown();
+            this.tbMessage = new System.Windows.Forms.TextBox();
+            this.btnInsert = new System.Windows.Forms.Button();
             this.pnlVariableChooserLog = new System.Windows.Forms.Panel();
-            this.ultraLabel2 = new Infragistics.Win.Misc.UltraLabel();
-            this.numLogLevel = new Infragistics.Win.UltraWinEditors.UltraNumericEditor();
-            this.btnInsert = new Infragistics.Win.Misc.UltraButton();
-            this.tbMessage = new Infragistics.Win.FormattedLinkLabel.UltraFormattedTextEditor();
             this.btnCancel = new System.Windows.Forms.Button();
             this.btnOK = new System.Windows.Forms.Button();
-            this.ultraMessageBox = new Infragistics.Win.UltraMessageBox.UltraMessageBoxManager(this.components);
-            this.uTabConfig = new Infragistics.Win.UltraWinTabControl.UltraTabControl();
-            this.ultraTabSharedControlsPage1 = new Infragistics.Win.UltraWinTabControl.UltraTabSharedControlsPage();
-            this.ultraToolTipManager1 = new Infragistics.Win.UltraWinToolTip.UltraToolTipManager(this.components);
-            this.uceLayoutMapping = new Infragistics.Win.UltraWinEditors.UltraComboEditor();
             this.lblLayoutMapping = new System.Windows.Forms.Label();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.pnlTableLoaderType = new System.Windows.Forms.Panel();
-            this._cmbDestinationTable = new Lookup2.ComponentFramework.Controls.IsagComboBox();
-            this.uTabConfiguration.SuspendLayout();
+            this.cmbLayoutMapping = new System.Windows.Forms.ComboBox();
+            this.uTabConfig = new System.Windows.Forms.TabControl();
+            this.uTabConfiguration = new System.Windows.Forms.TabPage();
+            this.uTabMapping = new System.Windows.Forms.TabPage();
+            this.uTabPreSQLStatement = new System.Windows.Forms.TabPage();
+            this.uTabPostSQLStatement = new System.Windows.Forms.TabPage();
+            this.uTabSQLPreview = new System.Windows.Forms.TabPage();
+            this.uTabCustomCommand = new System.Windows.Forms.TabPage();
+            this.uTabLogging = new System.Windows.Forms.TabPage();
             ((System.ComponentModel.ISupportInitialize)(this.imgHelpStandardConfig)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.imgHelpChunkSize)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.imgHelpTransactions)).BeginInit();
-            this.uTabMapping.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.tbPrefixOutput)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.tbPrefixInput)).BeginInit();
-            this.uTabPreSqlStatement.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.ultraTextEditor1)).BeginInit();
-            this.uTabPostSqlStatement.SuspendLayout();
-            this.uTabSqlPreview.SuspendLayout();
-            this.uTabCustomCommand.SuspendLayout();
-            this.ultraTabPageControl1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numLogLevel)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.uTabConfig)).BeginInit();
             this.uTabConfig.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.uceLayoutMapping)).BeginInit();
+            this.uTabConfiguration.SuspendLayout();
+            this.uTabMapping.SuspendLayout();
+            this.uTabPreSQLStatement.SuspendLayout();
+            this.uTabPostSQLStatement.SuspendLayout();
+            this.uTabSQLPreview.SuspendLayout();
+            this.uTabCustomCommand.SuspendLayout();
+            this.uTabLogging.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // uTabConfiguration
-            // 
-            this.uTabConfiguration.Controls.Add(this.btnCreateTable);
-            this.uTabConfiguration.Controls.Add(this.btnAlterTable);
-            this.uTabConfiguration.Controls.Add(this.btnCreateScdTable);
-            this.uTabConfiguration.Controls.Add(this.tbReattempts);
-            this.uTabConfiguration.Controls.Add(this.tbMaxThreadCount);
-            this.uTabConfiguration.Controls.Add(this.tbChunkSizeBulk);
-            this.uTabConfiguration.Controls.Add(this.tbChunkSizeDbCommand);
-            this.uTabConfiguration.Controls.Add(this.tbTimeout);
-            this.uTabConfiguration.Controls.Add(this.checkDisableTablock);
-            this.uTabConfiguration.Controls.Add(this._cmbDestinationTable);
-            this.uTabConfiguration.Controls.Add(this.lblConMgrBulk);
-            this.uTabConfiguration.Controls.Add(this.pnlCheckStandardConfigAuto);
-            this.uTabConfiguration.Controls.Add(this.label3);
-            this.uTabConfiguration.Controls.Add(this.pnlTableLoaderType);
-            this.uTabConfiguration.Controls.Add(this.pnlTransaction);
-            this.uTabConfiguration.Controls.Add(this.pnlCmbStandardConfig);
-            this.uTabConfiguration.Controls.Add(this.pnlDbCommand);
-            this.uTabConfiguration.Controls.Add(this.lblTlType);
-            this.uTabConfiguration.Controls.Add(this.lblTransaction);
-            this.uTabConfiguration.Controls.Add(this.imgHelpStandardConfig);
-            this.uTabConfiguration.Controls.Add(this.imgHelpChunkSize);
-            this.uTabConfiguration.Controls.Add(this.imgHelpTransactions);
-            this.uTabConfiguration.Controls.Add(this.pnlConnMgrBulk);
-            this.uTabConfiguration.Controls.Add(this.pnlConnMgrMain);
-            this.uTabConfiguration.Controls.Add(this.lblWarning);
-            this.uTabConfiguration.Controls.Add(this.lbDbCommand);
-            this.uTabConfiguration.Controls.Add(this.label11);
-            this.uTabConfiguration.Controls.Add(this.label14);
-            this.uTabConfiguration.Controls.Add(this.lblMaxThreadCount);
-            this.uTabConfiguration.Controls.Add(this.lblChunkSizeDbCommand);
-            this.uTabConfiguration.Controls.Add(this.label2);
-            this.uTabConfiguration.Controls.Add(this.label1);
-            this.uTabConfiguration.Controls.Add(this.label17);
-            this.uTabConfiguration.Controls.Add(this.lblChunkSizeBulk);
-            this.uTabConfiguration.Location = new System.Drawing.Point(1, 23);
-            this.uTabConfiguration.Name = "uTabConfiguration";
-            this.uTabConfiguration.Size = new System.Drawing.Size(913, 371);
             // 
             // btnCreateTable
             // 
-            this.btnCreateTable.Location = new System.Drawing.Point(586, 81);
+            this.btnCreateTable.Location = new System.Drawing.Point(587, 78);
             this.btnCreateTable.Name = "btnCreateTable";
             this.btnCreateTable.Size = new System.Drawing.Size(95, 21);
-            this.btnCreateTable.TabIndex = 26;
+            this.btnCreateTable.TabIndex = 50;
             this.btnCreateTable.Text = "Create Table";
             this.btnCreateTable.UseVisualStyleBackColor = true;
             this.btnCreateTable.Click += new System.EventHandler(this.btnCreateTable_Click);
             // 
             // btnAlterTable
             // 
-            this.btnAlterTable.Location = new System.Drawing.Point(687, 81);
+            this.btnAlterTable.Location = new System.Drawing.Point(688, 78);
             this.btnAlterTable.Name = "btnAlterTable";
             this.btnAlterTable.Size = new System.Drawing.Size(95, 21);
-            this.btnAlterTable.TabIndex = 26;
+            this.btnAlterTable.TabIndex = 60;
             this.btnAlterTable.Text = "Alter Table";
             this.btnAlterTable.UseVisualStyleBackColor = true;
             this.btnAlterTable.Click += new System.EventHandler(this.btnAlterTable_Click);
             // 
             // btnCreateScdTable
             // 
-            this.btnCreateScdTable.Location = new System.Drawing.Point(586, 108);
+            this.btnCreateScdTable.Location = new System.Drawing.Point(587, 105);
             this.btnCreateScdTable.Name = "btnCreateScdTable";
             this.btnCreateScdTable.Size = new System.Drawing.Size(95, 21);
-            this.btnCreateScdTable.TabIndex = 26;
+            this.btnCreateScdTable.TabIndex = 70;
             this.btnCreateScdTable.Text = "Create SCD";
             this.btnCreateScdTable.UseVisualStyleBackColor = true;
             this.btnCreateScdTable.Click += new System.EventHandler(this.btnCreateScdTable_Click);
             // 
             // tbReattempts
             // 
-            this.tbReattempts.Location = new System.Drawing.Point(652, 211);
+            this.tbReattempts.Location = new System.Drawing.Point(653, 208);
             this.tbReattempts.Name = "tbReattempts";
             this.tbReattempts.Size = new System.Drawing.Size(147, 20);
-            this.tbReattempts.TabIndex = 25;
+            this.tbReattempts.TabIndex = 120;
             // 
             // tbMaxThreadCount
             // 
-            this.tbMaxThreadCount.Location = new System.Drawing.Point(170, 115);
+            this.tbMaxThreadCount.Location = new System.Drawing.Point(171, 112);
             this.tbMaxThreadCount.Name = "tbMaxThreadCount";
             this.tbMaxThreadCount.Size = new System.Drawing.Size(363, 20);
-            this.tbMaxThreadCount.TabIndex = 24;
+            this.tbMaxThreadCount.TabIndex = 80;
             this.toolTip1.SetToolTip(this.tbMaxThreadCount, "Maximum number of BulkCopy threads");
             // 
             // tbChunkSizeBulk
             // 
-            this.tbChunkSizeBulk.Location = new System.Drawing.Point(170, 141);
+            this.tbChunkSizeBulk.Location = new System.Drawing.Point(171, 138);
             this.tbChunkSizeBulk.Name = "tbChunkSizeBulk";
             this.tbChunkSizeBulk.Size = new System.Drawing.Size(363, 20);
-            this.tbChunkSizeBulk.TabIndex = 24;
+            this.tbChunkSizeBulk.TabIndex = 90;
             this.toolTip1.SetToolTip(this.tbChunkSizeBulk, "Number of rows  used for a single Bulk Copy thread");
             // 
             // tbChunkSizeDbCommand
             // 
-            this.tbChunkSizeDbCommand.Location = new System.Drawing.Point(170, 166);
+            this.tbChunkSizeDbCommand.Location = new System.Drawing.Point(171, 163);
             this.tbChunkSizeDbCommand.Name = "tbChunkSizeDbCommand";
             this.tbChunkSizeDbCommand.Size = new System.Drawing.Size(363, 20);
-            this.tbChunkSizeDbCommand.TabIndex = 24;
+            this.tbChunkSizeDbCommand.TabIndex = 100;
             // 
             // tbTimeout
             // 
-            this.tbTimeout.Location = new System.Drawing.Point(170, 211);
+            this.tbTimeout.Location = new System.Drawing.Point(171, 208);
             this.tbTimeout.Name = "tbTimeout";
             this.tbTimeout.Size = new System.Drawing.Size(363, 20);
-            this.tbTimeout.TabIndex = 24;
+            this.tbTimeout.TabIndex = 110;
             this.toolTip1.SetToolTip(this.tbTimeout, "Database Timeout in seconds");
+            // 
+            // _checkStandardConfigAuto
+            // 
+            this._checkStandardConfigAuto.AutoSize = true;
+            this._checkStandardConfigAuto.Enabled = false;
+            this._checkStandardConfigAuto.Location = new System.Drawing.Point(145, 281);
+            this._checkStandardConfigAuto.Name = "_checkStandardConfigAuto";
+            this._checkStandardConfigAuto.Size = new System.Drawing.Size(15, 14);
+            this._checkStandardConfigAuto.TabIndex = 140;
+            this._checkStandardConfigAuto.UseVisualStyleBackColor = true;
+            this._checkStandardConfigAuto.CheckedChanged += new System.EventHandler(this._checkStandardConfigAuto_CheckedChanged);
             // 
             // checkDisableTablock
             // 
             this.checkDisableTablock.AutoSize = true;
-            this.checkDisableTablock.Location = new System.Drawing.Point(144, 321);
+            this.checkDisableTablock.Location = new System.Drawing.Point(145, 318);
             this.checkDisableTablock.Name = "checkDisableTablock";
             this.checkDisableTablock.Size = new System.Drawing.Size(15, 14);
-            this.checkDisableTablock.TabIndex = 23;
+            this.checkDisableTablock.TabIndex = 160;
             this.checkDisableTablock.UseVisualStyleBackColor = true;
             // 
             // lblConMgrBulk
@@ -281,28 +221,28 @@
             this.lblConMgrBulk.TabIndex = 20;
             this.lblConMgrBulk.Text = "Connection Manager (Bulk):";
             // 
-            // pnlCheckStandardConfigAuto
-            // 
-            this.pnlCheckStandardConfigAuto.BackColor = System.Drawing.Color.Transparent;
-            this.pnlCheckStandardConfigAuto.Location = new System.Drawing.Point(142, 281);
-            this.pnlCheckStandardConfigAuto.Name = "pnlCheckStandardConfigAuto";
-            this.pnlCheckStandardConfigAuto.Size = new System.Drawing.Size(22, 21);
-            this.pnlCheckStandardConfigAuto.TabIndex = 15;
-            // 
             // label3
             // 
             this.label3.AutoSize = true;
             this.label3.BackColor = System.Drawing.Color.Transparent;
-            this.label3.Location = new System.Drawing.Point(18, 284);
+            this.label3.Location = new System.Drawing.Point(19, 281);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(115, 13);
             this.label3.TabIndex = 18;
             this.label3.Text = "Standard Configuration";
             // 
+            // pnlTableLoaderType
+            // 
+            this.pnlTableLoaderType.BackColor = System.Drawing.Color.Transparent;
+            this.pnlTableLoaderType.Location = new System.Drawing.Point(653, 21);
+            this.pnlTableLoaderType.Name = "pnlTableLoaderType";
+            this.pnlTableLoaderType.Size = new System.Drawing.Size(147, 21);
+            this.pnlTableLoaderType.TabIndex = 14;
+            // 
             // pnlTransaction
             // 
             this.pnlTransaction.BackColor = System.Drawing.Color.Transparent;
-            this.pnlTransaction.Location = new System.Drawing.Point(652, 48);
+            this.pnlTransaction.Location = new System.Drawing.Point(653, 48);
             this.pnlTransaction.Name = "pnlTransaction";
             this.pnlTransaction.Size = new System.Drawing.Size(147, 21);
             this.pnlTransaction.TabIndex = 14;
@@ -310,15 +250,23 @@
             // pnlCmbStandardConfig
             // 
             this.pnlCmbStandardConfig.BackColor = System.Drawing.Color.Transparent;
-            this.pnlCmbStandardConfig.Location = new System.Drawing.Point(170, 281);
+            this.pnlCmbStandardConfig.Location = new System.Drawing.Point(171, 278);
             this.pnlCmbStandardConfig.Name = "pnlCmbStandardConfig";
             this.pnlCmbStandardConfig.Size = new System.Drawing.Size(363, 21);
             this.pnlCmbStandardConfig.TabIndex = 14;
             // 
+            // pnlDestinationTanble
+            // 
+            this.pnlDestinationTanble.BackColor = System.Drawing.Color.Transparent;
+            this.pnlDestinationTanble.Location = new System.Drawing.Point(171, 78);
+            this.pnlDestinationTanble.Name = "pnlDestinationTanble";
+            this.pnlDestinationTanble.Size = new System.Drawing.Size(363, 21);
+            this.pnlDestinationTanble.TabIndex = 14;
+            // 
             // pnlDbCommand
             // 
             this.pnlDbCommand.BackColor = System.Drawing.Color.Transparent;
-            this.pnlDbCommand.Location = new System.Drawing.Point(170, 238);
+            this.pnlDbCommand.Location = new System.Drawing.Point(171, 235);
             this.pnlDbCommand.Name = "pnlDbCommand";
             this.pnlDbCommand.Size = new System.Drawing.Size(363, 21);
             this.pnlDbCommand.TabIndex = 14;
@@ -327,7 +275,7 @@
             // 
             this.lblTlType.AutoSize = true;
             this.lblTlType.BackColor = System.Drawing.Color.Transparent;
-            this.lblTlType.Location = new System.Drawing.Point(586, 24);
+            this.lblTlType.Location = new System.Drawing.Point(587, 24);
             this.lblTlType.Name = "lblTlType";
             this.lblTlType.Size = new System.Drawing.Size(50, 13);
             this.lblTlType.TabIndex = 12;
@@ -337,7 +285,7 @@
             // 
             this.lblTransaction.AutoSize = true;
             this.lblTransaction.BackColor = System.Drawing.Color.Transparent;
-            this.lblTransaction.Location = new System.Drawing.Point(586, 51);
+            this.lblTransaction.Location = new System.Drawing.Point(587, 51);
             this.lblTransaction.Name = "lblTransaction";
             this.lblTransaction.Size = new System.Drawing.Size(66, 13);
             this.lblTransaction.TabIndex = 12;
@@ -345,10 +293,10 @@
             // 
             // imgHelpStandardConfig
             // 
-            this.imgHelpStandardConfig.BackgroundImage = global::TableLoader.Properties.Resources.Help;
+            this.imgHelpStandardConfig.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("imgHelpStandardConfig.BackgroundImage")));
             this.imgHelpStandardConfig.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.imgHelpStandardConfig.ErrorImage = null;
-            this.imgHelpStandardConfig.Location = new System.Drawing.Point(539, 282);
+            this.imgHelpStandardConfig.Location = new System.Drawing.Point(540, 279);
             this.imgHelpStandardConfig.Name = "imgHelpStandardConfig";
             this.imgHelpStandardConfig.Size = new System.Drawing.Size(23, 20);
             this.imgHelpStandardConfig.TabIndex = 10;
@@ -357,10 +305,10 @@
             // 
             // imgHelpChunkSize
             // 
-            this.imgHelpChunkSize.BackgroundImage = global::TableLoader.Properties.Resources.Help;
+            this.imgHelpChunkSize.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("imgHelpChunkSize.BackgroundImage")));
             this.imgHelpChunkSize.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.imgHelpChunkSize.ErrorImage = null;
-            this.imgHelpChunkSize.Location = new System.Drawing.Point(539, 141);
+            this.imgHelpChunkSize.Location = new System.Drawing.Point(540, 138);
             this.imgHelpChunkSize.Name = "imgHelpChunkSize";
             this.imgHelpChunkSize.Size = new System.Drawing.Size(23, 20);
             this.imgHelpChunkSize.TabIndex = 10;
@@ -369,10 +317,10 @@
             // 
             // imgHelpTransactions
             // 
-            this.imgHelpTransactions.BackgroundImage = global::TableLoader.Properties.Resources.Help;
+            this.imgHelpTransactions.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("imgHelpTransactions.BackgroundImage")));
             this.imgHelpTransactions.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.imgHelpTransactions.ErrorImage = null;
-            this.imgHelpTransactions.Location = new System.Drawing.Point(811, 48);
+            this.imgHelpTransactions.Location = new System.Drawing.Point(812, 48);
             this.imgHelpTransactions.Name = "imgHelpTransactions";
             this.imgHelpTransactions.Size = new System.Drawing.Size(23, 20);
             this.imgHelpTransactions.TabIndex = 10;
@@ -382,47 +330,34 @@
             // pnlConnMgrBulk
             // 
             this.pnlConnMgrBulk.BackColor = System.Drawing.Color.Transparent;
-            this.pnlConnMgrBulk.Location = new System.Drawing.Point(170, 48);
+            this.pnlConnMgrBulk.Location = new System.Drawing.Point(171, 42);
             this.pnlConnMgrBulk.Name = "pnlConnMgrBulk";
-            this.pnlConnMgrBulk.Size = new System.Drawing.Size(363, 21);
+            this.pnlConnMgrBulk.Size = new System.Drawing.Size(363, 27);
             this.pnlConnMgrBulk.TabIndex = 3;
             // 
             // pnlConnMgrMain
             // 
             this.pnlConnMgrMain.BackColor = System.Drawing.Color.Transparent;
-            this.pnlConnMgrMain.Location = new System.Drawing.Point(170, 21);
+            this.pnlConnMgrMain.Location = new System.Drawing.Point(171, 14);
             this.pnlConnMgrMain.Name = "pnlConnMgrMain";
-            this.pnlConnMgrMain.Size = new System.Drawing.Size(363, 21);
+            this.pnlConnMgrMain.Size = new System.Drawing.Size(363, 27);
             this.pnlConnMgrMain.TabIndex = 3;
-            // 
-            // lblWarning
-            // 
-            this.lblWarning.AutoSize = true;
-            this.lblWarning.BackColor = System.Drawing.Color.Transparent;
-            this.lblWarning.ForeColor = System.Drawing.Color.Red;
-            this.lblWarning.Location = new System.Drawing.Point(558, 242);
-            this.lblWarning.Name = "lblWarning";
-            this.lblWarning.Size = new System.Drawing.Size(271, 13);
-            this.lblWarning.TabIndex = 2;
-            this.lblWarning.Text = "Beim BulkInsert müssen alle Zielspalten bedient werden!";
-            this.lblWarning.Visible = false;
             // 
             // lbDbCommand
             // 
             this.lbDbCommand.AutoSize = true;
             this.lbDbCommand.BackColor = System.Drawing.Color.Transparent;
-            this.lbDbCommand.Location = new System.Drawing.Point(17, 242);
+            this.lbDbCommand.Location = new System.Drawing.Point(18, 239);
             this.lbDbCommand.Name = "lbDbCommand";
             this.lbDbCommand.Size = new System.Drawing.Size(72, 13);
             this.lbDbCommand.TabIndex = 2;
             this.lbDbCommand.Text = "DB Command";
-            this.lbDbCommand.Click += new System.EventHandler(this.lbDbCommand_Click);
             // 
             // label11
             // 
             this.label11.AutoSize = true;
             this.label11.BackColor = System.Drawing.Color.Transparent;
-            this.label11.Location = new System.Drawing.Point(18, 24);
+            this.label11.Location = new System.Drawing.Point(19, 21);
             this.label11.Name = "label11";
             this.label11.Size = new System.Drawing.Size(141, 13);
             this.label11.TabIndex = 2;
@@ -432,7 +367,7 @@
             // 
             this.label14.AutoSize = true;
             this.label14.BackColor = System.Drawing.Color.Transparent;
-            this.label14.Location = new System.Drawing.Point(18, 85);
+            this.label14.Location = new System.Drawing.Point(19, 82);
             this.label14.Name = "label14";
             this.label14.Size = new System.Drawing.Size(90, 13);
             this.label14.TabIndex = 2;
@@ -442,19 +377,17 @@
             // 
             this.lblMaxThreadCount.AutoSize = true;
             this.lblMaxThreadCount.BackColor = System.Drawing.Color.Transparent;
-            this.lblMaxThreadCount.Location = new System.Drawing.Point(17, 118);
+            this.lblMaxThreadCount.Location = new System.Drawing.Point(18, 115);
             this.lblMaxThreadCount.Name = "lblMaxThreadCount";
             this.lblMaxThreadCount.Size = new System.Drawing.Size(95, 13);
             this.lblMaxThreadCount.TabIndex = 2;
             this.lblMaxThreadCount.Text = "Max Thread Count";
-            ultraToolTipInfo4.ToolTipText = "Maximum number of BulkCopy threads";
-            this.ultraToolTipManager1.SetUltraToolTip(this.lblMaxThreadCount, ultraToolTipInfo4);
             // 
             // lblChunkSizeDbCommand
             // 
             this.lblChunkSizeDbCommand.AutoSize = true;
             this.lblChunkSizeDbCommand.BackColor = System.Drawing.Color.Transparent;
-            this.lblChunkSizeDbCommand.Location = new System.Drawing.Point(17, 169);
+            this.lblChunkSizeDbCommand.Location = new System.Drawing.Point(18, 166);
             this.lblChunkSizeDbCommand.Name = "lblChunkSizeDbCommand";
             this.lblChunkSizeDbCommand.Size = new System.Drawing.Size(135, 13);
             this.lblChunkSizeDbCommand.TabIndex = 2;
@@ -464,7 +397,7 @@
             // 
             this.label2.AutoSize = true;
             this.label2.BackColor = System.Drawing.Color.Transparent;
-            this.label2.Location = new System.Drawing.Point(17, 321);
+            this.label2.Location = new System.Drawing.Point(18, 318);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(84, 13);
             this.label2.TabIndex = 2;
@@ -474,7 +407,7 @@
             // 
             this.label1.AutoSize = true;
             this.label1.BackColor = System.Drawing.Color.Transparent;
-            this.label1.Location = new System.Drawing.Point(586, 215);
+            this.label1.Location = new System.Drawing.Point(587, 212);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(61, 13);
             this.label1.TabIndex = 2;
@@ -484,100 +417,42 @@
             // 
             this.label17.AutoSize = true;
             this.label17.BackColor = System.Drawing.Color.Transparent;
-            this.label17.Location = new System.Drawing.Point(17, 215);
+            this.label17.Location = new System.Drawing.Point(18, 212);
             this.label17.Name = "label17";
             this.label17.Size = new System.Drawing.Size(77, 13);
             this.label17.TabIndex = 2;
             this.label17.Text = "DB Timeout [s]";
-            ultraToolTipInfo5.ToolTipText = "Database Timeout in seconds";
-            this.ultraToolTipManager1.SetUltraToolTip(this.label17, ultraToolTipInfo5);
             // 
             // lblChunkSizeBulk
             // 
             this.lblChunkSizeBulk.AutoSize = true;
             this.lblChunkSizeBulk.BackColor = System.Drawing.Color.Transparent;
-            this.lblChunkSizeBulk.Location = new System.Drawing.Point(17, 144);
+            this.lblChunkSizeBulk.Location = new System.Drawing.Point(18, 141);
             this.lblChunkSizeBulk.Name = "lblChunkSizeBulk";
             this.lblChunkSizeBulk.Size = new System.Drawing.Size(91, 13);
             this.lblChunkSizeBulk.TabIndex = 2;
             this.lblChunkSizeBulk.Text = "Chunk Size (Bulk)";
-            ultraToolTipInfo6.ToolTipText = "Number of rows  used for a single Bulk Copy thread";
-            this.ultraToolTipManager1.SetUltraToolTip(this.lblChunkSizeBulk, ultraToolTipInfo6);
-            // 
-            // uTabMapping
-            // 
-            this.uTabMapping.Controls.Add(this.btnAddRow);
-            this.uTabMapping.Controls.Add(this.btnRemoveRow);
-            this.uTabMapping.Controls.Add(this.btnSelect);
-            this.uTabMapping.Controls.Add(this.btnDeSelect);
-            this.uTabMapping.Controls.Add(this.tbPrefixOutput);
-            this.uTabMapping.Controls.Add(this.btnAutoMap);
-            this.uTabMapping.Controls.Add(this.tbPrefixInput);
-            this.uTabMapping.Controls.Add(this.pnlDGV);
-            this.uTabMapping.Controls.Add(this.label5);
-            this.uTabMapping.Controls.Add(this.label6);
-            this.uTabMapping.Location = new System.Drawing.Point(-10000, -10000);
-            this.uTabMapping.Name = "uTabMapping";
-            this.uTabMapping.Size = new System.Drawing.Size(913, 371);
-            // 
-            // btnAddRow
-            // 
-            this.btnAddRow.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnAddRow.Enabled = false;
-            this.btnAddRow.Location = new System.Drawing.Point(685, 344);
-            this.btnAddRow.Name = "btnAddRow";
-            this.btnAddRow.Size = new System.Drawing.Size(97, 21);
-            this.btnAddRow.TabIndex = 22;
-            this.btnAddRow.Text = "Add Row";
-            this.btnAddRow.Click += new System.EventHandler(this.btnAddRow_Click);
-            // 
-            // btnRemoveRow
-            // 
-            this.btnRemoveRow.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnRemoveRow.Enabled = false;
-            this.btnRemoveRow.Location = new System.Drawing.Point(788, 344);
-            this.btnRemoveRow.Name = "btnRemoveRow";
-            this.btnRemoveRow.Size = new System.Drawing.Size(97, 21);
-            this.btnRemoveRow.TabIndex = 23;
-            this.btnRemoveRow.Text = "Remove Row(s)";
-            this.btnRemoveRow.Click += new System.EventHandler(this.btnRemoveRow_Click);
-            // 
-            // btnSelect
-            // 
-            this.btnSelect.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnSelect.Location = new System.Drawing.Point(491, 343);
-            this.btnSelect.Name = "btnSelect";
-            this.btnSelect.Size = new System.Drawing.Size(74, 23);
-            this.btnSelect.TabIndex = 17;
-            this.btnSelect.Text = "Select";
-            this.btnSelect.Click += new System.EventHandler(this.btnSelect_Click);
-            // 
-            // btnDeSelect
-            // 
-            this.btnDeSelect.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnDeSelect.Location = new System.Drawing.Point(571, 343);
-            this.btnDeSelect.Name = "btnDeSelect";
-            this.btnDeSelect.Size = new System.Drawing.Size(74, 23);
-            this.btnDeSelect.TabIndex = 18;
-            this.btnDeSelect.Text = "Deselect";
-            this.btnDeSelect.Click += new System.EventHandler(this.btnDeSelect_Click);
             // 
             // tbPrefixOutput
             // 
             this.tbPrefixOutput.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            appearance7.BackColor = System.Drawing.SystemColors.Window;
-            this.tbPrefixOutput.Appearance = appearance7;
-            this.tbPrefixOutput.BackColor = System.Drawing.SystemColors.Window;
-            this.tbPrefixOutput.ImageTransparentColor = System.Drawing.Color.Turquoise;
-            this.tbPrefixOutput.Location = new System.Drawing.Point(339, 344);
+            this.tbPrefixOutput.Location = new System.Drawing.Point(340, 341);
             this.tbPrefixOutput.Name = "tbPrefixOutput";
-            this.tbPrefixOutput.Size = new System.Drawing.Size(88, 21);
-            this.tbPrefixOutput.TabIndex = 21;
+            this.tbPrefixOutput.Size = new System.Drawing.Size(88, 20);
+            this.tbPrefixOutput.TabIndex = 6;
+            // 
+            // tbPrefixInput
+            // 
+            this.tbPrefixInput.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.tbPrefixInput.Location = new System.Drawing.Point(162, 341);
+            this.tbPrefixInput.Name = "tbPrefixInput";
+            this.tbPrefixInput.Size = new System.Drawing.Size(88, 20);
+            this.tbPrefixInput.TabIndex = 6;
             // 
             // btnAutoMap
             // 
             this.btnAutoMap.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnAutoMap.Location = new System.Drawing.Point(5, 344);
+            this.btnAutoMap.Location = new System.Drawing.Point(6, 341);
             this.btnAutoMap.Name = "btnAutoMap";
             this.btnAutoMap.Size = new System.Drawing.Size(75, 21);
             this.btnAutoMap.TabIndex = 19;
@@ -585,24 +460,56 @@
             this.btnAutoMap.UseVisualStyleBackColor = true;
             this.btnAutoMap.Click += new System.EventHandler(this.btnAutoMap_Click);
             // 
-            // tbPrefixInput
+            // btnSelect
             // 
-            this.tbPrefixInput.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            appearance8.BackColor = System.Drawing.SystemColors.Window;
-            this.tbPrefixInput.Appearance = appearance8;
-            this.tbPrefixInput.BackColor = System.Drawing.SystemColors.Window;
-            this.tbPrefixInput.ImageTransparentColor = System.Drawing.Color.Turquoise;
-            this.tbPrefixInput.Location = new System.Drawing.Point(161, 344);
-            this.tbPrefixInput.Name = "tbPrefixInput";
-            this.tbPrefixInput.Size = new System.Drawing.Size(88, 21);
-            this.tbPrefixInput.TabIndex = 20;
+            this.btnSelect.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnSelect.Location = new System.Drawing.Point(492, 340);
+            this.btnSelect.Name = "btnSelect";
+            this.btnSelect.Size = new System.Drawing.Size(74, 23);
+            this.btnSelect.TabIndex = 19;
+            this.btnSelect.Text = "Select";
+            this.btnSelect.UseVisualStyleBackColor = true;
+            this.btnSelect.Click += new System.EventHandler(this.btnSelect_Click);
+            // 
+            // btnDeSelect
+            // 
+            this.btnDeSelect.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnDeSelect.Location = new System.Drawing.Point(572, 340);
+            this.btnDeSelect.Name = "btnDeSelect";
+            this.btnDeSelect.Size = new System.Drawing.Size(74, 23);
+            this.btnDeSelect.TabIndex = 19;
+            this.btnDeSelect.Text = "Deselect";
+            this.btnDeSelect.UseVisualStyleBackColor = true;
+            this.btnDeSelect.Click += new System.EventHandler(this.btnDeSelect_Click);
+            // 
+            // btnRemoveRow
+            // 
+            this.btnRemoveRow.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnRemoveRow.Location = new System.Drawing.Point(789, 341);
+            this.btnRemoveRow.Name = "btnRemoveRow";
+            this.btnRemoveRow.Size = new System.Drawing.Size(97, 21);
+            this.btnRemoveRow.TabIndex = 19;
+            this.btnRemoveRow.Text = "Remove Row(s)";
+            this.btnRemoveRow.UseVisualStyleBackColor = true;
+            this.btnRemoveRow.Click += new System.EventHandler(this.btnRemoveRow_Click);
+            // 
+            // btnAddRow
+            // 
+            this.btnAddRow.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnAddRow.Location = new System.Drawing.Point(686, 341);
+            this.btnAddRow.Name = "btnAddRow";
+            this.btnAddRow.Size = new System.Drawing.Size(97, 21);
+            this.btnAddRow.TabIndex = 19;
+            this.btnAddRow.Text = "Add Row";
+            this.btnAddRow.UseVisualStyleBackColor = true;
+            this.btnAddRow.Click += new System.EventHandler(this.btnAddRow_Click);
             // 
             // pnlDGV
             // 
             this.pnlDGV.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.pnlDGV.Location = new System.Drawing.Point(5, 3);
+            this.pnlDGV.Location = new System.Drawing.Point(6, 0);
             this.pnlDGV.Name = "pnlDGV";
             this.pnlDGV.Size = new System.Drawing.Size(898, 333);
             this.pnlDGV.TabIndex = 16;
@@ -612,7 +519,7 @@
             this.label5.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label5.AutoSize = true;
             this.label5.BackColor = System.Drawing.Color.Transparent;
-            this.label5.Location = new System.Drawing.Point(95, 348);
+            this.label5.Location = new System.Drawing.Point(96, 345);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(60, 13);
             this.label5.TabIndex = 14;
@@ -623,350 +530,277 @@
             this.label6.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label6.AutoSize = true;
             this.label6.BackColor = System.Drawing.Color.Transparent;
-            this.label6.Location = new System.Drawing.Point(265, 348);
+            this.label6.Location = new System.Drawing.Point(266, 345);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(68, 13);
             this.label6.TabIndex = 15;
             this.label6.Text = "Output Prefix";
-            // 
-            // uTabPreSqlStatement
-            // 
-            this.uTabPreSqlStatement.Controls.Add(this.pnlExcludePreSqlFromTransaction);
-            this.uTabPreSqlStatement.Controls.Add(this.lblExcludePreSqlFromTransaction);
-            this.uTabPreSqlStatement.Controls.Add(this.btnInsertTruncatePreSql);
-            this.uTabPreSqlStatement.Controls.Add(this.btnInsertVariablePreSql);
-            this.uTabPreSqlStatement.Controls.Add(this.pnlVariablesPreSql);
-            this.uTabPreSqlStatement.Controls.Add(this.lblVariablesPreSql);
-            this.uTabPreSqlStatement.Controls.Add(this.tbPreSql);
-            this.uTabPreSqlStatement.Controls.Add(this.ultraTextEditor1);
-            this.uTabPreSqlStatement.Location = new System.Drawing.Point(-10000, -10000);
-            this.uTabPreSqlStatement.Name = "uTabPreSqlStatement";
-            this.uTabPreSqlStatement.Size = new System.Drawing.Size(913, 371);
-            // 
-            // pnlExcludePreSqlFromTransaction
-            // 
-            this.pnlExcludePreSqlFromTransaction.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.pnlExcludePreSqlFromTransaction.BackColor = System.Drawing.Color.Transparent;
-            this.pnlExcludePreSqlFromTransaction.Location = new System.Drawing.Point(889, 343);
-            this.pnlExcludePreSqlFromTransaction.Name = "pnlExcludePreSqlFromTransaction";
-            this.pnlExcludePreSqlFromTransaction.Size = new System.Drawing.Size(22, 21);
-            this.pnlExcludePreSqlFromTransaction.TabIndex = 17;
-            // 
-            // lblExcludePreSqlFromTransaction
-            // 
-            this.lblExcludePreSqlFromTransaction.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblExcludePreSqlFromTransaction.AutoSize = true;
-            this.lblExcludePreSqlFromTransaction.BackColor = System.Drawing.Color.Transparent;
-            this.lblExcludePreSqlFromTransaction.Location = new System.Drawing.Point(760, 346);
-            this.lblExcludePreSqlFromTransaction.Name = "lblExcludePreSqlFromTransaction";
-            this.lblExcludePreSqlFromTransaction.Size = new System.Drawing.Size(123, 13);
-            this.lblExcludePreSqlFromTransaction.TabIndex = 16;
-            this.lblExcludePreSqlFromTransaction.Text = "Exclude from transaction";
-            // 
-            // btnInsertTruncatePreSql
-            // 
-            this.btnInsertTruncatePreSql.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnInsertTruncatePreSql.Location = new System.Drawing.Point(413, 342);
-            this.btnInsertTruncatePreSql.Name = "btnInsertTruncatePreSql";
-            this.btnInsertTruncatePreSql.Size = new System.Drawing.Size(109, 22);
-            this.btnInsertTruncatePreSql.TabIndex = 14;
-            this.btnInsertTruncatePreSql.Text = "Insert Truncate";
-            this.btnInsertTruncatePreSql.Click += new System.EventHandler(this.btnInsertTruncatePreSql_Click);
-            // 
-            // btnInsertVariablePreSql
-            // 
-            this.btnInsertVariablePreSql.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnInsertVariablePreSql.Location = new System.Drawing.Point(298, 342);
-            this.btnInsertVariablePreSql.Name = "btnInsertVariablePreSql";
-            this.btnInsertVariablePreSql.Size = new System.Drawing.Size(109, 22);
-            this.btnInsertVariablePreSql.TabIndex = 14;
-            this.btnInsertVariablePreSql.Text = "Insert Variable";
-            this.btnInsertVariablePreSql.Click += new System.EventHandler(this.btnInsertVariablePreSql_Click);
-            // 
-            // pnlVariablesPreSql
-            // 
-            this.pnlVariablesPreSql.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.pnlVariablesPreSql.Location = new System.Drawing.Point(72, 342);
-            this.pnlVariablesPreSql.Name = "pnlVariablesPreSql";
-            this.pnlVariablesPreSql.Size = new System.Drawing.Size(200, 22);
-            this.pnlVariablesPreSql.TabIndex = 13;
-            // 
-            // lblVariablesPreSql
-            // 
-            this.lblVariablesPreSql.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            appearance9.BackColor = System.Drawing.Color.Transparent;
-            this.lblVariablesPreSql.Appearance = appearance9;
-            this.lblVariablesPreSql.Location = new System.Drawing.Point(8, 346);
-            this.lblVariablesPreSql.Name = "lblVariablesPreSql";
-            this.lblVariablesPreSql.Size = new System.Drawing.Size(57, 15);
-            this.lblVariablesPreSql.TabIndex = 12;
-            this.lblVariablesPreSql.Text = "Variables";
             // 
             // tbPreSql
             // 
             this.tbPreSql.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbPreSql.Location = new System.Drawing.Point(0, 0);
+            this.tbPreSql.Location = new System.Drawing.Point(-4, 0);
+            this.tbPreSql.Multiline = true;
             this.tbPreSql.Name = "tbPreSql";
-            this.tbPreSql.Size = new System.Drawing.Size(913, 335);
-            this.tbPreSql.TabIndex = 11;
-            this.tbPreSql.Value = "";
-            this.tbPreSql.TextChanged += new System.EventHandler(this.tbPreSql_TextChanged);
+            this.tbPreSql.Size = new System.Drawing.Size(913, 336);
+            this.tbPreSql.TabIndex = 20;
             // 
-            // ultraTextEditor1
+            // _checkExcludePreSqlFromTransaction
             // 
-            this.ultraTextEditor1.Location = new System.Drawing.Point(662, 169);
-            this.ultraTextEditor1.Name = "ultraTextEditor1";
-            this.ultraTextEditor1.Size = new System.Drawing.Size(100, 21);
-            this.ultraTextEditor1.TabIndex = 0;
-            this.ultraTextEditor1.Text = "ultraTextEditor1";
+            this._checkExcludePreSqlFromTransaction.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this._checkExcludePreSqlFromTransaction.AutoSize = true;
+            this._checkExcludePreSqlFromTransaction.Location = new System.Drawing.Point(885, 347);
+            this._checkExcludePreSqlFromTransaction.Name = "_checkExcludePreSqlFromTransaction";
+            this._checkExcludePreSqlFromTransaction.Size = new System.Drawing.Size(15, 14);
+            this._checkExcludePreSqlFromTransaction.TabIndex = 19;
+            this._checkExcludePreSqlFromTransaction.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            this._checkExcludePreSqlFromTransaction.UseVisualStyleBackColor = true;
             // 
-            // uTabPostSqlStatement
+            // btnInsertTruncatePreSql
             // 
-            this.uTabPostSqlStatement.Controls.Add(this.btnInsertVariablePostSql);
-            this.uTabPostSqlStatement.Controls.Add(this.pnlVariablesPostSql);
-            this.uTabPostSqlStatement.Controls.Add(this.lblVariablesPostSql);
-            this.uTabPostSqlStatement.Controls.Add(this.tbPostSql);
-            this.uTabPostSqlStatement.Location = new System.Drawing.Point(-10000, -10000);
-            this.uTabPostSqlStatement.Name = "uTabPostSqlStatement";
-            this.uTabPostSqlStatement.Size = new System.Drawing.Size(913, 371);
+            this.btnInsertTruncatePreSql.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnInsertTruncatePreSql.Location = new System.Drawing.Point(409, 342);
+            this.btnInsertTruncatePreSql.Name = "btnInsertTruncatePreSql";
+            this.btnInsertTruncatePreSql.Size = new System.Drawing.Size(109, 22);
+            this.btnInsertTruncatePreSql.TabIndex = 18;
+            this.btnInsertTruncatePreSql.Text = "Insert Truncate";
+            this.btnInsertTruncatePreSql.UseVisualStyleBackColor = true;
+            this.btnInsertTruncatePreSql.Click += new System.EventHandler(this.btnInsertTruncatePreSql_Click);
             // 
-            // btnInsertVariablePostSql
+            // btnInsertVariablePreSql
             // 
-            this.btnInsertVariablePostSql.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnInsertVariablePostSql.Location = new System.Drawing.Point(298, 342);
-            this.btnInsertVariablePostSql.Name = "btnInsertVariablePostSql";
-            this.btnInsertVariablePostSql.Size = new System.Drawing.Size(109, 22);
-            this.btnInsertVariablePostSql.TabIndex = 18;
-            this.btnInsertVariablePostSql.Text = "Insert Variable";
-            this.btnInsertVariablePostSql.Click += new System.EventHandler(this.btnInsertVariablePostSql_Click);
+            this.btnInsertVariablePreSql.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnInsertVariablePreSql.Location = new System.Drawing.Point(294, 342);
+            this.btnInsertVariablePreSql.Name = "btnInsertVariablePreSql";
+            this.btnInsertVariablePreSql.Size = new System.Drawing.Size(109, 22);
+            this.btnInsertVariablePreSql.TabIndex = 18;
+            this.btnInsertVariablePreSql.Text = "Insert Variable";
+            this.btnInsertVariablePreSql.UseVisualStyleBackColor = true;
+            this.btnInsertVariablePreSql.Click += new System.EventHandler(this.btnInsertVariablePreSql_Click);
             // 
-            // pnlVariablesPostSql
+            // lblVariablesPreSql
             // 
-            this.pnlVariablesPostSql.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.pnlVariablesPostSql.BackColor = System.Drawing.Color.Transparent;
-            this.pnlVariablesPostSql.Location = new System.Drawing.Point(72, 342);
-            this.pnlVariablesPostSql.Name = "pnlVariablesPostSql";
-            this.pnlVariablesPostSql.Size = new System.Drawing.Size(200, 22);
-            this.pnlVariablesPostSql.TabIndex = 16;
+            this.lblVariablesPreSql.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.lblVariablesPreSql.AutoSize = true;
+            this.lblVariablesPreSql.BackColor = System.Drawing.Color.Transparent;
+            this.lblVariablesPreSql.Location = new System.Drawing.Point(3, 346);
+            this.lblVariablesPreSql.Name = "lblVariablesPreSql";
+            this.lblVariablesPreSql.Size = new System.Drawing.Size(50, 13);
+            this.lblVariablesPreSql.TabIndex = 16;
+            this.lblVariablesPreSql.Text = "Variables";
             // 
-            // lblVariablesPostSql
+            // lblExcludePreSqlFromTransaction
             // 
-            this.lblVariablesPostSql.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.lblVariablesPostSql.Location = new System.Drawing.Point(8, 346);
-            this.lblVariablesPostSql.Name = "lblVariablesPostSql";
-            this.lblVariablesPostSql.Size = new System.Drawing.Size(57, 15);
-            this.lblVariablesPostSql.TabIndex = 15;
-            this.lblVariablesPostSql.Text = "Variables";
+            this.lblExcludePreSqlFromTransaction.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblExcludePreSqlFromTransaction.AutoSize = true;
+            this.lblExcludePreSqlFromTransaction.BackColor = System.Drawing.Color.Transparent;
+            this.lblExcludePreSqlFromTransaction.Location = new System.Drawing.Point(756, 346);
+            this.lblExcludePreSqlFromTransaction.Name = "lblExcludePreSqlFromTransaction";
+            this.lblExcludePreSqlFromTransaction.Size = new System.Drawing.Size(123, 13);
+            this.lblExcludePreSqlFromTransaction.TabIndex = 16;
+            this.lblExcludePreSqlFromTransaction.Text = "Exclude from transaction";
+            // 
+            // pnlVariablesPreSql
+            // 
+            this.pnlVariablesPreSql.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.pnlVariablesPreSql.Location = new System.Drawing.Point(68, 342);
+            this.pnlVariablesPreSql.Name = "pnlVariablesPreSql";
+            this.pnlVariablesPreSql.Size = new System.Drawing.Size(200, 22);
+            this.pnlVariablesPreSql.TabIndex = 13;
             // 
             // tbPostSql
             // 
             this.tbPostSql.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbPostSql.Location = new System.Drawing.Point(0, 0);
+            this.tbPostSql.Location = new System.Drawing.Point(-4, 0);
+            this.tbPostSql.Multiline = true;
             this.tbPostSql.Name = "tbPostSql";
             this.tbPostSql.Size = new System.Drawing.Size(913, 335);
-            this.tbPostSql.TabIndex = 10;
-            this.tbPostSql.Value = "";
-            this.tbPostSql.TextChanged += new System.EventHandler(this.tbPostSql_TextChanged);
+            this.tbPostSql.TabIndex = 21;
             // 
-            // uTabSqlPreview
+            // lblVariablesPostSql
             // 
-            this.uTabSqlPreview.Controls.Add(this.btnSqlPreview);
-            this.uTabSqlPreview.Controls.Add(this.tbSqlPreview);
-            this.uTabSqlPreview.Location = new System.Drawing.Point(-10000, -10000);
-            this.uTabSqlPreview.Name = "uTabSqlPreview";
-            this.uTabSqlPreview.Size = new System.Drawing.Size(913, 371);
+            this.lblVariablesPostSql.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.lblVariablesPostSql.AutoSize = true;
+            this.lblVariablesPostSql.BackColor = System.Drawing.Color.Transparent;
+            this.lblVariablesPostSql.Location = new System.Drawing.Point(4, 346);
+            this.lblVariablesPostSql.Name = "lblVariablesPostSql";
+            this.lblVariablesPostSql.Size = new System.Drawing.Size(50, 13);
+            this.lblVariablesPostSql.TabIndex = 20;
+            this.lblVariablesPostSql.Text = "Variables";
             // 
-            // btnSqlPreview
+            // btnInsertVariablePostSql
             // 
-            this.btnSqlPreview.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnSqlPreview.Location = new System.Drawing.Point(3, 344);
-            this.btnSqlPreview.Name = "btnSqlPreview";
-            this.btnSqlPreview.Size = new System.Drawing.Size(109, 22);
-            this.btnSqlPreview.TabIndex = 19;
-            this.btnSqlPreview.Text = "Refresh";
-            this.btnSqlPreview.Click += new System.EventHandler(this.btnSqlPreview_Click);
+            this.btnInsertVariablePostSql.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnInsertVariablePostSql.Location = new System.Drawing.Point(294, 342);
+            this.btnInsertVariablePostSql.Name = "btnInsertVariablePostSql";
+            this.btnInsertVariablePostSql.Size = new System.Drawing.Size(109, 22);
+            this.btnInsertVariablePostSql.TabIndex = 19;
+            this.btnInsertVariablePostSql.Text = "Insert Variable";
+            this.btnInsertVariablePostSql.UseVisualStyleBackColor = true;
+            this.btnInsertVariablePostSql.Click += new System.EventHandler(this.btnInsertVariablePostSql_Click);
+            // 
+            // pnlVariablesPostSql
+            // 
+            this.pnlVariablesPostSql.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.pnlVariablesPostSql.BackColor = System.Drawing.Color.Transparent;
+            this.pnlVariablesPostSql.Location = new System.Drawing.Point(68, 342);
+            this.pnlVariablesPostSql.Name = "pnlVariablesPostSql";
+            this.pnlVariablesPostSql.Size = new System.Drawing.Size(200, 22);
+            this.pnlVariablesPostSql.TabIndex = 16;
             // 
             // tbSqlPreview
             // 
             this.tbSqlPreview.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            appearance10.FontData.BoldAsString = "False";
-            appearance10.FontData.ItalicAsString = "False";
-            appearance10.FontData.Name = "Microsoft Sans Serif";
-            appearance10.FontData.SizeInPoints = 8.25F;
-            appearance10.FontData.StrikeoutAsString = "False";
-            appearance10.FontData.UnderlineAsString = "False";
-            this.tbSqlPreview.Appearance = appearance10;
-            this.tbSqlPreview.Location = new System.Drawing.Point(-1, 3);
+            this.tbSqlPreview.Location = new System.Drawing.Point(-4, 0);
+            this.tbSqlPreview.Multiline = true;
             this.tbSqlPreview.Name = "tbSqlPreview";
             this.tbSqlPreview.Size = new System.Drawing.Size(913, 335);
-            this.tbSqlPreview.TabIndex = 11;
-            this.tbSqlPreview.Value = "";
+            this.tbSqlPreview.TabIndex = 22;
             // 
-            // uTabCustomCommand
+            // btnSqlPreview
             // 
-            this.uTabCustomCommand.Controls.Add(this.pnlUseCustomCommand);
-            this.uTabCustomCommand.Controls.Add(this.btnInsertVarCustomCommand);
-            this.uTabCustomCommand.Controls.Add(this.pnlVariablesCustomCommand);
-            this.uTabCustomCommand.Controls.Add(this.ultraLabel1);
-            this.uTabCustomCommand.Controls.Add(this.tbCustomMergeCommand);
-            this.uTabCustomCommand.Controls.Add(this.btnInsertDefaultMergeCommand);
-            this.uTabCustomCommand.Location = new System.Drawing.Point(-10000, -10000);
-            this.uTabCustomCommand.Name = "uTabCustomCommand";
-            this.uTabCustomCommand.Size = new System.Drawing.Size(913, 371);
+            this.btnSqlPreview.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnSqlPreview.Location = new System.Drawing.Point(-1, 344);
+            this.btnSqlPreview.Name = "btnSqlPreview";
+            this.btnSqlPreview.Size = new System.Drawing.Size(109, 22);
+            this.btnSqlPreview.TabIndex = 20;
+            this.btnSqlPreview.Text = "Refresh";
+            this.btnSqlPreview.UseVisualStyleBackColor = true;
+            this.btnSqlPreview.Click += new System.EventHandler(this.btnSqlPreview_Click);
             // 
-            // pnlUseCustomCommand
+            // _checkUseCustomCommand
             // 
-            this.pnlUseCustomCommand.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.pnlUseCustomCommand.BackColor = System.Drawing.Color.Transparent;
-            this.pnlUseCustomCommand.Location = new System.Drawing.Point(5, 345);
-            this.pnlUseCustomCommand.Name = "pnlUseCustomCommand";
-            this.pnlUseCustomCommand.Size = new System.Drawing.Size(200, 22);
-            this.pnlUseCustomCommand.TabIndex = 21;
+            this._checkUseCustomCommand.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this._checkUseCustomCommand.AutoSize = true;
+            this._checkUseCustomCommand.BackColor = System.Drawing.Color.Transparent;
+            this._checkUseCustomCommand.Location = new System.Drawing.Point(4, 349);
+            this._checkUseCustomCommand.Name = "_checkUseCustomCommand";
+            this._checkUseCustomCommand.Size = new System.Drawing.Size(133, 17);
+            this._checkUseCustomCommand.TabIndex = 25;
+            this._checkUseCustomCommand.Text = "Use Custom Command";
+            this._checkUseCustomCommand.UseVisualStyleBackColor = false;
+            this._checkUseCustomCommand.CheckedChanged += new System.EventHandler(this._checkUseCustomCommand_CheckedChanged);
             // 
-            // btnInsertVarCustomCommand
+            // btnInsertDefaultMergeCommand
             // 
-            this.btnInsertVarCustomCommand.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnInsertVarCustomCommand.Location = new System.Drawing.Point(498, 345);
-            this.btnInsertVarCustomCommand.Name = "btnInsertVarCustomCommand";
-            this.btnInsertVarCustomCommand.Size = new System.Drawing.Size(109, 22);
-            this.btnInsertVarCustomCommand.TabIndex = 21;
-            this.btnInsertVarCustomCommand.Text = "Insert Variable";
-            this.btnInsertVarCustomCommand.Click += new System.EventHandler(this.btnInsertVarCustomCommand_Click);
+            this.btnInsertDefaultMergeCommand.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnInsertDefaultMergeCommand.Location = new System.Drawing.Point(741, 344);
+            this.btnInsertDefaultMergeCommand.Name = "btnInsertDefaultMergeCommand";
+            this.btnInsertDefaultMergeCommand.Size = new System.Drawing.Size(161, 24);
+            this.btnInsertDefaultMergeCommand.TabIndex = 24;
+            this.btnInsertDefaultMergeCommand.Text = "DB Command generieren";
+            this.btnInsertDefaultMergeCommand.UseVisualStyleBackColor = true;
+            this.btnInsertDefaultMergeCommand.Click += new System.EventHandler(this.btnInsertDefaultCustomCommand_Click);
             // 
-            // pnlVariablesCustomCommand
+            // label4
             // 
-            this.pnlVariablesCustomCommand.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.pnlVariablesCustomCommand.BackColor = System.Drawing.Color.Transparent;
-            this.pnlVariablesCustomCommand.Location = new System.Drawing.Point(292, 345);
-            this.pnlVariablesCustomCommand.Name = "pnlVariablesCustomCommand";
-            this.pnlVariablesCustomCommand.Size = new System.Drawing.Size(200, 22);
-            this.pnlVariablesCustomCommand.TabIndex = 20;
-            // 
-            // ultraLabel1
-            // 
-            this.ultraLabel1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.ultraLabel1.Location = new System.Drawing.Point(228, 349);
-            this.ultraLabel1.Name = "ultraLabel1";
-            this.ultraLabel1.Size = new System.Drawing.Size(57, 15);
-            this.ultraLabel1.TabIndex = 19;
-            this.ultraLabel1.Text = "Variables";
+            this.label4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.label4.AutoSize = true;
+            this.label4.BackColor = System.Drawing.Color.Transparent;
+            this.label4.Location = new System.Drawing.Point(233, 350);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(50, 13);
+            this.label4.TabIndex = 21;
+            this.label4.Text = "Variables";
             // 
             // tbCustomMergeCommand
             // 
             this.tbCustomMergeCommand.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            appearance11.FontData.BoldAsString = "False";
-            appearance11.FontData.ItalicAsString = "False";
-            appearance11.FontData.Name = "Microsoft Sans Serif";
-            appearance11.FontData.SizeInPoints = 8.25F;
-            appearance11.FontData.StrikeoutAsString = "False";
-            appearance11.FontData.UnderlineAsString = "False";
-            this.tbCustomMergeCommand.Appearance = appearance11;
-            this.tbCustomMergeCommand.Location = new System.Drawing.Point(0, 0);
+            this.tbCustomMergeCommand.Location = new System.Drawing.Point(-3, 0);
+            this.tbCustomMergeCommand.Multiline = true;
             this.tbCustomMergeCommand.Name = "tbCustomMergeCommand";
-            this.tbCustomMergeCommand.Size = new System.Drawing.Size(913, 338);
-            this.tbCustomMergeCommand.TabIndex = 6;
-            this.tbCustomMergeCommand.Value = "";
+            this.tbCustomMergeCommand.Size = new System.Drawing.Size(913, 335);
+            this.tbCustomMergeCommand.TabIndex = 23;
             // 
-            // btnInsertDefaultMergeCommand
+            // btnInsertVarCustomCommand
             // 
-            this.btnInsertDefaultMergeCommand.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnInsertDefaultMergeCommand.Location = new System.Drawing.Point(744, 344);
-            this.btnInsertDefaultMergeCommand.Name = "btnInsertDefaultMergeCommand";
-            this.btnInsertDefaultMergeCommand.Size = new System.Drawing.Size(161, 24);
-            this.btnInsertDefaultMergeCommand.TabIndex = 5;
-            this.btnInsertDefaultMergeCommand.Text = "DB Command generieren";
-            this.btnInsertDefaultMergeCommand.Click += new System.EventHandler(this.btnInsertDefaultCustomCommand_Click);
+            this.btnInsertVarCustomCommand.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnInsertVarCustomCommand.Location = new System.Drawing.Point(495, 345);
+            this.btnInsertVarCustomCommand.Name = "btnInsertVarCustomCommand";
+            this.btnInsertVarCustomCommand.Size = new System.Drawing.Size(109, 22);
+            this.btnInsertVarCustomCommand.TabIndex = 22;
+            this.btnInsertVarCustomCommand.Text = "Insert Variable";
+            this.btnInsertVarCustomCommand.UseVisualStyleBackColor = true;
+            this.btnInsertVarCustomCommand.Click += new System.EventHandler(this.btnInsertVarCustomCommand_Click);
             // 
-            // ultraTabPageControl1
+            // pnlVariablesCustomCommand
             // 
-            this.ultraTabPageControl1.Controls.Add(this.pnlVariableChooserLog);
-            this.ultraTabPageControl1.Controls.Add(this.ultraLabel2);
-            this.ultraTabPageControl1.Controls.Add(this.numLogLevel);
-            this.ultraTabPageControl1.Controls.Add(this.btnInsert);
-            this.ultraTabPageControl1.Controls.Add(this.tbMessage);
-            this.ultraTabPageControl1.Location = new System.Drawing.Point(-10000, -10000);
-            this.ultraTabPageControl1.Name = "ultraTabPageControl1";
-            this.ultraTabPageControl1.Size = new System.Drawing.Size(913, 371);
+            this.pnlVariablesCustomCommand.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.pnlVariablesCustomCommand.BackColor = System.Drawing.Color.Transparent;
+            this.pnlVariablesCustomCommand.Location = new System.Drawing.Point(289, 345);
+            this.pnlVariablesCustomCommand.Name = "pnlVariablesCustomCommand";
+            this.pnlVariablesCustomCommand.Size = new System.Drawing.Size(200, 22);
+            this.pnlVariablesCustomCommand.TabIndex = 20;
             // 
-            // pnlVariableChooserLog
+            // label7
             // 
-            this.pnlVariableChooserLog.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.pnlVariableChooserLog.BackColor = System.Drawing.Color.Transparent;
-            this.pnlVariableChooserLog.Location = new System.Drawing.Point(7, 346);
-            this.pnlVariableChooserLog.Name = "pnlVariableChooserLog";
-            this.pnlVariableChooserLog.Size = new System.Drawing.Size(200, 22);
-            this.pnlVariableChooserLog.TabIndex = 28;
+            this.label7.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.label7.AutoSize = true;
+            this.label7.BackColor = System.Drawing.Color.Transparent;
+            this.label7.Location = new System.Drawing.Point(803, 349);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(54, 13);
+            this.label7.TabIndex = 31;
+            this.label7.Text = "Log Level";
             // 
-            // ultraLabel2
+            // numLogLevel1
             // 
-            this.ultraLabel2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.ultraLabel2.Location = new System.Drawing.Point(803, 352);
-            this.ultraLabel2.Name = "ultraLabel2";
-            this.ultraLabel2.Size = new System.Drawing.Size(57, 15);
-            this.ultraLabel2.TabIndex = 27;
-            this.ultraLabel2.Text = "Log Level";
-            // 
-            // numLogLevel
-            // 
-            this.numLogLevel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            appearance12.BackColor = System.Drawing.Color.Transparent;
-            this.numLogLevel.Appearance = appearance12;
-            this.numLogLevel.BackColor = System.Drawing.Color.Transparent;
-            this.numLogLevel.Location = new System.Drawing.Point(866, 347);
-            this.numLogLevel.MaskInput = "n";
-            this.numLogLevel.MaxValue = 3;
-            this.numLogLevel.MinValue = 1;
-            this.numLogLevel.Name = "numLogLevel";
-            this.numLogLevel.Size = new System.Drawing.Size(44, 21);
-            this.numLogLevel.SpinButtonDisplayStyle = Infragistics.Win.ButtonDisplayStyle.Always;
-            this.numLogLevel.SpinIncrement = 1;
-            this.numLogLevel.TabIndex = 26;
-            // 
-            // btnInsert
-            // 
-            this.btnInsert.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnInsert.Location = new System.Drawing.Point(209, 347);
-            this.btnInsert.Name = "btnInsert";
-            this.btnInsert.Size = new System.Drawing.Size(75, 21);
-            this.btnInsert.TabIndex = 25;
-            this.btnInsert.Text = "Insert";
-            this.btnInsert.Click += new System.EventHandler(this.btnInsert_Click);
+            this.numLogLevel1.Items.Add("3");
+            this.numLogLevel1.Items.Add("2");
+            this.numLogLevel1.Items.Add("1");
+            this.numLogLevel1.Location = new System.Drawing.Point(863, 347);
+            this.numLogLevel1.Name = "numLogLevel1";
+            this.numLogLevel1.Size = new System.Drawing.Size(44, 20);
+            this.numLogLevel1.TabIndex = 22;
+            this.numLogLevel1.Text = "1";
             // 
             // tbMessage
             // 
             this.tbMessage.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            appearance13.FontData.BoldAsString = "False";
-            appearance13.FontData.ItalicAsString = "False";
-            appearance13.FontData.Name = "Microsoft Sans Serif";
-            appearance13.FontData.SizeInPoints = 8.25F;
-            appearance13.FontData.StrikeoutAsString = "False";
-            appearance13.FontData.UnderlineAsString = "False";
-            this.tbMessage.Appearance = appearance13;
-            this.tbMessage.HideSelection = false;
-            this.tbMessage.Location = new System.Drawing.Point(7, 3);
+            this.tbMessage.Location = new System.Drawing.Point(-3, 0);
+            this.tbMessage.Multiline = true;
             this.tbMessage.Name = "tbMessage";
-            this.tbMessage.Size = new System.Drawing.Size(903, 338);
-            this.tbMessage.TabIndex = 22;
-            this.tbMessage.Value = "";
+            this.tbMessage.Size = new System.Drawing.Size(913, 335);
+            this.tbMessage.TabIndex = 30;
+            // 
+            // btnInsert
+            // 
+            this.btnInsert.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnInsert.Location = new System.Drawing.Point(210, 346);
+            this.btnInsert.Name = "btnInsert";
+            this.btnInsert.Size = new System.Drawing.Size(109, 22);
+            this.btnInsert.TabIndex = 29;
+            this.btnInsert.Text = "Insert Variable";
+            this.btnInsert.UseVisualStyleBackColor = true;
+            this.btnInsert.Click += new System.EventHandler(this.btnInsert_Click);
+            // 
+            // pnlVariableChooserLog
+            // 
+            this.pnlVariableChooserLog.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.pnlVariableChooserLog.BackColor = System.Drawing.Color.Transparent;
+            this.pnlVariableChooserLog.Location = new System.Drawing.Point(4, 346);
+            this.pnlVariableChooserLog.Name = "pnlVariableChooserLog";
+            this.pnlVariableChooserLog.Size = new System.Drawing.Size(200, 22);
+            this.pnlVariableChooserLog.TabIndex = 28;
             // 
             // btnCancel
             // 
             this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point(840, 418);
+            this.btnCancel.Location = new System.Drawing.Point(840, 415);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(81, 26);
-            this.btnCancel.TabIndex = 2;
+            this.btnCancel.TabIndex = 180;
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
             // 
@@ -974,125 +808,190 @@
             // 
             this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.btnOK.Location = new System.Drawing.Point(753, 418);
+            this.btnOK.Location = new System.Drawing.Point(753, 415);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(81, 26);
-            this.btnOK.TabIndex = 1;
+            this.btnOK.TabIndex = 170;
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
             this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
             // 
-            // ultraMessageBox
+            // lblLayoutMapping
             // 
-            this.ultraMessageBox.ContainingControl = this;
-            this.ultraMessageBox.MinimumWidth = 775;
-            this.ultraMessageBox.UseOsThemes = Infragistics.Win.DefaultableBoolean.False;
+            this.lblLayoutMapping.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.lblLayoutMapping.AutoSize = true;
+            this.lblLayoutMapping.Location = new System.Drawing.Point(5, 424);
+            this.lblLayoutMapping.Name = "lblLayoutMapping";
+            this.lblLayoutMapping.Size = new System.Drawing.Size(39, 13);
+            this.lblLayoutMapping.TabIndex = 5;
+            this.lblLayoutMapping.Text = "Layout";
+            // 
+            // cmbLayoutMapping
+            // 
+            this.cmbLayoutMapping.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.cmbLayoutMapping.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbLayoutMapping.FormattingEnabled = true;
+            this.cmbLayoutMapping.Items.AddRange(new object[] {
+            "Standard",
+            "Minimal",
+            "SCD"});
+            this.cmbLayoutMapping.Location = new System.Drawing.Point(50, 420);
+            this.cmbLayoutMapping.Name = "cmbLayoutMapping";
+            this.cmbLayoutMapping.Size = new System.Drawing.Size(144, 21);
+            this.cmbLayoutMapping.TabIndex = 6;
+            this.cmbLayoutMapping.SelectedIndexChanged += new System.EventHandler(this.cmbLayoutMapping_SelectedIndexChanged);
             // 
             // uTabConfig
             // 
             this.uTabConfig.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.uTabConfig.Controls.Add(this.ultraTabSharedControlsPage1);
             this.uTabConfig.Controls.Add(this.uTabConfiguration);
             this.uTabConfig.Controls.Add(this.uTabMapping);
-            this.uTabConfig.Controls.Add(this.uTabPreSqlStatement);
-            this.uTabConfig.Controls.Add(this.uTabPostSqlStatement);
-            this.uTabConfig.Controls.Add(this.uTabSqlPreview);
+            this.uTabConfig.Controls.Add(this.uTabPreSQLStatement);
+            this.uTabConfig.Controls.Add(this.uTabPostSQLStatement);
+            this.uTabConfig.Controls.Add(this.uTabSQLPreview);
             this.uTabConfig.Controls.Add(this.uTabCustomCommand);
-            this.uTabConfig.Controls.Add(this.ultraTabPageControl1);
-            this.uTabConfig.Location = new System.Drawing.Point(4, 12);
+            this.uTabConfig.Controls.Add(this.uTabLogging);
+            this.uTabConfig.Location = new System.Drawing.Point(4, 1);
             this.uTabConfig.Name = "uTabConfig";
-            this.uTabConfig.SharedControlsPage = this.ultraTabSharedControlsPage1;
+            this.uTabConfig.SelectedIndex = 0;
             this.uTabConfig.Size = new System.Drawing.Size(917, 397);
-            this.uTabConfig.TabIndex = 3;
-            ultraTab1.TabPage = this.uTabConfiguration;
-            ultraTab1.Text = "Configuration";
-            ultraTab2.TabPage = this.uTabMapping;
-            ultraTab2.Text = "Mapping";
-            ultraTab3.TabPage = this.uTabPreSqlStatement;
-            ultraTab3.Text = "Pre SQL Statement";
-            ultraTab4.TabPage = this.uTabPostSqlStatement;
-            ultraTab4.Text = "Post SQL Statement";
-            ultraTab5.TabPage = this.uTabSqlPreview;
-            ultraTab5.Text = "SQL Preview";
-            ultraTab6.TabPage = this.uTabCustomCommand;
-            ultraTab6.Text = "Custom Command";
-            ultraTab7.TabPage = this.ultraTabPageControl1;
-            ultraTab7.Text = "Logging";
-            this.uTabConfig.Tabs.AddRange(new Infragistics.Win.UltraWinTabControl.UltraTab[] {
-            ultraTab1,
-            ultraTab2,
-            ultraTab3,
-            ultraTab4,
-            ultraTab5,
-            ultraTab6,
-            ultraTab7});
+            this.uTabConfig.TabIndex = 7;
+            this.uTabConfig.TabStop = false;
+            this.uTabConfig.TabIndexChanged += new System.EventHandler(this.uTabConfig_TabIndexChanged);
             // 
-            // ultraTabSharedControlsPage1
+            // uTabConfiguration
             // 
-            this.ultraTabSharedControlsPage1.Location = new System.Drawing.Point(-10000, -10000);
-            this.ultraTabSharedControlsPage1.Name = "ultraTabSharedControlsPage1";
-            this.ultraTabSharedControlsPage1.Size = new System.Drawing.Size(913, 371);
+            this.uTabConfiguration.Controls.Add(this.btnCreateTable);
+            this.uTabConfiguration.Controls.Add(this.label11);
+            this.uTabConfiguration.Controls.Add(this.btnAlterTable);
+            this.uTabConfiguration.Controls.Add(this.lblChunkSizeBulk);
+            this.uTabConfiguration.Controls.Add(this.btnCreateScdTable);
+            this.uTabConfiguration.Controls.Add(this.label17);
+            this.uTabConfiguration.Controls.Add(this.tbReattempts);
+            this.uTabConfiguration.Controls.Add(this.label1);
+            this.uTabConfiguration.Controls.Add(this.tbMaxThreadCount);
+            this.uTabConfiguration.Controls.Add(this.label2);
+            this.uTabConfiguration.Controls.Add(this.tbChunkSizeBulk);
+            this.uTabConfiguration.Controls.Add(this.lblChunkSizeDbCommand);
+            this.uTabConfiguration.Controls.Add(this.tbChunkSizeDbCommand);
+            this.uTabConfiguration.Controls.Add(this.lblMaxThreadCount);
+            this.uTabConfiguration.Controls.Add(this.tbTimeout);
+            this.uTabConfiguration.Controls.Add(this.label14);
+            this.uTabConfiguration.Controls.Add(this._checkStandardConfigAuto);
+            this.uTabConfiguration.Controls.Add(this.lbDbCommand);
+            this.uTabConfiguration.Controls.Add(this.checkDisableTablock);
+            this.uTabConfiguration.Controls.Add(this.lblConMgrBulk);
+            this.uTabConfiguration.Controls.Add(this.pnlConnMgrMain);
+            this.uTabConfiguration.Controls.Add(this.label3);
+            this.uTabConfiguration.Controls.Add(this.pnlConnMgrBulk);
+            this.uTabConfiguration.Controls.Add(this.pnlTableLoaderType);
+            this.uTabConfiguration.Controls.Add(this.imgHelpTransactions);
+            this.uTabConfiguration.Controls.Add(this.pnlTransaction);
+            this.uTabConfiguration.Controls.Add(this.imgHelpChunkSize);
+            this.uTabConfiguration.Controls.Add(this.pnlCmbStandardConfig);
+            this.uTabConfiguration.Controls.Add(this.imgHelpStandardConfig);
+            this.uTabConfiguration.Controls.Add(this.pnlDestinationTanble);
+            this.uTabConfiguration.Controls.Add(this.lblTransaction);
+            this.uTabConfiguration.Controls.Add(this.pnlDbCommand);
+            this.uTabConfiguration.Controls.Add(this.lblTlType);
+            this.uTabConfiguration.Location = new System.Drawing.Point(4, 22);
+            this.uTabConfiguration.Name = "uTabConfiguration";
+            this.uTabConfiguration.Padding = new System.Windows.Forms.Padding(3);
+            this.uTabConfiguration.Size = new System.Drawing.Size(909, 371);
+            this.uTabConfiguration.TabIndex = 0;
+            this.uTabConfiguration.Text = "Configuration";
+            this.uTabConfiguration.UseVisualStyleBackColor = true;
             // 
-            // ultraToolTipManager1
+            // uTabMapping
             // 
-            this.ultraToolTipManager1.ContainingControl = this;
+            this.uTabMapping.Controls.Add(this.tbPrefixOutput);
+            this.uTabMapping.Controls.Add(this.pnlDGV);
+            this.uTabMapping.Controls.Add(this.tbPrefixInput);
+            this.uTabMapping.Controls.Add(this.label6);
+            this.uTabMapping.Controls.Add(this.btnAutoMap);
+            this.uTabMapping.Controls.Add(this.label5);
+            this.uTabMapping.Controls.Add(this.btnSelect);
+            this.uTabMapping.Controls.Add(this.btnAddRow);
+            this.uTabMapping.Controls.Add(this.btnDeSelect);
+            this.uTabMapping.Controls.Add(this.btnRemoveRow);
+            this.uTabMapping.Location = new System.Drawing.Point(4, 22);
+            this.uTabMapping.Name = "uTabMapping";
+            this.uTabMapping.Padding = new System.Windows.Forms.Padding(3);
+            this.uTabMapping.Size = new System.Drawing.Size(909, 371);
+            this.uTabMapping.TabIndex = 1;
+            this.uTabMapping.Text = "Mapping";
+            this.uTabMapping.UseVisualStyleBackColor = true;
             // 
-            // uceLayoutMapping
+            // uTabPreSQLStatement
             // 
-            this.uceLayoutMapping.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.uceLayoutMapping.DropDownStyle = Infragistics.Win.DropDownStyle.DropDownList;
-            valueListItem1.DataValue = "Standard";
-            valueListItem1.DisplayText = "Standard";
-            valueListItem2.DataValue = "Minimal";
-            valueListItem2.DisplayText = "Minimal";
-            valueListItem3.DataValue = "SCD";
-            valueListItem3.DisplayText = "SCD";
-            this.uceLayoutMapping.Items.AddRange(new Infragistics.Win.ValueListItem[] {
-            valueListItem1,
-            valueListItem2,
-            valueListItem3});
-            this.uceLayoutMapping.LimitToList = true;
-            this.uceLayoutMapping.Location = new System.Drawing.Point(50, 423);
-            this.uceLayoutMapping.Name = "uceLayoutMapping";
-            this.uceLayoutMapping.Nullable = false;
-            this.uceLayoutMapping.Size = new System.Drawing.Size(144, 21);
-            this.uceLayoutMapping.TabIndex = 4;
-            this.uceLayoutMapping.Text = "Standard";
-            this.uceLayoutMapping.SelectionChanged += new System.EventHandler(this.uceLayoutMapping_SelectionChanged);
+            this.uTabPreSQLStatement.Controls.Add(this.tbPreSql);
+            this.uTabPreSQLStatement.Controls.Add(this._checkExcludePreSqlFromTransaction);
+            this.uTabPreSQLStatement.Controls.Add(this.pnlVariablesPreSql);
+            this.uTabPreSQLStatement.Controls.Add(this.btnInsertTruncatePreSql);
+            this.uTabPreSQLStatement.Controls.Add(this.lblExcludePreSqlFromTransaction);
+            this.uTabPreSQLStatement.Controls.Add(this.btnInsertVariablePreSql);
+            this.uTabPreSQLStatement.Controls.Add(this.lblVariablesPreSql);
+            this.uTabPreSQLStatement.Location = new System.Drawing.Point(4, 22);
+            this.uTabPreSQLStatement.Name = "uTabPreSQLStatement";
+            this.uTabPreSQLStatement.Size = new System.Drawing.Size(909, 371);
+            this.uTabPreSQLStatement.TabIndex = 2;
+            this.uTabPreSQLStatement.Text = "Pre SQL Statement";
+            this.uTabPreSQLStatement.UseVisualStyleBackColor = true;
             // 
-            // lblLayoutMapping
+            // uTabPostSQLStatement
             // 
-            this.lblLayoutMapping.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.lblLayoutMapping.AutoSize = true;
-            this.lblLayoutMapping.Location = new System.Drawing.Point(5, 427);
-            this.lblLayoutMapping.Name = "lblLayoutMapping";
-            this.lblLayoutMapping.Size = new System.Drawing.Size(39, 13);
-            this.lblLayoutMapping.TabIndex = 5;
-            this.lblLayoutMapping.Text = "Layout";
+            this.uTabPostSQLStatement.Controls.Add(this.tbPostSql);
+            this.uTabPostSQLStatement.Controls.Add(this.lblVariablesPostSql);
+            this.uTabPostSQLStatement.Controls.Add(this.pnlVariablesPostSql);
+            this.uTabPostSQLStatement.Controls.Add(this.btnInsertVariablePostSql);
+            this.uTabPostSQLStatement.Location = new System.Drawing.Point(4, 22);
+            this.uTabPostSQLStatement.Name = "uTabPostSQLStatement";
+            this.uTabPostSQLStatement.Size = new System.Drawing.Size(909, 371);
+            this.uTabPostSQLStatement.TabIndex = 3;
+            this.uTabPostSQLStatement.Text = "Post SQL Statement";
+            this.uTabPostSQLStatement.UseVisualStyleBackColor = true;
             // 
-            // pnlTableLoaderType
+            // uTabSQLPreview
             // 
-            this.pnlTableLoaderType.BackColor = System.Drawing.Color.Transparent;
-            this.pnlTableLoaderType.Location = new System.Drawing.Point(652, 21);
-            this.pnlTableLoaderType.Name = "pnlTableLoaderType";
-            this.pnlTableLoaderType.Size = new System.Drawing.Size(147, 21);
-            this.pnlTableLoaderType.TabIndex = 14;
+            this.uTabSQLPreview.Controls.Add(this.tbSqlPreview);
+            this.uTabSQLPreview.Controls.Add(this.btnSqlPreview);
+            this.uTabSQLPreview.Location = new System.Drawing.Point(4, 22);
+            this.uTabSQLPreview.Name = "uTabSQLPreview";
+            this.uTabSQLPreview.Size = new System.Drawing.Size(909, 371);
+            this.uTabSQLPreview.TabIndex = 4;
+            this.uTabSQLPreview.Text = "SQL Preview";
+            this.uTabSQLPreview.UseVisualStyleBackColor = true;
             // 
-            // _cmbDestinationTable
+            // uTabCustomCommand
             // 
-            this._cmbDestinationTable.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
-            this._cmbDestinationTable.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
-            this._cmbDestinationTable.EnableDoubleBinding = false;
-            this._cmbDestinationTable.FormattingEnabled = true;
-            this._cmbDestinationTable.Location = new System.Drawing.Point(170, 82);
-            this._cmbDestinationTable.Name = "_cmbDestinationTable";
-            this._cmbDestinationTable.Size = new System.Drawing.Size(363, 21);
-            this._cmbDestinationTable.Sorted = true;
-            this._cmbDestinationTable.TabIndex = 22;
-            this._cmbDestinationTable.UpdateSelectedItemBindingOnSelectedIndexChanged = true;
-            this._cmbDestinationTable.SelectedIndexChanged += new System.EventHandler(this.cmbDestinationTable_SelectedIndexChanged);
+            this.uTabCustomCommand.Controls.Add(this._checkUseCustomCommand);
+            this.uTabCustomCommand.Controls.Add(this.tbCustomMergeCommand);
+            this.uTabCustomCommand.Controls.Add(this.btnInsertDefaultMergeCommand);
+            this.uTabCustomCommand.Controls.Add(this.pnlVariablesCustomCommand);
+            this.uTabCustomCommand.Controls.Add(this.label4);
+            this.uTabCustomCommand.Controls.Add(this.btnInsertVarCustomCommand);
+            this.uTabCustomCommand.Location = new System.Drawing.Point(4, 22);
+            this.uTabCustomCommand.Name = "uTabCustomCommand";
+            this.uTabCustomCommand.Size = new System.Drawing.Size(909, 371);
+            this.uTabCustomCommand.TabIndex = 5;
+            this.uTabCustomCommand.Text = "Custom Command";
+            this.uTabCustomCommand.UseVisualStyleBackColor = true;
+            // 
+            // uTabLogging
+            // 
+            this.uTabLogging.Controls.Add(this.label7);
+            this.uTabLogging.Controls.Add(this.tbMessage);
+            this.uTabLogging.Controls.Add(this.numLogLevel1);
+            this.uTabLogging.Controls.Add(this.pnlVariableChooserLog);
+            this.uTabLogging.Controls.Add(this.btnInsert);
+            this.uTabLogging.Location = new System.Drawing.Point(4, 22);
+            this.uTabLogging.Name = "uTabLogging";
+            this.uTabLogging.Size = new System.Drawing.Size(909, 371);
+            this.uTabLogging.TabIndex = 6;
+            this.uTabLogging.Text = "Logging";
+            this.uTabLogging.UseVisualStyleBackColor = true;
             // 
             // frmTableLoaderUI
             // 
@@ -1101,9 +1000,9 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
             this.ClientSize = new System.Drawing.Size(927, 453);
-            this.Controls.Add(this.lblLayoutMapping);
-            this.Controls.Add(this.uceLayoutMapping);
             this.Controls.Add(this.uTabConfig);
+            this.Controls.Add(this.cmbLayoutMapping);
+            this.Controls.Add(this.lblLayoutMapping);
             this.Controls.Add(this.btnOK);
             this.Controls.Add(this.btnCancel);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -1112,27 +1011,24 @@
             this.Text = "Table Loader";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frmTableLoaderUI_FormClosing);
             this.Load += new System.EventHandler(this.frmTableLoaderUI_Load);
-            this.uTabConfiguration.ResumeLayout(false);
-            this.uTabConfiguration.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.imgHelpStandardConfig)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.imgHelpChunkSize)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.imgHelpTransactions)).EndInit();
+            this.uTabConfig.ResumeLayout(false);
+            this.uTabConfiguration.ResumeLayout(false);
+            this.uTabConfiguration.PerformLayout();
             this.uTabMapping.ResumeLayout(false);
             this.uTabMapping.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.tbPrefixOutput)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.tbPrefixInput)).EndInit();
-            this.uTabPreSqlStatement.ResumeLayout(false);
-            this.uTabPreSqlStatement.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.ultraTextEditor1)).EndInit();
-            this.uTabPostSqlStatement.ResumeLayout(false);
-            this.uTabSqlPreview.ResumeLayout(false);
+            this.uTabPreSQLStatement.ResumeLayout(false);
+            this.uTabPreSQLStatement.PerformLayout();
+            this.uTabPostSQLStatement.ResumeLayout(false);
+            this.uTabPostSQLStatement.PerformLayout();
+            this.uTabSQLPreview.ResumeLayout(false);
+            this.uTabSQLPreview.PerformLayout();
             this.uTabCustomCommand.ResumeLayout(false);
-            this.ultraTabPageControl1.ResumeLayout(false);
-            this.ultraTabPageControl1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numLogLevel)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.uTabConfig)).EndInit();
-            this.uTabConfig.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.uceLayoutMapping)).EndInit();
+            this.uTabCustomCommand.PerformLayout();
+            this.uTabLogging.ResumeLayout(false);
+            this.uTabLogging.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1143,24 +1039,10 @@
         private System.Windows.Forms.Button btnCancel;
         private System.Windows.Forms.Button btnOK;
         private System.Windows.Forms.PictureBox imgHelpTransactions;
-        private Infragistics.Win.UltraMessageBox.UltraMessageBoxManager ultraMessageBox;
-        private Infragistics.Win.UltraWinTabControl.UltraTabControl uTabConfig;
-        private Infragistics.Win.UltraWinTabControl.UltraTabSharedControlsPage ultraTabSharedControlsPage1;
-        private Infragistics.Win.UltraWinTabControl.UltraTabPageControl uTabConfiguration;
-        private Infragistics.Win.UltraWinTabControl.UltraTabPageControl uTabMapping;
-        private Infragistics.Win.Misc.UltraButton btnSelect;
-        private Infragistics.Win.Misc.UltraButton btnDeSelect;
-        private Infragistics.Win.UltraWinEditors.UltraTextEditor tbPrefixOutput;
         private System.Windows.Forms.Button btnAutoMap;
-        private Infragistics.Win.UltraWinEditors.UltraTextEditor tbPrefixInput;
         private System.Windows.Forms.Panel pnlDGV;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label label6;
-        private Infragistics.Win.UltraWinTabControl.UltraTabPageControl uTabPreSqlStatement;
-        private Infragistics.Win.UltraWinTabControl.UltraTabPageControl uTabPostSqlStatement;
-        private Infragistics.Win.UltraWinTabControl.UltraTabPageControl uTabSqlPreview;
-        private Infragistics.Win.UltraWinTabControl.UltraTabPageControl uTabCustomCommand;
-        private Infragistics.Win.Misc.UltraButton btnInsertDefaultMergeCommand;
         private System.Windows.Forms.Label label11;
         private System.Windows.Forms.Panel pnlConnMgrBulk;
         private System.Windows.Forms.Panel pnlConnMgrMain;
@@ -1171,46 +1053,20 @@
         private System.Windows.Forms.Panel pnlDbCommand;
         private System.Windows.Forms.Label lbDbCommand;
         private System.Windows.Forms.Panel pnlTransaction;
-        private Infragistics.Win.FormattedLinkLabel.UltraFormattedTextEditor tbPreSql;
-        private Infragistics.Win.UltraWinEditors.UltraTextEditor ultraTextEditor1;
-        private Infragistics.Win.FormattedLinkLabel.UltraFormattedTextEditor tbPostSql;
-        private Infragistics.Win.Misc.UltraButton btnInsertTruncatePreSql;
-        private Infragistics.Win.Misc.UltraButton btnInsertVariablePreSql;
         private System.Windows.Forms.Panel pnlVariablesPreSql;
-        private Infragistics.Win.Misc.UltraLabel lblVariablesPreSql;
-        private Infragistics.Win.Misc.UltraButton btnInsertVariablePostSql;
         private System.Windows.Forms.Panel pnlVariablesPostSql;
-        private Infragistics.Win.Misc.UltraLabel lblVariablesPostSql;
-        private Infragistics.Win.Misc.UltraButton btnAddRow;
-        private Infragistics.Win.Misc.UltraButton btnRemoveRow;
-        private Infragistics.Win.Misc.UltraButton btnSqlPreview;
-        private Infragistics.Win.FormattedLinkLabel.UltraFormattedTextEditor tbSqlPreview;
-        private Infragistics.Win.FormattedLinkLabel.UltraFormattedTextEditor tbCustomMergeCommand;
-        private System.Windows.Forms.Label lblWarning;
         private System.Windows.Forms.PictureBox imgHelpChunkSize;
         private System.Windows.Forms.Label lblMaxThreadCount;
-        private Infragistics.Win.Misc.UltraButton btnInsertVarCustomCommand;
         private System.Windows.Forms.Panel pnlVariablesCustomCommand;
-        private Infragistics.Win.Misc.UltraLabel ultraLabel1;
-        private System.Windows.Forms.Panel pnlUseCustomCommand;
-        private System.Windows.Forms.Panel pnlCheckStandardConfigAuto;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Panel pnlCmbStandardConfig;
-        private Infragistics.Win.UltraWinTabControl.UltraTabPageControl ultraTabPageControl1;
-        private Infragistics.Win.Misc.UltraButton btnInsert;
-        private Infragistics.Win.FormattedLinkLabel.UltraFormattedTextEditor tbMessage;
-        private Infragistics.Win.Misc.UltraLabel ultraLabel2;
-        private Infragistics.Win.UltraWinEditors.UltraNumericEditor numLogLevel;
-        private Infragistics.Win.UltraWinToolTip.UltraToolTipManager ultraToolTipManager1;
         private System.Windows.Forms.PictureBox imgHelpStandardConfig;
         private System.Windows.Forms.Label lblTlType;
         private System.Windows.Forms.Label lblChunkSizeDbCommand;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Panel pnlVariableChooserLog;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Panel pnlExcludePreSqlFromTransaction;
         private System.Windows.Forms.Label lblExcludePreSqlFromTransaction;
-        private Infragistics.Win.UltraWinEditors.UltraComboEditor uceLayoutMapping;
         private System.Windows.Forms.Label lblLayoutMapping;
         private System.Windows.Forms.Label lblConMgrBulk;
         private System.Windows.Forms.CheckBox checkDisableTablock;
@@ -1223,8 +1079,43 @@
         private System.Windows.Forms.Button btnCreateScdTable;
         private System.Windows.Forms.Button btnCreateTable;
         private System.Windows.Forms.Button btnAlterTable;
-        private Lookup2.ComponentFramework.Controls.IsagComboBox _cmbDestinationTable;
         private System.Windows.Forms.Panel pnlTableLoaderType;
+        private System.Windows.Forms.CheckBox _checkStandardConfigAuto;
+        private System.Windows.Forms.Button btnInsertTruncatePreSql;
+        private System.Windows.Forms.Button btnInsertVariablePreSql;
+        private System.Windows.Forms.Button btnInsertVariablePostSql;
+        private System.Windows.Forms.Button btnInsertVarCustomCommand;
+        private System.Windows.Forms.Button btnInsert;
+        private System.Windows.Forms.CheckBox _checkExcludePreSqlFromTransaction;
+        private System.Windows.Forms.TextBox tbPreSql;
+        private System.Windows.Forms.Label lblVariablesPreSql;
+        private System.Windows.Forms.TextBox tbPostSql;
+        private System.Windows.Forms.Label lblVariablesPostSql;
+        private System.Windows.Forms.Panel pnlDestinationTanble;
+        private System.Windows.Forms.TextBox tbSqlPreview;
+        private System.Windows.Forms.Button btnSqlPreview;
+        private System.Windows.Forms.Button btnInsertDefaultMergeCommand;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.TextBox tbCustomMergeCommand;
+        private System.Windows.Forms.CheckBox _checkUseCustomCommand;
+        private System.Windows.Forms.DomainUpDown numLogLevel1;
+        private System.Windows.Forms.TextBox tbMessage;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.TextBox tbPrefixOutput;
+        private System.Windows.Forms.TextBox tbPrefixInput;
+        private System.Windows.Forms.Button btnSelect;
+        private System.Windows.Forms.Button btnDeSelect;
+        private System.Windows.Forms.Button btnRemoveRow;
+        private System.Windows.Forms.Button btnAddRow;
+        private System.Windows.Forms.ComboBox cmbLayoutMapping;
+        private System.Windows.Forms.TabControl uTabConfig;
+        private System.Windows.Forms.TabPage uTabConfiguration;
+        private System.Windows.Forms.TabPage uTabMapping;
+        private System.Windows.Forms.TabPage uTabPreSQLStatement;
+        private System.Windows.Forms.TabPage uTabPostSQLStatement;
+        private System.Windows.Forms.TabPage uTabSQLPreview;
+        private System.Windows.Forms.TabPage uTabCustomCommand;
+        private System.Windows.Forms.TabPage uTabLogging;
        
   
        

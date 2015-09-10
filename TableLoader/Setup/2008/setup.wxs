@@ -1,7 +1,7 @@
 ﻿<?xml version='1.0'?>
 <Wix xmlns='http://schemas.microsoft.com/wix/2006/wi'>
-    <Product Id='*' Name='TableLoader 3.1.11.0 for Integration Services 2008' Language='1033'
-             Version='3.1.10.0' Manufacturer='innovative IT solutions AG' UpgradeCode='88F4A44E-5A15-4E3F-BD7F-E8A331F4ACE4'>
+    <Product Id='*' Name='TableLoader 3.1.12.0 for Integration Services 2008' Language='1033'
+             Version='3.1.12.0' Manufacturer='innovative IT solutions AG' UpgradeCode='88F4A44E-5A15-4E3F-BD7F-E8A331F4ACE4'>
         
 
         
@@ -13,11 +13,11 @@
         <Upgrade Id="88F4A44E-5A15-4E3F-BD7F-E8A331F4ACE4">
             <UpgradeVersion Minimum="1.0.0"
                             IncludeMinimum="yes"
-                            Maximum="3.1.11"
+                            Maximum="3.1.12"
                             Property="OLDERVERSIONBEINGUPGRADED" />
         </Upgrade>
         <Upgrade Id="88F4A44E-5A15-4E3F-BD7F-E8A331F4ACE4">
-            <UpgradeVersion Minimum="3.1.11"
+            <UpgradeVersion Minimum="3.1.12"
                             OnlyDetect="yes"
                             Property="NEWERVERSIONDETECTED" />
         </Upgrade>
@@ -58,25 +58,7 @@
             <Directory Id="GAC" Name="GAC">
                 <Component Id="RT_TableLoader" Guid="4F50184D-184C-45B9-8219-85C041B0E1AA" DiskId="1">
                     <File Id="F_RT_TableLoader" Name="TableLoader3.dll" Source="c:\Program Files (x86)\Microsoft SQL Server\100\DTS\PipelineComponents\TableLoader3.dll" KeyPath="yes" Assembly=".net"/>
-                </Component>
-                <Component Id="RT_IG_Shared" Guid="920CBBD7-6361-4502-A6AE-5C639E41BF9A" DiskId="1">
-                    <File Id="F_RT_IG_Shared" Name="Infragistics2.Shared.v10.2.dll" Source="C:\Program Files (x86)\Infragistics\NetAdvantage 2010.2\Windows Forms\Bin\Infragistics2.Shared.v10.2.dll" KeyPath="yes" Assembly=".net"/>
-                </Component>
-                <Component Id="RT_IG_UltraWinEditors" Guid="5177E14F-A666-4A89-8116-0CAA1AAC8F9B" DiskId="1">
-                    <File Id="F_RT_IG_UltraWinEditors" Name="Infragistics2.Win.UltraWinEditors.v10.2.dll" Source="C:\Program Files (x86)\Infragistics\NetAdvantage 2010.2\Windows Forms\Bin\Infragistics2.Win.UltraWinEditors.v10.2.dll" KeyPath="yes" Assembly=".net"/>
-                </Component>
-                <Component Id="RT_IG_Win" Guid="9E48C2B7-D554-40A2-A088-93541D8C3D6A" DiskId="1">
-                    <File Id="F_RT_IG_Win" Name="Infragistics2.Win.v10.2.dll" Source="C:\Program Files (x86)\Infragistics\NetAdvantage 2010.2\Windows Forms\Bin\Infragistics2.Win.v10.2.dll" KeyPath="yes" Assembly=".net"/>
-                </Component>
-                <Component Id="RT_IG_MISC" Guid="7DA2E805-57F8-4CA5-8FF3-E1872EC4561E" DiskId="1">
-                    <File Id="F_RT_IG_MISC" Name="Infragistics2.Win.Misc.v10.2.dll" Source="C:\Program Files (x86)\Infragistics\NetAdvantage 2010.2\Windows Forms\Bin\Infragistics2.Win.Misc.v10.2.dll" KeyPath="yes" Assembly=".net"/>
-                </Component>
-                <Component Id="RT_IG_UltraWinGrid" Guid="B6E09C1E-8DF2-4689-97D3-B6727F0BE05A" DiskId="1">
-                    <File Id="F_RT_IG_UltraWinGrid" Name="Infragistics2.Win.UltraWinGrid.v10.2.dll" Source="C:\Program Files (x86)\Infragistics\NetAdvantage 2010.2\Windows Forms\Bin\Infragistics2.Win.UltraWinGrid.v10.2.dll" KeyPath="yes" Assembly=".net"/>
-                </Component>
-                <Component Id="RT_IG_UltraWinTabControl" Guid="AF77F256-9FBE-491E-9FFC-D56CA7099FE0" DiskId="1">
-                    <File Id="F_RT_IG_UltraWinTabControl" Name="Infragistics2.Win.UltraWinTabControl.v10.2.dll" Source="C:\Program Files (x86)\Infragistics\NetAdvantage 2010.2\Windows Forms\Bin\Infragistics2.Win.UltraWinTabControl.v10.2.dll" KeyPath="yes" Assembly=".net"/>
-                </Component>
+                </Component>               
             </Directory>
         </Directory>
 
@@ -85,12 +67,6 @@
         <Feature Id='MyFeature' Title='My 1st Feature' Level='1'>
             <ComponentRef Id='TableLoader3.dll' />
             <ComponentRef Id='RT_TableLoader' />
-            <ComponentRef Id='RT_IG_Shared' />
-            <ComponentRef Id='RT_IG_UltraWinEditors' />
-            <ComponentRef Id='RT_IG_Win' />
-            <ComponentRef Id='RT_IG_MISC' />
-            <ComponentRef Id='RT_IG_UltraWinGrid' />
-            <ComponentRef Id='RT_IG_UltraWinTabControl' />
         </Feature>
 
         <Icon Id="TableLoader.ico" SourceFile="C:\Visual Studio\Visual Studio TFS\initions-BI\Henry Components\TableLoader\Main\TableLoader\Resources\TableLoader.ico"/>

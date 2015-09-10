@@ -1,0 +1,79 @@
+﻿<?xml version='1.0'?>
+<Wix xmlns='http://schemas.microsoft.com/wix/2006/wi'>
+    <Product Id='*' Name='TableLoader 3.1.12.0 for Integration Services 2014' Language='1033'
+             Version='3.1.12.0' Manufacturer='innovative IT solutions AG' UpgradeCode='F3BFD12F-E169-4B07-88C2-C648DD5B3F22'>
+        
+
+        
+        <Package Description='TableLoader Installer package'
+                  Manufacturer='innovative IT solutions AG' InstallerVersion='200' Compressed='yes' />
+
+        <Media Id='1' Cabinet='TableLoader.cab' EmbedCab='yes' />
+
+        <Upgrade Id="F3BFD12F-E169-4B07-88C2-C648DD5B3F22">
+            <UpgradeVersion Minimum="1.0.0"
+                            IncludeMinimum="yes"
+                            Maximum="3.1.12"
+                            Property="OLDERVERSIONBEINGUPGRADED" />
+        </Upgrade>
+        <Upgrade Id="F3BFD12F-E169-4B07-88C2-C648DD5B3F22">
+            <UpgradeVersion Minimum="3.1.12"
+                            OnlyDetect="yes"
+                            Property="NEWERVERSIONDETECTED" />
+        </Upgrade>
+
+        <Condition Message="Eine neuere Version des TableLoaders ist breits installiert. Die Installation wird abgebrochen.">
+            NOT NEWERVERSIONDETECTED OR Installed
+        </Condition>
+        
+        <InstallExecuteSequence>
+            <RemoveExistingProducts After="InstallValidate"/>
+        </InstallExecuteSequence>
+
+        <Property Id="WIXUI_INSTALLDIR" Value="PIPELINECOMPONENTS" />
+        <UIRef Id="WixUI_InstallDir" />
+
+        <UI>
+            <UIRef Id="WixUI_InstallDir" />
+            <!-- skip licence dialog -->
+            <Publish Dialog="WelcomeDlg" Control="Next" Event="NewDialog" Value="InstallDirDlg" Order="2">1</Publish>
+            <Publish Dialog="InstallDirDlg" Control="Back" Event="NewDialog" Value="WelcomeDlg" Order="2">1</Publish>
+        </UI>
+        
+        <Directory Id="TARGETDIR" Name="SourceDir">
+            <Directory Id="PF86" Name="Program Files (x86)">
+                <Directory Id="MicrosoftSQLServer" Name="Microsoft SQL Server">
+                    <Directory Id="dir110" Name="120">
+                        <Directory Id="DTS" Name="DTS">
+                            <Directory Id="PIPELINECOMPONENTS" Name="PipelineComponents">
+                                <Component Id="TableLoader5.dll" Guid='A3947FB7-6784-42D4-8C91-2EFF825BCA15'>
+                                    <File Id='TableLoader5.dll' Source="c:\Program Files (x86)\Microsoft SQL Server\120\DTS\PipelineComponents\TableLoader5.dll" />
+                                </Component>
+                            </Directory>
+                        </Directory>
+                    </Directory>
+                </Directory>
+            </Directory>
+            
+            <Directory Id="GAC" Name="GAC">
+                <Component Id="RT_TableLoader" Guid="F223E65F-DF32-451D-84EC-8CC0DB2048D0" DiskId="1">
+                    <File Id="F_RT_TableLoader" Name="TableLoader5.dll" Source="c:\Program Files (x86)\Microsoft SQL Server\120\DTS\PipelineComponents\TableLoader5.dll" KeyPath="yes" Assembly=".net"/>
+                </Component>
+            </Directory>
+        </Directory>
+
+
+
+        <Feature Id='MyFeature' Title='My 1st Feature' Level='1'>
+            <ComponentRef Id='TableLoader5.dll' />
+            <ComponentRef Id='RT_TableLoader' />
+        </Feature>
+
+        <Icon Id="TableLoader.ico" SourceFile="\Visual Studio\Visual Studio TFS\initions-BI\Henry Components\TableLoader\Release\2014\TableLoader 3 .1.10\TableLoader\Resources\TableLoader.ico"/>
+        <Property Id="ARPPRODUCTICON" Value="TableLoader.ico" />
+        <Property Id="ALLUSERS" Value="1" />
+
+        
+    </Product>
+</Wix>
+

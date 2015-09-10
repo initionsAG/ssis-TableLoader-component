@@ -7,23 +7,34 @@ using System.Diagnostics;
 
 namespace TableLoader.ComponentFramework.Mapping
 {
+    /// <summary>
+    /// Since SSIS 2012 lineageIDs are not stored in the DTSX file, but still used at design- and runtime.
+    /// Also lineage IDs may change if package is reopened. So mapping  for custom configurations for columns is achieved via GUIDS.
+    /// </summary>
     public class Mapping
     {
         public static string IdPropertyName = "CustomID";
 
+        /// <summary>
+        /// Returns if mapping is nececarry
+        /// </summary>
+        /// <returns></returns>
         public static bool NeedsMapping()
         {
-            Assembly asm = Assembly.GetExecutingAssembly();
-            FileVersionInfo fvi = FileVersionInfo.GetVersionInfo(asm.Location);
+#if     (SQL2008) 
+            return false;      
+#else 
+            return true;
+#endif
 
-            return fvi.FileMajorPart > 3;
         }
 
         #region Input
 
         public static void UpdateInputIdProperties(IDTSComponentMetaData100 _componentMetaData, IsagCustomProperties _isagCustomProperties)
         {
-            if (!NeedsMapping()) return;
+            if (!NeedsMapping())
+                return;
 
             UpdateInputIdProperties(_componentMetaData.InputCollection[0], _componentMetaData, _isagCustomProperties);
         }
@@ -39,13 +50,14 @@ namespace TableLoader.ComponentFramework.Mapping
         private static void UpdateInputIdProperty(IDTSInputColumn100 col, IDTSComponentMetaData100 _componentMetaData, IsagCustomProperties _isagCustomProperties)
         {
             if (HasIdProperty(col.CustomPropertyCollection))
-            { 
+            {
                 IDTSCustomProperty100 prop = col.CustomPropertyCollection[IdPropertyName];
-                string guid = (string)col.CustomPropertyCollection[IdPropertyName].Value;
+                string guid = (string) col.CustomPropertyCollection[IdPropertyName].Value;
 
                 foreach (ColumnConfig config in _isagCustomProperties.ColumnConfigList)
                 {
-                    if (AreIdsEqual(config, guid)) UpdateColumnConfig(config, col, _componentMetaData, _isagCustomProperties);
+                    if (AreIdsEqual(config, guid))
+                        UpdateColumnConfig(config, col, _componentMetaData, _isagCustomProperties);
                 }
             }
         }
@@ -76,7 +88,8 @@ namespace TableLoader.ComponentFramework.Mapping
 
         public static void SetIdProperty(string ID, IDTSCustomPropertyCollection100 propCollection)
         {
-            if (!NeedsMapping()) return;
+            if (!NeedsMapping())
+                return;
 
             try
             {
@@ -90,7 +103,8 @@ namespace TableLoader.ComponentFramework.Mapping
 
         public static bool HasIdProperty(IDTSCustomPropertyCollection100 propCollection)
         {
-            if (!NeedsMapping()) return false;
+            if (!NeedsMapping())
+                return false;
 
             try
             {

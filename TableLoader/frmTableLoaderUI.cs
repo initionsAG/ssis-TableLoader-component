@@ -1,19 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Drawing;
-using System.Windows.Forms;
-using Microsoft.SqlServer.Dts.Pipeline.Wrapper;
-using Microsoft.SqlServer.Dts.Runtime;
-using System.Data.SqlClient;
-using System.Data.OleDb;
-using Infragistics.Win.UltraMessageBox;
-using Infragistics.Win.UltraWinGrid;
-using Infragistics.Win;
-using System.Data.Common;
-using ComponentFramework.Controls;
+﻿using ComponentFramework.Controls;
 using ComponentFramework.Gui;
 using Lookup2.ComponentFramework.Controls;
+using Microsoft.SqlServer.Dts.Pipeline.Wrapper;
+using Microsoft.SqlServer.Dts.Runtime;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Data.Common;
+using System.Data.OleDb;
+using System.Data.SqlClient;
+using System.Drawing;
+using System.Windows.Forms;
 using TableLoader.ComponentFramework;
 
 
@@ -34,14 +32,19 @@ namespace TableLoader
         private IsagCustomProperties _IsagCustomProperties;
         private SqlColumnList _sqlColumns;
         private bool _abortClosing = false;
-        private ValueList _outputColumnValueList;
+
         private Dictionary<string, DataRow> _cfgList = new Dictionary<string, DataRow>();
         private StandardConfiguration _stdConfig;
+
         //GUI Elemente
-        private IsagDataGrid ugMapping = new IsagDataGrid();
+        private IsagDataGridView ugMapping = new IsagDataGridView();
+        private BindingList<object> _mappingOutputColumnItemSource = new BindingList<object>();
+        private List<string> _outputColumnList = new List<string>();
+
         private IsagConnectionManager _connectionManagerMain = new IsagConnectionManager();
         private IsagConnectionManager _connectionManagerBulk = new IsagConnectionManager();
 
+        private IsagComboBox _cmbDestinationTable = new IsagComboBox();
         private IsagComboBox _cmbTableLoaderType = new IsagComboBox();
         private IsagComboBox _cmbDbCommand = new IsagComboBox();
         private IsagComboBox _cmbTransaction = new IsagComboBox();
@@ -50,12 +53,11 @@ namespace TableLoader
         private IsagVariableChooser _cmpVariableChooserLog = new IsagVariableChooser();
         private IsagVariableChooser _cmpVariableChooserPreSql = new IsagVariableChooser();
         private IsagVariableChooser _cmpVariableChooserPostSql = new IsagVariableChooser();
-        private IsagCheckBox _checkUseCustomCommand = new IsagCheckBox();
-        private MenuItem _miLimitOutputColumnNames;
-        private IsagUltraComboEditor _cmbStandardConfig = new IsagUltraComboEditor();
-        private IsagCheckBox _checkStandardConfigAuto = new IsagCheckBox();
 
-        private IsagCheckBox _checkExcludePreSqlFromTransaction = new IsagCheckBox();
+        private MenuItem _miLimitOutputColumnNames;
+        private MenuItem _miRemoveRows;
+        private MenuItem _miFunctionEditor;
+        private ComboBox _cmbStandardConfig = new ComboBox();
 
         private DbConnection _configConnection;
         public DbConnection ConfigConnection
@@ -115,8 +117,8 @@ namespace TableLoader
             InitializeCustomComponents();
             _IsagCustomProperties = IsagCustomProperties.Load(_metadata, false);
             CreateBindings();
-            InitializeFunctionButtons();
-            PopulateOutputColumnList();
+            InitializeContextMenu();
+            //PopulateOutputColumnList();
             InitStandardConfig();
 
             this.Text += " " + _IsagCustomProperties.Version;
@@ -124,17 +126,22 @@ namespace TableLoader
 
         #region Initialize
 
+        void ugMapping_DataBindingComplete(object sender, DataGridViewBindingCompleteEventArgs e)
+        {
+            PopulateOutputColumnList();
+            ugMapping.AddCellBoundedComboBox("OutputColumnName", _mappingOutputColumnItemSource, IsagDataGridView.ComboboxConfigType.DISABLE);
+            ugMapping.DataBindingComplete -= ugMapping_DataBindingComplete;
+            ugMapping.CellValueChanged += ugMapping_CellValueChanged;           
+        }
 
 
         private void CreateBindings()
         {
+            //ugMapping.DataBindings.DefaultDataSourceUpdateMode = DataSourceUpdateMode.OnPropertyChanged;
             ugMapping.DataSource = _IsagCustomProperties.ColumnConfigList;
-            ugMapping.DataBind();
-
-            foreach (UltraGridColumn col in ugMapping.DisplayLayout.Bands[0].Columns)
-            {
-                col.Header.Column.SortIndicator = SortIndicator.Ascending;
-            }
+            ugMapping.DataBindingComplete += ugMapping_DataBindingComplete;
+            
+                    
 
             tbPrefixInput.DataBindings.Add("Text", _IsagCustomProperties, "PrefixInput");
             tbPrefixOutput.DataBindings.Add("Text", _IsagCustomProperties, "PrefixOutput");
@@ -149,11 +156,11 @@ namespace TableLoader
             btnInsertDefaultMergeCommand.DataBindings.Add("Enabled", _checkUseCustomCommand, "Checked");
             uTabCustomCommand.DataBindings.Add("Enabled", _IsagCustomProperties, "CanUseCustomCommand");
 
-           
+
             _cmpVariableChooserCustomCommand.DataBindings.Add("Enabled", _IsagCustomProperties, "UseCustomMergeCommand");
             btnInsertVarCustomCommand.DataBindings.Add("Enabled", _IsagCustomProperties, "UseCustomMergeCommand");
 
-            
+
             _cmbTableLoaderType.DataBindings.Add("SelectedItem", _IsagCustomProperties, "TlType");
             _cmbTableLoaderType.DataBindings.Add("Enabled", _IsagCustomProperties, "NoAutoUpdateStandardConfiguration");
 
@@ -162,7 +169,7 @@ namespace TableLoader
             _cmbTransaction.DataBindings.Add("Visible", _IsagCustomProperties, "IsTransactionAvailable");
             _cmbTransaction.DataBindings.Add("SelectedItem", _IsagCustomProperties, "Transaction");
             _cmbTransaction.DataBindings.Add("Enabled", _IsagCustomProperties, "NoAutoUpdateStandardConfiguration");
-            _cmbDbCommand.DataBindings.Add("Value", _IsagCustomProperties, "DbCommand");
+            _cmbDbCommand.DataBindings.Add("Text", _IsagCustomProperties, "DbCommand");
             _cmbDbCommand.DataBindings.Add("Enabled", _IsagCustomProperties, "NoAutoUpdateStandardConfiguration");
 
             lblMaxThreadCount.DataBindings.Add("Visible", _IsagCustomProperties, "UseMultiThreading");
@@ -177,11 +184,10 @@ namespace TableLoader
             lblChunkSizeDbCommand.DataBindings.Add("Visible", _IsagCustomProperties, "IsTransactionAvailable");
 
             tbTimeout.DataBindings.Add("Text", _IsagCustomProperties, "TimeOutDb");
-            
+
             tbReattempts.DataBindings.Add("Text", _IsagCustomProperties, "Reattempts");
 
-
-            _connectionManagerBulk.DataBindings.Add("Visible", _IsagCustomProperties, "UseExternalTransaction");
+            pnlConnMgrBulk.DataBindings.Add("Visible", _IsagCustomProperties, "UseExternalTransaction");
             lblConMgrBulk.DataBindings.Add("Visible", _IsagCustomProperties, "UseExternalTransaction");
 
             tbPreSql.DataBindings.Add("Text", _IsagCustomProperties, "PreSql");
@@ -189,47 +195,59 @@ namespace TableLoader
 
             btnAddRow.DataBindings.Add("Enabled", _IsagCustomProperties, "HasDestinationTable");
 
-            //lblWarning.DataBindings.Add("Visible", _IsagCustomProperties, "UseBulkInsert");
-
             tbMessage.DataBindings.Add("Text", _IsagCustomProperties, "CustumLoggingTemplate");
-            numLogLevel.DataBindings.Add("Value", _IsagCustomProperties, "LogLevel");
+            numLogLevel1.DataBindings.Add("Text", _IsagCustomProperties, "LogLevel");
 
             //DestinationTable Auswahl            
-            _cmbDestinationTable.DataBindings.Add("Text", _IsagCustomProperties, "DestinationTable");
+            _cmbDestinationTable.DataBindings.Add("SelectedItem", _IsagCustomProperties, "DestinationTable");
             PopulateDestinationTableName();
-
-            //Standard Configuration
-            _cmbStandardConfig.DataBindings.Add("Value", _IsagCustomProperties, "StandarConfiguration");
-            _checkStandardConfigAuto.DataBindings.Add("Checked", _IsagCustomProperties, "AutoUpdateStandardConfiguration");
-
-            uTabConfig.ActiveTabChanged += new Infragistics.Win.UltraWinTabControl.ActiveTabChangedEventHandler(uTabConfig_ActiveTabChanged);
         }
 
-       
+        
 
         private void InitializeCustomComponents()
         {
 
             //Mapping Grid
             pnlDGV.Controls.Add(ugMapping);
+            ugMapping.Dock = DockStyle.Fill;
+            ugMapping.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.Fill);
+            ugMapping.ColumnHeadersHeight = ugMapping.ColumnHeadersHeight * 2;
 
             //ConnectionManager
             _connectionManagerBulk.Initialize(_metadata, _serviceProvider, _connections, Constants.CONNECTION_MANAGER_NAME_BULK);
             pnlConnMgrBulk.Controls.Add(_connectionManagerBulk);
+            _connectionManagerBulk.Dock = DockStyle.Fill;
+            _connectionManagerBulk.TabIndex = 0;
             _connectionManagerMain.Initialize(_metadata, _serviceProvider, _connections, Constants.CONNECTION_MANAGER_NAME_MAIN);
             pnlConnMgrMain.Controls.Add(_connectionManagerMain);
+            _connectionManagerMain.Dock = DockStyle.Fill;
+            _connectionManagerMain.TabIndex = 20;
+
+            //DestinationTable
+            pnlDestinationTanble.Controls.Add(_cmbDestinationTable);
+            _cmbDestinationTable.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
+            _cmbDestinationTable.AutoCompleteSource = AutoCompleteSource.ListItems;
+            _cmbDestinationTable.Sorted = true;
+            _cmbDestinationTable.UpdateSelectedItemBindingOnSelectedIndexChanged = true;
+            _cmbDestinationTable.Dock = DockStyle.Fill;
+            _cmbDestinationTable.TabIndex = 40;
 
             //TableLoader Type
             _cmbTableLoaderType.DropDownStyle = ComboBoxStyle.DropDownList;
             _cmbTableLoaderType.UpdateSelectedItemBindingOnSelectedIndexChanged = true;
             _cmbTableLoaderType.SetItemList(typeof(IsagCustomProperties.TableLoaderType));
+            _cmbTableLoaderType.Dock = DockStyle.Fill;
             pnlTableLoaderType.Controls.Add(_cmbTableLoaderType);
-            
-            //Transaktion
+            _cmbTableLoaderType.TabIndex = 10;
+
+            //Transaction
             pnlTransaction.Controls.Add(_cmbTransaction);
             _cmbTransaction.SetItemList(typeof(IsagCustomProperties.TransactionType));
             _cmbTransaction.Dock = DockStyle.Fill;
-            _cmbTransaction.DropDownStyle = ComboBoxStyle.DropDownList;           
+            _cmbTransaction.UpdateSelectedItemBindingOnSelectedIndexChanged = true;
+            _cmbTransaction.DropDownStyle = ComboBoxStyle.DropDownList;
+            _cmbTransaction.TabIndex = 30;
 
             //DB Command
             pnlDbCommand.Controls.Add(_cmbDbCommand);
@@ -237,18 +255,15 @@ namespace TableLoader
             _cmbDbCommand.DropDownStyle = ComboBoxStyle.DropDownList;
             ItemDataSource dbCommandItemSource = new ItemDataSource(typeof(IsagCustomProperties.DbCommandType), IsagCustomProperties.DB_COMMAND_MERGE_STRING_VALUES);
             _cmbDbCommand.SetItemDataSource(dbCommandItemSource);
-       
+            _cmbDbCommand.TabIndex = 130;
+
             //Text Editors
             tbCustomMergeCommand.DataBindings.DefaultDataSourceUpdateMode = DataSourceUpdateMode.OnPropertyChanged;
             tbPreSql.DataBindings.DefaultDataSourceUpdateMode = DataSourceUpdateMode.OnPropertyChanged;
             tbPostSql.DataBindings.DefaultDataSourceUpdateMode = DataSourceUpdateMode.OnPropertyChanged;
 
             //Custom Command
-            _checkUseCustomCommand.Text = "Use Custom Command";
-            _checkUseCustomCommand.Dock = DockStyle.Fill;
-            pnlUseCustomCommand.Controls.Add(_checkUseCustomCommand);
-            _checkUseCustomCommand.CheckedChanged += new EventHandler(_checkUseCustomCommand_CheckedChanged);
-
+            _checkUseCustomCommand.DataBindings.DefaultDataSourceUpdateMode = DataSourceUpdateMode.OnPropertyChanged;
 
             //Variable Chooser
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmTableLoaderUI));
@@ -256,8 +271,9 @@ namespace TableLoader
             _cmpVariableChooserLog.Initialize(_variables, icon);
             pnlVariableChooserLog.Controls.Add(_cmpVariableChooserLog);
             _cmpVariableChooserCustomCommand.Initialize(_variables, icon);
-            pnlVariablesCustomCommand.Controls.Add(_cmpVariableChooserCustomCommand);            
+            pnlVariablesCustomCommand.Controls.Add(_cmpVariableChooserCustomCommand);
             _cmpVariableChooserPreSql.Initialize(_variables, icon);
+            _cmpVariableChooserPreSql.Dock = DockStyle.Fill;
             pnlVariablesPreSql.Controls.Add(_cmpVariableChooserPreSql);
             _cmpVariableChooserPostSql.Initialize(_variables, icon);
             pnlVariablesPostSql.Controls.Add(_cmpVariableChooserPostSql);
@@ -265,41 +281,59 @@ namespace TableLoader
 
             //Standard Configuration
             pnlCmbStandardConfig.Controls.Add(_cmbStandardConfig);
-            //_checkStandardConfigAuto.Text = "AutoLoad Configuration";
-            _checkStandardConfigAuto.Dock = DockStyle.Fill;
-            _checkStandardConfigAuto.Enabled = false;
-            pnlCheckStandardConfigAuto.Controls.Add(_checkStandardConfigAuto);
-           
-            //Exclude PreSql from transaction
-            _checkExcludePreSqlFromTransaction.Dock = DockStyle.Fill;
-            pnlExcludePreSqlFromTransaction.Controls.Add(_checkExcludePreSqlFromTransaction);
-        }
+            _cmbStandardConfig.Dock = DockStyle.Fill;
+            _cmbStandardConfig.DropDownStyle = ComboBoxStyle.DropDownList;
+            _cmbStandardConfig.Sorted = true;
+            _cmbStandardConfig.TabIndex = 150;
 
-     
+            //Layout
+            cmbLayoutMapping.SelectedIndex = 0;
 
-        private void InitializeFunctionButtons()
-        {
-            ugMapping.DisplayLayout.Bands[0].Columns["Function"].Style = Infragistics.Win.UltraWinGrid.ColumnStyle.EditButton;
-            ugMapping.DisplayLayout.Override.ButtonStyle = UIElementButtonStyle.Office2007RibbonButton;
-            ugMapping.ClickCellButton += new CellEventHandler(ugMapping_ClickCellButton);
+
         }
 
         private void InitializeContextMenu()
         {
-
             ugMapping.ContextMenu = new ContextMenu();
-            ugMapping.ContextMenu.MenuItems.Add(new MenuItem("Select", menuItemLimitOutputColumns_Click));
-            ugMapping.ContextMenu.MenuItems.Add(new MenuItem("DeSelect", menuItemLimitOutputColumns_Click));
+            ugMapping.ContextMenu.MenuItems.Add(new MenuItem("Select", menuItem_Click));
+            ugMapping.ContextMenu.MenuItems.Add(new MenuItem("DeSelect", menuItem_Click));
             ugMapping.ContextMenu.MenuItems.Add(new MenuItem("-"));
-            _miLimitOutputColumnNames = new MenuItem("Limit OutputColumnList", menuItemLimitOutputColumns_Click);
+            _miLimitOutputColumnNames = new MenuItem("Limit OutputColumnList", menuItem_Click);
             ugMapping.ContextMenu.MenuItems.Add(_miLimitOutputColumnNames);
-            ugMapping.ContextMenu.MenuItems.Add(new MenuItem("AutoMap", menuItemLimitOutputColumns_Click));
-            ugMapping.ContextMenu.MenuItems.Add(new MenuItem("AutoMap Selection", menuItemLimitOutputColumns_Click));
+            ugMapping.ContextMenu.MenuItems.Add(new MenuItem("AutoMap", menuItem_Click));
+            ugMapping.ContextMenu.MenuItems.Add(new MenuItem("AutoMap Selection", menuItem_Click));
             ugMapping.ContextMenu.MenuItems.Add(new MenuItem("-"));
-            ugMapping.ContextMenu.MenuItems.Add(new MenuItem("Add Row", menuItemLimitOutputColumns_Click));
-            ugMapping.ContextMenu.MenuItems.Add(new MenuItem("Remove Row(s)", menuItemLimitOutputColumns_Click));
+            ugMapping.ContextMenu.MenuItems.Add(new MenuItem("Add Row", menuItem_Click));
+            _miRemoveRows = new MenuItem("Remove Row(s)", menuItem_Click);
+            ugMapping.ContextMenu.MenuItems.Add(_miRemoveRows);
             ugMapping.ContextMenu.MenuItems.Add(new MenuItem("-"));
-            ugMapping.ContextMenu.MenuItems.Add(new MenuItem("Remove Selected Mappings", menuItemLimitOutputColumns_Click));
+            _miFunctionEditor = new MenuItem("Function Editor", menuItem_Click);
+            ugMapping.ContextMenu.MenuItems.Add(_miFunctionEditor);
+
+            ugMapping.MouseDown += ugMapping_MouseDown;
+        }
+
+        void ugMapping_MouseDown(object sender, MouseEventArgs e)
+        {
+            //Configure & show context menu
+            if (e.Button == System.Windows.Forms.MouseButtons.Right)
+            {
+                //Show/Hide RemoveRow
+                _miRemoveRows.Visible = btnRemoveRow.Enabled;
+
+                //Show/Hide Function Editor
+                bool showFunctionEditor = ugMapping.Columns[ugMapping.CurrentCell.ColumnIndex].Name == "Function" && !ugMapping.CurrentCell.ReadOnly;
+                _miFunctionEditor.Visible = showFunctionEditor;
+                ugMapping.ContextMenu.MenuItems[_miFunctionEditor.Index-1].Visible = showFunctionEditor;
+
+                //Show context menu
+                ugMapping.ContextMenu.Show(ugMapping, new Point(e.X, e.Y));
+            }
+        }
+
+        void ContextMenu_Popup(object sender, EventArgs e)
+        {
+            ugMapping.ContextMenu.MenuItems["Remove Row(s)"].Visible = btnRemoveRow.Enabled;
         }
 
         #endregion
@@ -312,14 +346,8 @@ namespace TableLoader
         /// </summary>
         private void PopulateOutputColumnList()
         {
-            ValueList valueList;
-            if (ugMapping.DisplayLayout.ValueLists.IndexOf("Columns") != -1)
-            {
-                valueList = ugMapping.DisplayLayout.ValueLists["Columns"];
-                valueList.ValueListItems.Clear();
-            }
-            else valueList = this.ugMapping.DisplayLayout.ValueLists.Add("Columns");
-
+            _outputColumnList.Clear();
+            
             if (GetDesignTimeConnection() != null)
             {
                 try
@@ -330,7 +358,7 @@ namespace TableLoader
                     foreach (string columnName in _sqlColumns.Keys)
                     {
 
-                        valueList.ValueListItems.Add(columnName);
+                        _outputColumnList.Add(columnName);
                     }
 
                 }
@@ -339,12 +367,12 @@ namespace TableLoader
                     //Exception wird noch ignoriert, da es vorkommen kann dass der ConnectionManager noch nicht gesetzt ist.
                 }
             }
+            List<object> completeItemList = new List<object>();
+            completeItemList.Add("");
+            foreach (string item in _outputColumnList) completeItemList.Add(item);
 
-            valueList.SortStyle = ValueListSortStyle.AscendingByValue;
-            this.ugMapping.DisplayLayout.Bands[0].Columns["OutputColumnName"].ValueList = valueList;
-            this.ugMapping.DisplayLayout.Bands[0].Columns["OutputColumnName"].Style = Infragistics.Win.UltraWinGrid.ColumnStyle.DropDownList;
-
-            _outputColumnValueList = valueList;
+            ugMapping.SetCompleteItemSource(completeItemList, "OutputColumnName");
+            AdjustOutputColumnItemList();
         }
 
         /// <summary>
@@ -374,7 +402,7 @@ namespace TableLoader
                     }
                 }
 
-                
+
 
                 conn.Close();
             }
@@ -387,12 +415,12 @@ namespace TableLoader
                 _stdConfig = new StandardConfiguration(_connections);
                 if (_stdConfig.HasConnection)
                 {
-                    _cmbStandardConfig.ValueList = _stdConfig.GetStandardConfigurationAsValueList();
+                    _cmbStandardConfig.Items.AddRange(_stdConfig.GetStandardConfigurationList().ToArray());
                     _cfgList = _stdConfig.GetStandardConfigurationAsDictionary();
                     if (_IsagCustomProperties.AutoUpdateStandardConfiguration && !string.IsNullOrEmpty(_IsagCustomProperties.StandarConfiguration))
                     {
-                        _cmbStandardConfig.Value = _IsagCustomProperties.StandarConfiguration;
-                        _cmbStandardConfig_SelectionChanged(null, null);
+                        _cmbStandardConfig.Text = _IsagCustomProperties.StandarConfiguration;
+                        cmbStandardConfig_SelectedIndexChanged(null, null);
                     }
                 }
                 else if (_IsagCustomProperties.AutoUpdateStandardConfiguration) throw new Exception("Database Connection to the Standard Configuration is missing, but autoload is enabled.");
@@ -435,7 +463,7 @@ namespace TableLoader
             ItemDataSource items = (ItemDataSource)_cmbDbCommand.DataSource;
 
             if (IsSqlServer2005()) items.RemoveItem(IsagCustomProperties.DbCommandType.Merge);
-            else items.AddItem(IsagCustomProperties.DbCommandType.Merge);           
+            else items.AddItem(IsagCustomProperties.DbCommandType.Merge);
 
             UpdateTransactionList();
         }
@@ -471,8 +499,8 @@ namespace TableLoader
         private void frmTableLoaderUI_FormClosing(object sender, FormClosingEventArgs e)
         {
             if (_abortClosing && this.DialogResult == System.Windows.Forms.DialogResult.OK &&
-                ShowMessage("Da beim Speichern ein Fehler aufgetreten ist, würden Änderungen beim Schließen des TableLoaders verworfen werden. <br/><br/>" +
-                            "Soll das Schließen des TableLoaders abgebrochen werden?", "",
+                ShowMessage("Error while saving, changes would be lost. \n" +
+                            "Abort closing the TableLoader", "",
                             MessageBoxIcon.Question, MessageBoxButtons.YesNo) == System.Windows.Forms.DialogResult.Yes)
                 e.Cancel = _abortClosing;
         }
@@ -486,24 +514,38 @@ namespace TableLoader
         /// <param name="e"></param>
         private void frmTableLoaderUI_Load(object sender, EventArgs e)
         {
-            PopulateOutputColumnList();
 
-            _cmbDbCommand.SelectedIndexChanged += new EventHandler(_DbCommand_SelectedIndexChanged);            
+
+
+            _cmbDbCommand.SelectedIndexChanged += new EventHandler(_DbCommand_SelectedIndexChanged);
             _connectionManagerMain.ConnectionManagerChanged += new EventHandler(connectionManagerChanged);
             _connectionManagerBulk.ConnectionManagerChanged += new EventHandler(connectionManagerChanged);
-            _cmbTransaction.SelectedIndexChanged+= new EventHandler(_cmbTransaction_SelectedIndexChanged);
-            ugMapping.AfterSelectChange += new AfterSelectChangeEventHandler(ugMapping_AfterSelectChange);
-            ugMapping.AfterCellUpdate += new CellEventHandler(ugMapping_AfterCellUpdate);
-            _cmbStandardConfig.SelectionChanged += new EventHandler(_cmbStandardConfig_SelectionChanged);
-            _checkStandardConfigAuto.CheckedChanged += new EventHandler(_checkStandardConfigAuto_CheckedChanged);
+            _cmbTransaction.SelectedIndexChanged += new EventHandler(_cmbTransaction_SelectedIndexChanged);
+            _cmbDestinationTable.SelectedIndexChanged += new EventHandler(cmbDestinationTable_SelectedIndexChanged);
+            ugMapping.SelectionChanged += ugMapping_SelectionChanged;
+            ugMapping.CellValueChanged += ugMapping_CellValueChanged;
+            //_cmbStandardConfig.SelectedIndexChanged += new EventHandler(cmbStandardConfig_SelectedIndexChanged);
+            _cmbStandardConfig.SelectedValueChanged += new EventHandler(cmbStandardConfig_SelectedIndexChanged);
+            cmbStandardConfig_SelectedIndexChanged(null, null);
             UpdateDbCommandList();
 
             MarkDifferentVarTypes();
             AdjustSettingsForMerge();
             DisableDefaultValue();
 
-            InitializeContextMenu();
+            //TODO: uTabMapping.Show removes comboBox values from DataGrid. Should be fixed in IsagDataGridView
+            uTabMapping.Show();
+            ugMapping.RefreshCellBoundComboBox("OutputColumnName");
+            
         }
+
+       
+
+
+
+
+
+
 
 
 
@@ -512,14 +554,15 @@ namespace TableLoader
             _abortClosing = !save();
         }
 
-        private void _cmbStandardConfig_SelectionChanged(object sender, EventArgs e)
+        private void cmbStandardConfig_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (_cmbStandardConfig.SelectedItem.DataValue.ToString() != "")
+            if (_cmbStandardConfig.Text != "")
             {
+
                 try
                 {
-                    DataRow row = _cfgList[_cmbStandardConfig.SelectedItem.DataValue.ToString()];
-                    _stdConfig.SetStandardConfiguration(ref _IsagCustomProperties, row);
+                    DataRow row = _cfgList[_cmbStandardConfig.Text];
+                    //_stdConfig.SetStandardConfiguration(ref _IsagCustomProperties, row);
 
                     IsagCustomProperties.TableLoaderType tableLoaderType =
                         (IsagCustomProperties.TableLoaderType)Enum.Parse(typeof(IsagCustomProperties.TableLoaderType), row["TableLoaderType"].ToString());
@@ -537,25 +580,29 @@ namespace TableLoader
                     tbMaxThreadCount.Text = row["MaxThreadCount"].ToString();
                     tbPrefixInput.Text = row["PreFixInput"].ToString();
                     tbPrefixOutput.Text = row["PreFixOutput"].ToString();
+                    //_IsagCustomProperties.StandarConfiguration = _cmbStandardConfig.Text;
+                    _checkStandardConfigAuto.Checked = true;
+                    _checkStandardConfigAuto.Enabled = true;
                 }
                 catch (Exception ex)
                 {
                     ShowMessage(ex.Message, "Loading standard configuration failed.", MessageBoxIcon.Error, MessageBoxButtons.OK);
                 }
-
-
-
-                _checkStandardConfigAuto.Checked = true;
+            }
+            else
+            {
+                _checkStandardConfigAuto.Checked = false;
+                _checkStandardConfigAuto.Enabled = false;
             }
 
-            _checkStandardConfigAuto.Enabled = (_IsagCustomProperties.StandarConfiguration != "");
+            _IsagCustomProperties.StandarConfiguration = _cmbStandardConfig.Text;
 
         }
 
 
         private void _checkStandardConfigAuto_CheckedChanged(object sender, EventArgs e)
         {
-            if (!_checkStandardConfigAuto.Checked) _cmbStandardConfig.Value = "";
+            if (!_checkStandardConfigAuto.Checked) _cmbStandardConfig.Text = "";
         }
 
 
@@ -563,27 +610,38 @@ namespace TableLoader
 
         #region Mapping
 
-        void ugMapping_ClickCellButton(object sender, CellEventArgs e)
+        private void ShowFunctionEditor()
         {
-            ColumnConfig config = (ColumnConfig)e.Cell.Row.ListObject;
-            ValueList items = (ValueList)ugMapping.DisplayLayout.Bands[0].Columns["InputColumnName"].ValueList;
+            ColumnConfig config = (ColumnConfig)ugMapping.CurrentRow.DataBoundItem; ;
 
             frmFunctionEditor editor = new frmFunctionEditor(config.InputColumnName, config.DataTypeOutput,
-                                                             _IsagCustomProperties.DbCommand, e.Cell.Value.ToString(),
+                                                             _IsagCustomProperties.DbCommand, ugMapping.CurrentCell.Value.ToString(),
                                                              _IsagCustomProperties.GetInputColumns());
 
             if (editor.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-                e.Cell.Value = editor.Value;
+                ugMapping.CurrentCell.Value = editor.Value;
         }
 
-        private void ugMapping_AfterCellUpdate(object sender, CellEventArgs e)
+        void ugMapping_SelectionChanged(object sender, EventArgs e)
         {
-            MarkDifferentVarTypes(e.Cell.Row);
-            if (e.Cell.Column.Key == "OutputColumnName") MarkColumnAsKey(e.Cell.Row);
-            MarkAutoIdAsUnused(e.Cell.Row);
-            AdjustSettingsForMerge(e.Cell.Row);
-            DisableDefaultValue(e.Cell.Row);
-            AdjustOutputColumnValueList();
+            //ugMapping.RefreshCellBoundComboBox("OutputColumnName");
+            AdjustRemoveRowsButton();
+        }
+
+        void ugMapping_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        {
+
+            AdjustOutputColumnItemList();
+
+            MarkDifferentVarTypes(ugMapping.CurrentRow);
+            if (ugMapping.CurrentCell.ColumnIndex == ugMapping.Columns["OutputColumnName"].Index)
+            {
+                MarkColumnAsKey(ugMapping.CurrentRow);
+                //if (_miLimitOutputColumnNames.Checked) AdjustOutputColumnItemList();
+            }
+            MarkAutoIdAsUnused(ugMapping.CurrentRow);
+            AdjustSettingsForMerge(ugMapping.CurrentRow);
+            DisableDefaultValue(ugMapping.CurrentRow);
         }
 
         /// <summary>
@@ -592,19 +650,22 @@ namespace TableLoader
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void ugMapping_AfterSelectChange(object sender, AfterSelectChangeEventArgs e)
+        /// 
+        private void AdjustRemoveRowsButton() //ugMapping_AfterCellUpdate
         {
-            bool canDelete = (ugMapping.Selected.Rows.Count > 0);
+            bool canDelete = (ugMapping.SelectedRows.Count > 0);
 
-            foreach (UltraGridRow row in ugMapping.Selected.Rows)
+            foreach (DataGridViewRow row in ugMapping.SelectedRows)
             {
-                ColumnConfig config = (ColumnConfig)row.ListObject;
+                ColumnConfig config = (ColumnConfig)row.DataBoundItem;
 
                 if (config.HasInput) canDelete = false;
             }
 
             btnRemoveRow.Enabled = canDelete;
         }
+
+
 
         private void btnSelect_Click(object sender, EventArgs e)
         {
@@ -631,7 +692,7 @@ namespace TableLoader
             RemoveRows();
         }
 
-        private void menuItemLimitOutputColumns_Click(object sender, EventArgs e)
+        private void menuItem_Click(object sender, EventArgs e)
         {
 
 
@@ -641,7 +702,7 @@ namespace TableLoader
             {
                 case "Limit OutputColumnList":
                     item.Checked = !item.Checked;
-                    AdjustOutputColumnValueList();
+                    AdjustOutputColumnItemList();
                     break;
                 case "AutoMap":
                     AutoMap();
@@ -660,15 +721,16 @@ namespace TableLoader
                     break;
                 case "Remove Row(s)":
                     RemoveRows();
-                    break;
-                case "Remove Selected Mappings":
-                    RemoveSelectedMappings();
+                    break;;
+                case "Function Editor":
+                    ShowFunctionEditor();
                     break;
                 default:
                     break;
             }
         }
 
+       
         #region AutoMap
 
 
@@ -680,9 +742,9 @@ namespace TableLoader
 
         private void AuotMapSelection()
         {
-            foreach (UltraGridRow row in ugMapping.Selected.Rows)
+            foreach (DataGridViewRow row in ugMapping.SelectedRows)
             {
-                _IsagCustomProperties.AutoMap((ColumnConfig)row.ListObject);
+                _IsagCustomProperties.AutoMap((ColumnConfig)row.DataBoundItem);                
             }
 
             AutoMapApply();
@@ -691,8 +753,14 @@ namespace TableLoader
 
         private void AutoMapApply()
         {
+            
+            //Update OutputColumnNames because datascource is no bindinglist
+            foreach (DataGridViewRow row in ugMapping.Rows)
+            {
+                row.Cells["OutputColumnName"].Value = ((ColumnConfig)row.DataBoundItem).OutputColumnName;
+            }
+            ugMapping.UpdateCellBoundComboBox();
 
-            ugMapping.DataBind();
             MarkColumnAsKey();
             MarkDifferentVarTypes();
             MarkAutoIdAsUnused();
@@ -718,18 +786,8 @@ namespace TableLoader
 
         private void RemoveRows()
         {
-            ugMapping.DeleteSelectedRows();
-        }
-
-        private void RemoveSelectedMappings()
-        {
-            foreach (UltraGridRow row in ugMapping.Selected.Rows)
-            {
-                ((ColumnConfig)row.ListObject).RemoveOutput();
-                //_IsagCustomProperties.ColumnConfigList[row.Index].RemoveOutput();
-                row.Refresh();
-            }
-        }
+            ugMapping.RemoveSelectedRows();
+        }       
 
         #endregion
 
@@ -737,7 +795,7 @@ namespace TableLoader
 
         private void connectionManagerChanged(object sender, EventArgs e)
         {
-            IsagUltraComboEditor control = (IsagUltraComboEditor)sender;
+            IsagConnectionManager control = (IsagConnectionManager)sender;
 
             ReactOnConnectionManagerChanged(control.Equals(_connectionManagerMain));
         }
@@ -798,14 +856,12 @@ namespace TableLoader
 
         private void btnInsertVariablePreSql_Click(object sender, EventArgs e)
         {
-            System.Windows.Forms.Clipboard.SetDataObject("@(" + _cmpVariableChooserPreSql.SelectedVariable + ")", true);
-            tbPreSql.EditInfo.Paste();
+            tbPreSql.Text = tbPreSql.Text.Insert(tbPreSql.SelectionStart, "@(" + _cmpVariableChooserPreSql.SelectedVariable + ")");
         }
 
         private void btnInsertVariablePostSql_Click(object sender, EventArgs e)
         {
-            System.Windows.Forms.Clipboard.SetDataObject("@(" + _cmpVariableChooserPostSql.SelectedVariable + ")", true);
-            tbPostSql.EditInfo.Paste();
+            tbPostSql.Text = tbPostSql.Text.Insert(tbPostSql.SelectionStart, "@(" + _cmpVariableChooserPostSql.SelectedVariable + ")");
         }
 
         private void btnInsertTruncatePreSql_Click(object sender, EventArgs e)
@@ -813,8 +869,7 @@ namespace TableLoader
             string destTableName = "";
             if (_cmbDestinationTable.SelectedItem != null) destTableName = _cmbDestinationTable.SelectedItem.ToString();
 
-            System.Windows.Forms.Clipboard.SetDataObject("TRUNCATE TABLE " + destTableName, true);
-            tbPreSql.EditInfo.Paste();
+            tbPreSql.Text = tbPreSql.Text.Insert(tbPreSql.SelectionStart, "TRUNCATE TABLE " + destTableName);
         }
 
         /// <summary>
@@ -824,7 +879,7 @@ namespace TableLoader
         /// <param name="e"></param>
         private void tbPostSql_TextChanged(object sender, EventArgs e)
         {
-            SetTabColor(uTabPostSqlStatement, tbPostSql.Text != null && tbPostSql.Text != "");
+            SetTabColor(uTabPostSQLStatement, tbPostSql.Text != null && tbPostSql.Text != "");
         }
 
         /// <summary>
@@ -834,7 +889,7 @@ namespace TableLoader
         /// <param name="e"></param>
         private void tbPreSql_TextChanged(object sender, EventArgs e)
         {
-            SetTabColor(uTabPreSqlStatement, tbPreSql.Text != null && tbPreSql.Text != "");
+            SetTabColor(uTabPreSQLStatement, tbPreSql.Text != null && tbPreSql.Text != "");
         }
 
         /// <summary>
@@ -896,13 +951,12 @@ namespace TableLoader
         {
 
             string customCommand = _IsagCustomProperties.GetCustomCommand();
-            if (customCommand != "") tbCustomMergeCommand.Value = customCommand;
+            if (customCommand != "") tbCustomMergeCommand.Text = customCommand;
         }
 
         private void btnInsertVarCustomCommand_Click(object sender, EventArgs e)
         {
-            System.Windows.Forms.Clipboard.SetDataObject("@(" + _cmpVariableChooserCustomCommand.SelectedVariable + ")", true);
-            tbCustomMergeCommand.EditInfo.Paste();
+            tbCustomMergeCommand.Text = tbCustomMergeCommand.Text.Insert(tbCustomMergeCommand.SelectionStart, "@(" + _cmpVariableChooserCustomCommand.SelectedVariable + ")");
         }
 
         /// <summary>
@@ -928,14 +982,8 @@ namespace TableLoader
         {
             if (_IsagCustomProperties.PreSql != null && _IsagCustomProperties.PreSql.ToUpper().Contains("TRUNCATE"))
             {
-                string message = "The PreSql statement contains a \"TRUNCATE\". <br/>" + "Please validate the statement!";
-
-                UltraMessageBoxInfo info = new UltraMessageBoxInfo();
-                info.TextFormatted = message;
-                info.Header = "Warning: The destination table has changed.";
-                info.Caption = "TableLoader";
-                info.Icon = MessageBoxIcon.Information;
-                ultraMessageBox.ShowMessageBox(info);
+                string message = "The PreSql statement contains a \"TRUNCATE\". \n" + "Please validate the statement!";
+                MessageBox.Show(message, "TableLoader Warning: The destination table has changed.", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
 
@@ -946,16 +994,9 @@ namespace TableLoader
         /// </summary>
         private void ShowHelpStandardConfig()
         {
-            string message = "If checked the values for Chunk Size, DB Timeout, MaxThreadCount, PreFixInput, PostFixInput, Transaktion Type and DB Command <br/>" +
-                             "will always be used from the database table TL_CFG which must be accessable by the Connection Manager CN_CONFIG (or CN_CONFIG_ADO).<br/><br/>" +
-                             "Leaving this option unchecked you can use it as a template by selecting a standard configuration.";
-
-            UltraMessageBoxInfo info = new UltraMessageBoxInfo();
-            info.TextFormatted = message;
-            info.Header = "Help: Standard Configuration";
-            info.Caption = "TableLoader";
-            info.Icon = MessageBoxIcon.Information;
-            ultraMessageBox.ShowMessageBox(info);
+            IsagMessageBox messageBox = new IsagMessageBox();
+            messageBox.SetHelpText(Properties.Resources.Help_StdConfig);
+            messageBox.Show();
         }
 
 
@@ -964,32 +1005,16 @@ namespace TableLoader
         /// </summary>
         private void ShowHelpTransaction()
         {
-            string message = "If using the external Transaction you have to <br/><br/>" +
-                                "1. surround the DFT with Execute SQL Tasks (Begin Transaction, Commit, Rollback). <br/>" +
-                                @"2. make sure that the Connection (Main) of the TableLoader is identical to Connection of the SQL Task.<br/>   Also ""RetainSameConnection"" has to be activated. <br/>" +
-                                "3. make sure that no trancaction is assigned to the TableLoaders Connection (Bulk). <br/> <br/>" +
-                                "A Bulk Insert with an external Transaction is not possible!";
-
-            UltraMessageBoxInfo info = new UltraMessageBoxInfo();
-            info.TextFormatted = message;
-            info.Header = "Help: Transactions";
-            info.Caption = "TableLoader";
-            info.Icon = MessageBoxIcon.Information;
-            ultraMessageBox.ShowMessageBox(info);
+            IsagMessageBox messageBox = new IsagMessageBox();
+            messageBox.SetHelpText(Properties.Resources.Help_Transaction);
+            messageBox.Show();
         }
 
         private void ShowHelpChunkSize()
         {
-            string message = "ChunkSize (Bulk) is the number of rows that will be written <br/>" +
-            "by a Bulk Copy command to the temporary table. <br/><br/>" +
-            "If using the DB Command \"Bulk Insert\" the desination is the destination table instead of the temporary table.";
-
-            UltraMessageBoxInfo info = new UltraMessageBoxInfo();
-            info.TextFormatted = message;
-            info.Header = "Help: ChunkSize (Bulk)";
-            info.Caption = "TableLoader";
-            info.Icon = MessageBoxIcon.Information;
-            ultraMessageBox.ShowMessageBox(info);
+            IsagMessageBox messageBox = new IsagMessageBox();
+            messageBox.SetHelpText(Properties.Resources.Help_ChunkSize);
+            messageBox.Show();
         }
         /// <summary>
         /// Den Dialog zum Erzeugen der Zieltabelle (anhand des Inputs) anzeigen
@@ -1020,7 +1045,7 @@ namespace TableLoader
 
             if (con != null)
             {
-                _cmbDestinationTable.DataBindings["Value"].ControlUpdateMode = ControlUpdateMode.OnPropertyChanged;
+                //_cmbDestinationTable.DataBindings["Value"].ControlUpdateMode = ControlUpdateMode.OnPropertyChanged;
                 frmCreateTable frm = new frmCreateTable(_IsagCustomProperties, _sqlColumns, GetDesignTimeConnection());
                 if (frm.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                 {
@@ -1037,7 +1062,7 @@ namespace TableLoader
 
             if (con != null)
             {
-                frmCreateTable frm = new frmCreateTable(_IsagCustomProperties, _IsagCustomProperties.ColumnConfigList , GetDesignTimeConnection());
+                frmCreateTable frm = new frmCreateTable(_IsagCustomProperties, _IsagCustomProperties.ColumnConfigList, GetDesignTimeConnection());
                 frm.ShowDialog();
                 frm.Dispose();
             }
@@ -1061,13 +1086,8 @@ namespace TableLoader
         /// <returns>DialogResult</returns>
         private DialogResult ShowMessage(string message, string header, MessageBoxIcon icon, MessageBoxButtons buttons)
         {
-            UltraMessageBoxInfo info = new UltraMessageBoxInfo();
-            info.TextFormatted = message;
-            info.Header = header;
-            info.Caption = "TableLoader";
-            info.Icon = icon;
-            info.Buttons = buttons;
-            return ultraMessageBox.ShowMessageBox(info);
+            return MessageBox.Show(message, "TableLoader", buttons, icon);
+
 
         }
 
@@ -1135,7 +1155,7 @@ namespace TableLoader
 
         private void MarkColumnAsKey()
         {
-            foreach (UltraGridRow row in ugMapping.Rows)
+            foreach (DataGridViewRow row in ugMapping.Rows)
             {
                 MarkColumnAsKey(row);
             }
@@ -1144,18 +1164,18 @@ namespace TableLoader
         /// Falls eine Output Column Primary Key ist wird "Key" aktiviert
         /// </summary>
         /// <param name="row"></param>
-        private void MarkColumnAsKey(UltraGridRow row)
+        private void MarkColumnAsKey(DataGridViewRow row)
         {
-            ColumnConfig config = (ColumnConfig)row.ListObject;
+            ColumnConfig config = (ColumnConfig)row.DataBoundItem;
 
             config.Key = config.IsOutputPrimaryKey;
 
-            row.Update();
+            //row.Update();
         }
 
         private void MarkAutoIdAsUnused()
         {
-            foreach (UltraGridRow row in ugMapping.Rows)
+            foreach (DataGridViewRow row in ugMapping.Rows)
             {
                 MarkAutoIdAsUnused(row);
             }
@@ -1164,30 +1184,27 @@ namespace TableLoader
         /// Falls es sich bei der Output Column um eine "AutoId" handelt, so werden Use Insert&Update deaktiviert
         /// </summary>
         /// <param name="row"></param>
-        private void MarkAutoIdAsUnused(UltraGridRow row)
+        private void MarkAutoIdAsUnused(DataGridViewRow row)
         {
-            ColumnConfig config = (ColumnConfig)row.ListObject;
+            ColumnConfig config = (ColumnConfig)row.DataBoundItem;
 
             if (config.IsOutputAutoId)
             {
-                //config.Insert = false;
                 config.Update = false;
-
-                //row.Cells["Insert"].Activation = Activation.NoEdit;
-                row.Cells["Update"].Activation = Activation.NoEdit;
+                row.Cells["Update"].ReadOnly = true;
             }
             else
             {
-                row.Cells["Insert"].Activation = Activation.AllowEdit;
-                row.Cells["Update"].Activation = Activation.AllowEdit;
+                row.Cells["Insert"].ReadOnly = false;
+                row.Cells["Update"].ReadOnly = false;
             }
 
-            row.Update();
+            //row.Update();
         }
 
         private void MarkDifferentVarTypes()
         {
-            foreach (UltraGridRow row in ugMapping.Rows)
+            foreach (DataGridViewRow row in ugMapping.Rows)
             {
                 MarkDifferentVarTypes(row);
             }
@@ -1195,106 +1212,115 @@ namespace TableLoader
         /// <summary>
         /// Unterscheiden sich Output- und InputDatatype, so werden beide Zellen rot markiert
         /// </summary>
-        private void MarkDifferentVarTypes(UltraGridRow row)
+        private void MarkDifferentVarTypes(DataGridViewRow row)
         {
-            ColumnConfig config = (ColumnConfig)row.ListObject;
+            ColumnConfig config = (ColumnConfig)row.DataBoundItem;
 
             if (config.HasInput && config.HasOutput && config.DataTypeInput != config.DataTypeOutput)
             {
-                row.Cells["DataTypeInput"].Appearance.BackColor = Color.LightCoral;
-                row.Cells["DataTypeOutput"].Appearance.BackColor = Color.LightCoral;
+                row.Cells["DataTypeInput"].Style.BackColor = Color.LightCoral;
+                row.Cells["DataTypeOutput"].Style.BackColor = Color.LightCoral;
             }
             else
             {
-                row.Cells["DataTypeInput"].Appearance.BackColor = Color.LightGray;
-                row.Cells["DataTypeOutput"].Appearance.BackColor = Color.LightGray;
+                row.Cells["DataTypeInput"].Style.BackColor = Color.LightGray;
+                row.Cells["DataTypeOutput"].Style.BackColor = Color.LightGray;
             }
         }
 
 
         private void AdjustSettingsForMerge()
         {
-            foreach (UltraGridRow row in ugMapping.Rows)
+            foreach (DataGridViewRow row in ugMapping.Rows)
             {
                 AdjustSettingsForMerge(row);
             }
         }
-        private void AdjustSettingsForMerge(UltraGridRow row)
+        private void AdjustSettingsForMerge(DataGridViewRow row)
         {
-            ColumnConfig config = (ColumnConfig)row.ListObject;
+            ColumnConfig config = (ColumnConfig)row.DataBoundItem;
 
             if (_IsagCustomProperties.UseMerge && config.Key)
             {
                 config.Update = false;
-                //config.Insert = !config.IsOutputAutoId;
-
-                //row.Cells["Insert"].Activation = Activation.NoEdit;
-                row.Cells["Update"].Activation = Activation.NoEdit;
+                row.Cells["Update"].ReadOnly = true;
             }
             else
             {
-                row.Cells["Insert"].Activation = Activation.AllowEdit;
-                row.Cells["Update"].Activation = Activation.AllowEdit;
+                row.Cells["Insert"].ReadOnly = false;
+                row.Cells["Update"].ReadOnly = false;
                 MarkAutoIdAsUnused(row);
             }
 
-            row.Update();
+            //row.Update();
         }
 
         private void DisableDefaultValue()
         {
-            foreach (UltraGridRow row in ugMapping.Rows)
+            foreach (DataGridViewRow row in ugMapping.Rows)
             {
                 DisableDefaultValue(row);
             }
         }
-        private void DisableDefaultValue(UltraGridRow row)
+        private void DisableDefaultValue(DataGridViewRow row)
         {
-            ColumnConfig config = (ColumnConfig)row.ListObject;
+            ColumnConfig config = (ColumnConfig)row.DataBoundItem;
             if (_IsagCustomProperties.UseBulkInsert)
             {
-                row.Cells["Default"].Activation = Activation.NoEdit;
-                row.Cells["Function"].Activation = Activation.NoEdit;
+                row.Cells["Default"].ReadOnly = true;
+                row.Cells["Function"].ReadOnly = true;
             }
             else if (!config.Insert && config.Update)
             {
-                row.Cells["Default"].Activation = Activation.NoEdit;
-                row.Cells["Function"].Activation = Activation.AllowEdit;
+                row.Cells["Default"].ReadOnly = true;
+                row.Cells["Function"].ReadOnly = false;
             }
             else
             {
-                row.Cells["Default"].Activation = Activation.AllowEdit;
-                row.Cells["Function"].Activation = Activation.AllowEdit;
+                row.Cells["Default"].ReadOnly = false;
+                row.Cells["Function"].ReadOnly = false;
             }
         }
 
-        private ValueList GetLimitedOutputColumnValueList()
+        private List<string> GetLimitedOutputColumnValueList()
         {
-            ValueList result = new ValueList();
+            List<string> result = new List<string>();
 
-            foreach (ValueListItem item in _outputColumnValueList.ValueListItems)
+            foreach (string item in _outputColumnList)
             {
-                if (!_IsagCustomProperties.IsOutputColumnAssigned(item.DataValue.ToString())) result.ValueListItems.Add(item.DataValue);
+                if (!_IsagCustomProperties.IsOutputColumnAssigned(item)) result.Add(item);
             }
 
             return result;
         }
 
-        private void AdjustOutputColumnValueList()
+        private void AdjustOutputColumnItemList()
         {
-            this.ugMapping.DisplayLayout.Bands[0].Columns["OutputColumnName"].ValueList =
-                _miLimitOutputColumnNames.Checked ? GetLimitedOutputColumnValueList() : _outputColumnValueList;
+            //ugMapping.DisableListChangedEvent(_mappingOutputColumnItemSource);
+            _mappingOutputColumnItemSource.RaiseListChangedEvents = false;
+            _mappingOutputColumnItemSource.Clear();            
+
+            List<string> columnList = _miLimitOutputColumnNames.Checked ? GetLimitedOutputColumnValueList() : _outputColumnList;
+            
+            foreach (string column in columnList)
+            {
+                _mappingOutputColumnItemSource.Add(column);
+            }
+
+            //ugMapping.EnableListChangedEvent(_mappingOutputColumnItemSource);
+            _mappingOutputColumnItemSource.RaiseListChangedEvents = true;
+            _mappingOutputColumnItemSource.Insert(0, "");
         }
 
         /// <summary>
         /// Setzt die Farbe des Titels eines Tabs auf "gehighlightet" oder Standard-
         /// "gehighlightet" heißt, dass im Inhalt etwas (z.B. Custom Merge Command) aktiviert wurde.
         /// </summary>
-        /// <param name="tabControl">das Tab, das (nicht) markiert werden soll</param>
+        /// <param name="tab">das Tab, das (nicht) markiert werden soll</param>
         /// <param name="highlight">Soll der Titel des Tabs farbig markiert werden?</param>
-        private void SetTabColor(Infragistics.Win.UltraWinTabControl.UltraTabPageControl tabControl, bool highlight)
+        private void SetTabColor(TabPage tab, bool highlight)
         {
-            tabControl.Tab.Appearance.ForeColor = highlight ? Color.Green : Color.FromKnownColor(KnownColor.ControlText);
+            tab.ForeColor = highlight ? Color.Green : Color.FromKnownColor(KnownColor.ControlText);
         }
         #endregion
 
@@ -1320,7 +1346,7 @@ namespace TableLoader
             catch (Exception ex)
             {
 
-                ShowMessage("The Custom Properties could not be saved! <br/><br/>" + ex.ToString(),
+                ShowMessage("The Custom Properties could not be saved! \n\n" + ex.ToString(),
                             "TableLoader: Save", MessageBoxIcon.Error);
                 _stdConfig.CloseConnection();
                 return false;
@@ -1358,7 +1384,7 @@ namespace TableLoader
                     }
                     catch (Exception ex)
                     {
-                        ShowMessage("The Bulk ConnectionManager could not be saved! <br/><br/>" + ex.ToString(),
+                        ShowMessage("The Bulk ConnectionManager could not be saved! (n/n" + ex.ToString(),
                                     "TableLoader: Save", MessageBoxIcon.Error);
                         _stdConfig.CloseConnection();
                         return false;
@@ -1375,7 +1401,7 @@ namespace TableLoader
             }
             catch (Exception ex)
             {
-                ShowMessage("The Main ConnectionManager could not be saved! <br/><br/>" + ex.ToString(),
+                ShowMessage("The Main ConnectionManager could not be saved! /n/n" + ex.ToString(),
                             "TableLoader: Save", MessageBoxIcon.Error);
                 _stdConfig.CloseConnection();
                 return false;
@@ -1402,7 +1428,7 @@ namespace TableLoader
             }
             catch (Exception ex)
             {
-                ShowMessage("The Config ConnectionManager could not be saved! <br/><br/>" + ex.ToString(),
+                ShowMessage("The Config ConnectionManager could not be saved! /n/n" + ex.ToString(),
                              "TableLoader: Save", MessageBoxIcon.Error);
                 _stdConfig.CloseConnection();
                 return false;
@@ -1420,27 +1446,26 @@ namespace TableLoader
 
         private void btnInsert_Click(object sender, EventArgs e)
         {
-            System.Windows.Forms.Clipboard.SetDataObject("@(" + _cmpVariableChooserLog.SelectedVariable + ")", true);
-            tbMessage.EditInfo.Paste();
+            tbMessage.Text = tbMessage.Text.Insert(tbMessage.SelectionStart, "@(" + _cmpVariableChooserLog.SelectedVariable + ")");
         }
 
         #endregion
 
         #region View
 
-        private void ShowColumn(UltraGridColumn col)
+        private void ShowColumn(DataGridViewColumn col)
         {
-            col.Hidden = false;
+            col.Visible = true;
         }
 
-        private void HideColumn(UltraGridColumn col)
+        private void HideColumn(DataGridViewColumn col)
         {
-            col.Hidden = true;
+            col.Visible = false;
         }
 
         private void ShowAllColumns()
         {
-            foreach (UltraGridColumn col in ugMapping.DisplayLayout.Bands[0].Columns)
+            foreach (DataGridViewColumn col in ugMapping.Columns)
             {
                 ShowColumn(col);
             }
@@ -1450,32 +1475,32 @@ namespace TableLoader
         {
             ShowAllColumns();
 
-            ColumnsCollection columns = ugMapping.DisplayLayout.Bands[0].Columns;
-            columns["Default"].Hidden = true;
-            columns["Function"].Hidden = true;
-            columns["IsOutputPrimaryKey"].Hidden = true;
-            columns["AllowOutputDbNull"].Hidden = true;
-            columns["IsOutputAutoId"].Hidden = true;
-            columns["IsScdColumn"].Hidden = true;
-            columns["ScdTable"].Hidden = true;
-            columns["IsScdValidFrom"].Hidden = true;
+            DataGridViewColumnCollection columns = ugMapping.Columns;
+            HideColumn(columns["Default"]);
+            HideColumn(columns["Function"]);
+            HideColumn(columns["IsOutputPrimaryKey"]);
+            HideColumn(columns["AllowOutputDbNull"]);
+            HideColumn(columns["IsOutputAutoId"]);
+            HideColumn(columns["IsScdColumn"]);
+            HideColumn(columns["ScdTable"]);
+            HideColumn(columns["IsScdValidFrom"]);
         }
 
         private void ShowSCDLayout()
         {
             ShowAllColumns();
 
-            ColumnsCollection columns = ugMapping.DisplayLayout.Bands[0].Columns;
-            columns["Default"].Hidden = true;
-            columns["Function"].Hidden = true;
-            columns["IsOutputPrimaryKey"].Hidden = true;
-            columns["AllowOutputDbNull"].Hidden = true;
-            columns["IsOutputAutoId"].Hidden = true;
+            DataGridViewColumnCollection columns = ugMapping.Columns;
+            HideColumn(columns["Default"]);
+            HideColumn(columns["Function"]);
+            HideColumn(columns["IsOutputPrimaryKey"]);
+            HideColumn(columns["AllowOutputDbNull"]);
+            HideColumn(columns["IsOutputAutoId"]);
         }
 
-        private void uceLayoutMapping_SelectionChanged(object sender, EventArgs e)
+        private void cmbLayoutMapping_SelectedIndexChanged(object sender, EventArgs e)
         {
-            switch (uceLayoutMapping.SelectedItem.DisplayText)
+            switch (cmbLayoutMapping.Text)
             {
                 case "Standard":
                     ShowAllColumns();
@@ -1491,24 +1516,23 @@ namespace TableLoader
             }
         }
 
-        void uTabConfig_ActiveTabChanged(object sender, Infragistics.Win.UltraWinTabControl.ActiveTabChangedEventArgs e)
-        {
-            uceLayoutMapping.Visible = (e.Tab == uTabMapping.Tab);
-            lblLayoutMapping.Visible = (e.Tab == uTabMapping.Tab);
-        }
+
         #endregion
 
-        private void cmbTableLoaderType_SelectedIndexChanged(object sender, EventArgs e)
+        private void uTabConfig_TabIndexChanged(object sender, EventArgs e)
         {
-            _cmbTableLoaderType.DataBindings["SelectedItem"].WriteValue(); 
+            cmbLayoutMapping.Visible = (uTabConfig.SelectedTab == uTabMapping);
+            lblLayoutMapping.Visible = (uTabConfig.SelectedTab == uTabMapping);
         }
 
-        private void lbDbCommand_Click(object sender, EventArgs e)
-        {
+        //private void cmbTableLoaderType_SelectedIndexChanged(object sender, EventArgs e)
+        //{
+        //    _cmbTableLoaderType.DataBindings["SelectedItem"].WriteValue(); 
+        //}
 
-        }
 
-       
+
+
 
 
 

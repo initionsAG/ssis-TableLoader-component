@@ -14,6 +14,7 @@ using Microsoft.SqlServer.Dts.Runtime;
 using Microsoft.SqlServer.Dts.Runtime.Wrapper;
 using System.Windows.Forms;
 using System.Data;
+using TableLoader.ComponentFramework;
 
 
 namespace TableLoader
@@ -31,12 +32,12 @@ namespace TableLoader
             }
         }
 
-        BindingList<ColumnConfig> _columnConfigList;
-        public BindingList<ColumnConfig> ColumnConfigList
+        SortableBindingList<ColumnConfig> _columnConfigList;
+        public SortableBindingList<ColumnConfig> ColumnConfigList
         {
             get
             {
-                if (_columnConfigList == null) _columnConfigList = new BindingList<ColumnConfig>();
+                if (_columnConfigList == null) _columnConfigList = new SortableBindingList<ColumnConfig>();
                 return _columnConfigList;
             }
             set { _columnConfigList = value; }

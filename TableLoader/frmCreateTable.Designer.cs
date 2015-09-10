@@ -31,7 +31,7 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmCreateTable));
             this.btnCancel = new System.Windows.Forms.Button();
             this.btnOk = new System.Windows.Forms.Button();
-            this.teSql = new Infragistics.Win.FormattedLinkLabel.UltraFormattedTextEditor();
+            this.teSql = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // btnCancel
@@ -64,10 +64,10 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.teSql.Location = new System.Drawing.Point(12, 12);
+            this.teSql.Multiline = true;
             this.teSql.Name = "teSql";
             this.teSql.Size = new System.Drawing.Size(592, 402);
-            this.teSql.TabIndex = 8;
-            this.teSql.Value = "";
+            this.teSql.TabIndex = 16;
             // 
             // frmCreateTable
             // 
@@ -83,6 +83,7 @@
             this.Name = "frmCreateTable";
             this.Text = "Create Table";
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -90,6 +91,6 @@
 
         private System.Windows.Forms.Button btnCancel;
         private System.Windows.Forms.Button btnOk;
-        private Infragistics.Win.FormattedLinkLabel.UltraFormattedTextEditor teSql;
+        private System.Windows.Forms.TextBox teSql;
     }
 }

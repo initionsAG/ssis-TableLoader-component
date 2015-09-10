@@ -31,11 +31,10 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmFunctionEditor));
             this.btnOk = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
-            this.btnInsertInputColumn = new Infragistics.Win.Misc.UltraButton();
-            this.btnInsertInputColumnWithDefault = new Infragistics.Win.Misc.UltraButton();
-            this.tbValue = new Infragistics.Win.FormattedLinkLabel.UltraFormattedTextEditor();
-            this.cbColumnList = new Infragistics.Win.UltraWinEditors.UltraComboEditor();
-            ((System.ComponentModel.ISupportInitialize)(this.cbColumnList)).BeginInit();
+            this.tbValue = new System.Windows.Forms.TextBox();
+            this.btnInsertInputColumn = new System.Windows.Forms.Button();
+            this.btnInsertInputColumnWithDefault1 = new System.Windows.Forms.Button();
+            this.cbColumnList = new System.Windows.Forms.ComboBox();
             this.SuspendLayout();
             // 
             // btnOk
@@ -60,45 +59,49 @@
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
             // 
-            // btnInsertInputColumn
-            // 
-            this.btnInsertInputColumn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnInsertInputColumn.Location = new System.Drawing.Point(12, 420);
-            this.btnInsertInputColumn.Name = "btnInsertInputColumn";
-            this.btnInsertInputColumn.Size = new System.Drawing.Size(75, 23);
-            this.btnInsertInputColumn.TabIndex = 11;
-            this.btnInsertInputColumn.Text = "Insert InputColumn";
-            this.btnInsertInputColumn.Click += new System.EventHandler(this.btnInsertInputColumn_Click);
-            // 
-            // btnInsertInputColumnWithDefault
-            // 
-            this.btnInsertInputColumnWithDefault.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnInsertInputColumnWithDefault.Location = new System.Drawing.Point(93, 420);
-            this.btnInsertInputColumnWithDefault.Name = "btnInsertInputColumnWithDefault";
-            this.btnInsertInputColumnWithDefault.Size = new System.Drawing.Size(172, 23);
-            this.btnInsertInputColumnWithDefault.TabIndex = 11;
-            this.btnInsertInputColumnWithDefault.Text = "Insert InputColumn with Default";
-            this.btnInsertInputColumnWithDefault.Click += new System.EventHandler(this.btnInsertInputColumnWithDefault_Click);
-            // 
             // tbValue
             // 
             this.tbValue.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tbValue.Location = new System.Drawing.Point(12, 12);
+            this.tbValue.Multiline = true;
             this.tbValue.Name = "tbValue";
             this.tbValue.Size = new System.Drawing.Size(716, 402);
-            this.tbValue.TabIndex = 12;
-            this.tbValue.Value = "";
+            this.tbValue.TabIndex = 15;
+            // 
+            // btnInsertInputColumn
+            // 
+            this.btnInsertInputColumn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnInsertInputColumn.Location = new System.Drawing.Point(12, 420);
+            this.btnInsertInputColumn.Name = "btnInsertInputColumn";
+            this.btnInsertInputColumn.Size = new System.Drawing.Size(75, 23);
+            this.btnInsertInputColumn.TabIndex = 16;
+            this.btnInsertInputColumn.Text = "Insert InputColumn";
+            this.btnInsertInputColumn.UseVisualStyleBackColor = true;
+            this.btnInsertInputColumn.Click += new System.EventHandler(this.btnInsertInputColumn_Click);
+            // 
+            // btnInsertInputColumnWithDefault1
+            // 
+            this.btnInsertInputColumnWithDefault1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnInsertInputColumnWithDefault1.Location = new System.Drawing.Point(93, 420);
+            this.btnInsertInputColumnWithDefault1.Name = "btnInsertInputColumnWithDefault1";
+            this.btnInsertInputColumnWithDefault1.Size = new System.Drawing.Size(172, 23);
+            this.btnInsertInputColumnWithDefault1.TabIndex = 16;
+            this.btnInsertInputColumnWithDefault1.Text = "Insert InputColumn with Default";
+            this.btnInsertInputColumnWithDefault1.UseVisualStyleBackColor = true;
+            this.btnInsertInputColumnWithDefault1.Click += new System.EventHandler(this.btnInsertInputColumnWithDefault_Click);
             // 
             // cbColumnList
             // 
             this.cbColumnList.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.cbColumnList.DropDownStyle = Infragistics.Win.DropDownStyle.DropDownList;
+            this.cbColumnList.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbColumnList.FormattingEnabled = true;
             this.cbColumnList.Location = new System.Drawing.Point(297, 421);
             this.cbColumnList.Name = "cbColumnList";
             this.cbColumnList.Size = new System.Drawing.Size(144, 21);
-            this.cbColumnList.TabIndex = 14;
+            this.cbColumnList.Sorted = true;
+            this.cbColumnList.TabIndex = 17;
             // 
             // frmFunctionEditor
             // 
@@ -106,15 +109,14 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(740, 455);
             this.Controls.Add(this.cbColumnList);
-            this.Controls.Add(this.tbValue);
-            this.Controls.Add(this.btnInsertInputColumnWithDefault);
+            this.Controls.Add(this.btnInsertInputColumnWithDefault1);
             this.Controls.Add(this.btnInsertInputColumn);
+            this.Controls.Add(this.tbValue);
             this.Controls.Add(this.btnOk);
             this.Controls.Add(this.btnCancel);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "frmFunctionEditor";
             this.Text = "TableLoader: Function Editor";
-            ((System.ComponentModel.ISupportInitialize)(this.cbColumnList)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -124,10 +126,10 @@
 
         private System.Windows.Forms.Button btnOk;
         private System.Windows.Forms.Button btnCancel;
-        private Infragistics.Win.Misc.UltraButton btnInsertInputColumn;
-        private Infragistics.Win.Misc.UltraButton btnInsertInputColumnWithDefault;
-        private Infragistics.Win.FormattedLinkLabel.UltraFormattedTextEditor tbValue;
-        private Infragistics.Win.UltraWinEditors.UltraComboEditor cbColumnList;
+        private System.Windows.Forms.TextBox tbValue;
+        private System.Windows.Forms.Button btnInsertInputColumn;
+        private System.Windows.Forms.Button btnInsertInputColumnWithDefault1;
+        private System.Windows.Forms.ComboBox cbColumnList;
 
     }
 }
