@@ -18,12 +18,21 @@ Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
+		Sql2008|Any CPU = Sql2008|Any CPU
+		Sql2012|Any CPU = Sql2012|Any CPU
+		Sql2014|Any CPU = Sql2014|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{35CC5DAB-C753-48DD-85DE-66015091BED1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{35CC5DAB-C753-48DD-85DE-66015091BED1}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{35CC5DAB-C753-48DD-85DE-66015091BED1}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{35CC5DAB-C753-48DD-85DE-66015091BED1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{35CC5DAB-C753-48DD-85DE-66015091BED1}.Debug|Any CPU.ActiveCfg = Sql2014|Any CPU
+		{35CC5DAB-C753-48DD-85DE-66015091BED1}.Debug|Any CPU.Build.0 = Sql2014|Any CPU
+		{35CC5DAB-C753-48DD-85DE-66015091BED1}.Release|Any CPU.ActiveCfg = Sql2014|Any CPU
+		{35CC5DAB-C753-48DD-85DE-66015091BED1}.Release|Any CPU.Build.0 = Sql2014|Any CPU
+		{35CC5DAB-C753-48DD-85DE-66015091BED1}.Sql2008|Any CPU.ActiveCfg = Sql2008|Any CPU
+		{35CC5DAB-C753-48DD-85DE-66015091BED1}.Sql2008|Any CPU.Build.0 = Sql2008|Any CPU
+		{35CC5DAB-C753-48DD-85DE-66015091BED1}.Sql2012|Any CPU.ActiveCfg = Sql2012|Any CPU
+		{35CC5DAB-C753-48DD-85DE-66015091BED1}.Sql2012|Any CPU.Build.0 = Sql2012|Any CPU
+		{35CC5DAB-C753-48DD-85DE-66015091BED1}.Sql2014|Any CPU.ActiveCfg = Sql2014|Any CPU
+		{35CC5DAB-C753-48DD-85DE-66015091BED1}.Sql2014|Any CPU.Build.0 = Sql2014|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
