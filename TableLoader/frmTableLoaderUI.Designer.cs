@@ -128,7 +128,7 @@
             this.btnCreateTable.Location = new System.Drawing.Point(587, 78);
             this.btnCreateTable.Name = "btnCreateTable";
             this.btnCreateTable.Size = new System.Drawing.Size(95, 21);
-            this.btnCreateTable.TabIndex = 50;
+            this.btnCreateTable.TabIndex = 10;
             this.btnCreateTable.Text = "Create Table";
             this.btnCreateTable.UseVisualStyleBackColor = true;
             this.btnCreateTable.Click += new System.EventHandler(this.btnCreateTable_Click);
@@ -138,7 +138,7 @@
             this.btnAlterTable.Location = new System.Drawing.Point(688, 78);
             this.btnAlterTable.Name = "btnAlterTable";
             this.btnAlterTable.Size = new System.Drawing.Size(95, 21);
-            this.btnAlterTable.TabIndex = 60;
+            this.btnAlterTable.TabIndex = 11;
             this.btnAlterTable.Text = "Alter Table";
             this.btnAlterTable.UseVisualStyleBackColor = true;
             this.btnAlterTable.Click += new System.EventHandler(this.btnAlterTable_Click);
@@ -148,7 +148,7 @@
             this.btnCreateScdTable.Location = new System.Drawing.Point(587, 105);
             this.btnCreateScdTable.Name = "btnCreateScdTable";
             this.btnCreateScdTable.Size = new System.Drawing.Size(95, 21);
-            this.btnCreateScdTable.TabIndex = 70;
+            this.btnCreateScdTable.TabIndex = 12;
             this.btnCreateScdTable.Text = "Create SCD";
             this.btnCreateScdTable.UseVisualStyleBackColor = true;
             this.btnCreateScdTable.Click += new System.EventHandler(this.btnCreateScdTable_Click);
@@ -158,14 +158,14 @@
             this.tbReattempts.Location = new System.Drawing.Point(653, 208);
             this.tbReattempts.Name = "tbReattempts";
             this.tbReattempts.Size = new System.Drawing.Size(147, 20);
-            this.tbReattempts.TabIndex = 120;
+            this.tbReattempts.TabIndex = 22;
             // 
             // tbMaxThreadCount
             // 
             this.tbMaxThreadCount.Location = new System.Drawing.Point(171, 112);
             this.tbMaxThreadCount.Name = "tbMaxThreadCount";
             this.tbMaxThreadCount.Size = new System.Drawing.Size(363, 20);
-            this.tbMaxThreadCount.TabIndex = 80;
+            this.tbMaxThreadCount.TabIndex = 14;
             this.toolTip1.SetToolTip(this.tbMaxThreadCount, "Maximum number of BulkCopy threads");
             // 
             // tbChunkSizeBulk
@@ -173,7 +173,7 @@
             this.tbChunkSizeBulk.Location = new System.Drawing.Point(171, 138);
             this.tbChunkSizeBulk.Name = "tbChunkSizeBulk";
             this.tbChunkSizeBulk.Size = new System.Drawing.Size(363, 20);
-            this.tbChunkSizeBulk.TabIndex = 90;
+            this.tbChunkSizeBulk.TabIndex = 16;
             this.toolTip1.SetToolTip(this.tbChunkSizeBulk, "Number of rows  used for a single Bulk Copy thread");
             // 
             // tbChunkSizeDbCommand
@@ -181,14 +181,14 @@
             this.tbChunkSizeDbCommand.Location = new System.Drawing.Point(171, 163);
             this.tbChunkSizeDbCommand.Name = "tbChunkSizeDbCommand";
             this.tbChunkSizeDbCommand.Size = new System.Drawing.Size(363, 20);
-            this.tbChunkSizeDbCommand.TabIndex = 100;
+            this.tbChunkSizeDbCommand.TabIndex = 18;
             // 
             // tbTimeout
             // 
             this.tbTimeout.Location = new System.Drawing.Point(171, 208);
             this.tbTimeout.Name = "tbTimeout";
             this.tbTimeout.Size = new System.Drawing.Size(363, 20);
-            this.tbTimeout.TabIndex = 110;
+            this.tbTimeout.TabIndex = 20;
             this.toolTip1.SetToolTip(this.tbTimeout, "Database Timeout in seconds");
             // 
             // _checkStandardConfigAuto
@@ -198,7 +198,7 @@
             this._checkStandardConfigAuto.Location = new System.Drawing.Point(145, 281);
             this._checkStandardConfigAuto.Name = "_checkStandardConfigAuto";
             this._checkStandardConfigAuto.Size = new System.Drawing.Size(15, 14);
-            this._checkStandardConfigAuto.TabIndex = 140;
+            this._checkStandardConfigAuto.TabIndex = 26;
             this._checkStandardConfigAuto.UseVisualStyleBackColor = true;
             this._checkStandardConfigAuto.CheckedChanged += new System.EventHandler(this._checkStandardConfigAuto_CheckedChanged);
             // 
@@ -208,7 +208,7 @@
             this.checkDisableTablock.Location = new System.Drawing.Point(145, 318);
             this.checkDisableTablock.Name = "checkDisableTablock";
             this.checkDisableTablock.Size = new System.Drawing.Size(15, 14);
-            this.checkDisableTablock.TabIndex = 160;
+            this.checkDisableTablock.TabIndex = 29;
             this.checkDisableTablock.UseVisualStyleBackColor = true;
             // 
             // lblConMgrBulk
@@ -218,7 +218,7 @@
             this.lblConMgrBulk.Location = new System.Drawing.Point(18, 51);
             this.lblConMgrBulk.Name = "lblConMgrBulk";
             this.lblConMgrBulk.Size = new System.Drawing.Size(139, 13);
-            this.lblConMgrBulk.TabIndex = 20;
+            this.lblConMgrBulk.TabIndex = 4;
             this.lblConMgrBulk.Text = "Connection Manager (Bulk):";
             // 
             // label3
@@ -228,7 +228,7 @@
             this.label3.Location = new System.Drawing.Point(19, 281);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(115, 13);
-            this.label3.TabIndex = 18;
+            this.label3.TabIndex = 25;
             this.label3.Text = "Standard Configuration";
             // 
             // pnlTableLoaderType
@@ -237,7 +237,7 @@
             this.pnlTableLoaderType.Location = new System.Drawing.Point(653, 21);
             this.pnlTableLoaderType.Name = "pnlTableLoaderType";
             this.pnlTableLoaderType.Size = new System.Drawing.Size(147, 21);
-            this.pnlTableLoaderType.TabIndex = 14;
+            this.pnlTableLoaderType.TabIndex = 3;
             // 
             // pnlTransaction
             // 
@@ -245,7 +245,7 @@
             this.pnlTransaction.Location = new System.Drawing.Point(653, 48);
             this.pnlTransaction.Name = "pnlTransaction";
             this.pnlTransaction.Size = new System.Drawing.Size(147, 21);
-            this.pnlTransaction.TabIndex = 14;
+            this.pnlTransaction.TabIndex = 7;
             // 
             // pnlCmbStandardConfig
             // 
@@ -253,7 +253,7 @@
             this.pnlCmbStandardConfig.Location = new System.Drawing.Point(171, 278);
             this.pnlCmbStandardConfig.Name = "pnlCmbStandardConfig";
             this.pnlCmbStandardConfig.Size = new System.Drawing.Size(363, 21);
-            this.pnlCmbStandardConfig.TabIndex = 14;
+            this.pnlCmbStandardConfig.TabIndex = 27;
             // 
             // pnlDestinationTanble
             // 
@@ -261,7 +261,7 @@
             this.pnlDestinationTanble.Location = new System.Drawing.Point(171, 78);
             this.pnlDestinationTanble.Name = "pnlDestinationTanble";
             this.pnlDestinationTanble.Size = new System.Drawing.Size(363, 21);
-            this.pnlDestinationTanble.TabIndex = 14;
+            this.pnlDestinationTanble.TabIndex = 9;
             // 
             // pnlDbCommand
             // 
@@ -269,7 +269,7 @@
             this.pnlDbCommand.Location = new System.Drawing.Point(171, 235);
             this.pnlDbCommand.Name = "pnlDbCommand";
             this.pnlDbCommand.Size = new System.Drawing.Size(363, 21);
-            this.pnlDbCommand.TabIndex = 14;
+            this.pnlDbCommand.TabIndex = 24;
             // 
             // lblTlType
             // 
@@ -278,7 +278,7 @@
             this.lblTlType.Location = new System.Drawing.Point(587, 24);
             this.lblTlType.Name = "lblTlType";
             this.lblTlType.Size = new System.Drawing.Size(50, 13);
-            this.lblTlType.TabIndex = 12;
+            this.lblTlType.TabIndex = 2;
             this.lblTlType.Text = "TL Type:";
             // 
             // lblTransaction
@@ -288,7 +288,7 @@
             this.lblTransaction.Location = new System.Drawing.Point(587, 51);
             this.lblTransaction.Name = "lblTransaction";
             this.lblTransaction.Size = new System.Drawing.Size(66, 13);
-            this.lblTransaction.TabIndex = 12;
+            this.lblTransaction.TabIndex = 6;
             this.lblTransaction.Text = "Transaction:";
             // 
             // imgHelpStandardConfig
@@ -333,7 +333,7 @@
             this.pnlConnMgrBulk.Location = new System.Drawing.Point(171, 42);
             this.pnlConnMgrBulk.Name = "pnlConnMgrBulk";
             this.pnlConnMgrBulk.Size = new System.Drawing.Size(363, 27);
-            this.pnlConnMgrBulk.TabIndex = 3;
+            this.pnlConnMgrBulk.TabIndex = 5;
             // 
             // pnlConnMgrMain
             // 
@@ -341,7 +341,7 @@
             this.pnlConnMgrMain.Location = new System.Drawing.Point(171, 14);
             this.pnlConnMgrMain.Name = "pnlConnMgrMain";
             this.pnlConnMgrMain.Size = new System.Drawing.Size(363, 27);
-            this.pnlConnMgrMain.TabIndex = 3;
+            this.pnlConnMgrMain.TabIndex = 1;
             // 
             // lbDbCommand
             // 
@@ -350,7 +350,7 @@
             this.lbDbCommand.Location = new System.Drawing.Point(18, 239);
             this.lbDbCommand.Name = "lbDbCommand";
             this.lbDbCommand.Size = new System.Drawing.Size(72, 13);
-            this.lbDbCommand.TabIndex = 2;
+            this.lbDbCommand.TabIndex = 23;
             this.lbDbCommand.Text = "DB Command";
             // 
             // label11
@@ -360,7 +360,7 @@
             this.label11.Location = new System.Drawing.Point(19, 21);
             this.label11.Name = "label11";
             this.label11.Size = new System.Drawing.Size(141, 13);
-            this.label11.TabIndex = 2;
+            this.label11.TabIndex = 0;
             this.label11.Text = "Connection Manager (Main):";
             // 
             // label14
@@ -370,7 +370,7 @@
             this.label14.Location = new System.Drawing.Point(19, 82);
             this.label14.Name = "label14";
             this.label14.Size = new System.Drawing.Size(90, 13);
-            this.label14.TabIndex = 2;
+            this.label14.TabIndex = 8;
             this.label14.Text = "Destination Table";
             // 
             // lblMaxThreadCount
@@ -380,7 +380,7 @@
             this.lblMaxThreadCount.Location = new System.Drawing.Point(18, 115);
             this.lblMaxThreadCount.Name = "lblMaxThreadCount";
             this.lblMaxThreadCount.Size = new System.Drawing.Size(95, 13);
-            this.lblMaxThreadCount.TabIndex = 2;
+            this.lblMaxThreadCount.TabIndex = 13;
             this.lblMaxThreadCount.Text = "Max Thread Count";
             // 
             // lblChunkSizeDbCommand
@@ -390,7 +390,7 @@
             this.lblChunkSizeDbCommand.Location = new System.Drawing.Point(18, 166);
             this.lblChunkSizeDbCommand.Name = "lblChunkSizeDbCommand";
             this.lblChunkSizeDbCommand.Size = new System.Drawing.Size(135, 13);
-            this.lblChunkSizeDbCommand.TabIndex = 2;
+            this.lblChunkSizeDbCommand.TabIndex = 17;
             this.lblChunkSizeDbCommand.Text = "Chunk Size (DB Command)";
             // 
             // label2
@@ -400,7 +400,7 @@
             this.label2.Location = new System.Drawing.Point(18, 318);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(84, 13);
-            this.label2.TabIndex = 2;
+            this.label2.TabIndex = 28;
             this.label2.Text = "Disable Tablock";
             // 
             // label1
@@ -410,7 +410,7 @@
             this.label1.Location = new System.Drawing.Point(587, 212);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(61, 13);
-            this.label1.TabIndex = 2;
+            this.label1.TabIndex = 21;
             this.label1.Text = "Reattempts";
             // 
             // label17
@@ -420,7 +420,7 @@
             this.label17.Location = new System.Drawing.Point(18, 212);
             this.label17.Name = "label17";
             this.label17.Size = new System.Drawing.Size(77, 13);
-            this.label17.TabIndex = 2;
+            this.label17.TabIndex = 19;
             this.label17.Text = "DB Timeout [s]";
             // 
             // lblChunkSizeBulk
@@ -430,7 +430,7 @@
             this.lblChunkSizeBulk.Location = new System.Drawing.Point(18, 141);
             this.lblChunkSizeBulk.Name = "lblChunkSizeBulk";
             this.lblChunkSizeBulk.Size = new System.Drawing.Size(91, 13);
-            this.lblChunkSizeBulk.TabIndex = 2;
+            this.lblChunkSizeBulk.TabIndex = 15;
             this.lblChunkSizeBulk.Text = "Chunk Size (Bulk)";
             // 
             // tbPrefixOutput
@@ -439,7 +439,7 @@
             this.tbPrefixOutput.Location = new System.Drawing.Point(340, 341);
             this.tbPrefixOutput.Name = "tbPrefixOutput";
             this.tbPrefixOutput.Size = new System.Drawing.Size(88, 20);
-            this.tbPrefixOutput.TabIndex = 6;
+            this.tbPrefixOutput.TabIndex = 5;
             // 
             // tbPrefixInput
             // 
@@ -447,7 +447,7 @@
             this.tbPrefixInput.Location = new System.Drawing.Point(162, 341);
             this.tbPrefixInput.Name = "tbPrefixInput";
             this.tbPrefixInput.Size = new System.Drawing.Size(88, 20);
-            this.tbPrefixInput.TabIndex = 6;
+            this.tbPrefixInput.TabIndex = 3;
             // 
             // btnAutoMap
             // 
@@ -455,7 +455,7 @@
             this.btnAutoMap.Location = new System.Drawing.Point(6, 341);
             this.btnAutoMap.Name = "btnAutoMap";
             this.btnAutoMap.Size = new System.Drawing.Size(75, 21);
-            this.btnAutoMap.TabIndex = 19;
+            this.btnAutoMap.TabIndex = 1;
             this.btnAutoMap.Text = "AutoMap";
             this.btnAutoMap.UseVisualStyleBackColor = true;
             this.btnAutoMap.Click += new System.EventHandler(this.btnAutoMap_Click);
@@ -466,7 +466,7 @@
             this.btnSelect.Location = new System.Drawing.Point(492, 340);
             this.btnSelect.Name = "btnSelect";
             this.btnSelect.Size = new System.Drawing.Size(74, 23);
-            this.btnSelect.TabIndex = 19;
+            this.btnSelect.TabIndex = 6;
             this.btnSelect.Text = "Select";
             this.btnSelect.UseVisualStyleBackColor = true;
             this.btnSelect.Click += new System.EventHandler(this.btnSelect_Click);
@@ -477,7 +477,7 @@
             this.btnDeSelect.Location = new System.Drawing.Point(572, 340);
             this.btnDeSelect.Name = "btnDeSelect";
             this.btnDeSelect.Size = new System.Drawing.Size(74, 23);
-            this.btnDeSelect.TabIndex = 19;
+            this.btnDeSelect.TabIndex = 7;
             this.btnDeSelect.Text = "Deselect";
             this.btnDeSelect.UseVisualStyleBackColor = true;
             this.btnDeSelect.Click += new System.EventHandler(this.btnDeSelect_Click);
@@ -488,7 +488,7 @@
             this.btnRemoveRow.Location = new System.Drawing.Point(789, 341);
             this.btnRemoveRow.Name = "btnRemoveRow";
             this.btnRemoveRow.Size = new System.Drawing.Size(97, 21);
-            this.btnRemoveRow.TabIndex = 19;
+            this.btnRemoveRow.TabIndex = 9;
             this.btnRemoveRow.Text = "Remove Row(s)";
             this.btnRemoveRow.UseVisualStyleBackColor = true;
             this.btnRemoveRow.Click += new System.EventHandler(this.btnRemoveRow_Click);
@@ -499,7 +499,7 @@
             this.btnAddRow.Location = new System.Drawing.Point(686, 341);
             this.btnAddRow.Name = "btnAddRow";
             this.btnAddRow.Size = new System.Drawing.Size(97, 21);
-            this.btnAddRow.TabIndex = 19;
+            this.btnAddRow.TabIndex = 8;
             this.btnAddRow.Text = "Add Row";
             this.btnAddRow.UseVisualStyleBackColor = true;
             this.btnAddRow.Click += new System.EventHandler(this.btnAddRow_Click);
@@ -512,7 +512,7 @@
             this.pnlDGV.Location = new System.Drawing.Point(6, 0);
             this.pnlDGV.Name = "pnlDGV";
             this.pnlDGV.Size = new System.Drawing.Size(898, 333);
-            this.pnlDGV.TabIndex = 16;
+            this.pnlDGV.TabIndex = 0;
             // 
             // label5
             // 
@@ -522,7 +522,7 @@
             this.label5.Location = new System.Drawing.Point(96, 345);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(60, 13);
-            this.label5.TabIndex = 14;
+            this.label5.TabIndex = 2;
             this.label5.Text = "Input Prefix";
             // 
             // label6
@@ -533,7 +533,7 @@
             this.label6.Location = new System.Drawing.Point(266, 345);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(68, 13);
-            this.label6.TabIndex = 15;
+            this.label6.TabIndex = 4;
             this.label6.Text = "Output Prefix";
             // 
             // tbPreSql
@@ -800,7 +800,7 @@
             this.btnCancel.Location = new System.Drawing.Point(840, 415);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(81, 26);
-            this.btnCancel.TabIndex = 180;
+            this.btnCancel.TabIndex = 4;
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
             // 
@@ -811,7 +811,7 @@
             this.btnOK.Location = new System.Drawing.Point(753, 415);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(81, 26);
-            this.btnOK.TabIndex = 170;
+            this.btnOK.TabIndex = 3;
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
             this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
@@ -823,7 +823,7 @@
             this.lblLayoutMapping.Location = new System.Drawing.Point(5, 424);
             this.lblLayoutMapping.Name = "lblLayoutMapping";
             this.lblLayoutMapping.Size = new System.Drawing.Size(39, 13);
-            this.lblLayoutMapping.TabIndex = 5;
+            this.lblLayoutMapping.TabIndex = 1;
             this.lblLayoutMapping.Text = "Layout";
             // 
             // cmbLayoutMapping
@@ -838,7 +838,7 @@
             this.cmbLayoutMapping.Location = new System.Drawing.Point(50, 420);
             this.cmbLayoutMapping.Name = "cmbLayoutMapping";
             this.cmbLayoutMapping.Size = new System.Drawing.Size(144, 21);
-            this.cmbLayoutMapping.TabIndex = 6;
+            this.cmbLayoutMapping.TabIndex = 2;
             this.cmbLayoutMapping.SelectedIndexChanged += new System.EventHandler(this.cmbLayoutMapping_SelectedIndexChanged);
             // 
             // uTabConfig
@@ -857,7 +857,7 @@
             this.uTabConfig.Name = "uTabConfig";
             this.uTabConfig.SelectedIndex = 0;
             this.uTabConfig.Size = new System.Drawing.Size(917, 397);
-            this.uTabConfig.TabIndex = 7;
+            this.uTabConfig.TabIndex = 0;
             this.uTabConfig.TabStop = false;
             this.uTabConfig.TabIndexChanged += new System.EventHandler(this.uTabConfig_TabIndexChanged);
             // 
@@ -1006,7 +1006,7 @@
             this.Controls.Add(this.btnOK);
             this.Controls.Add(this.btnCancel);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.MinimumSize = new System.Drawing.Size(16, 350);
+            this.MinimumSize = new System.Drawing.Size(943, 491);
             this.Name = "frmTableLoaderUI";
             this.Text = "Table Loader";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frmTableLoaderUI_FormClosing);
