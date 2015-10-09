@@ -613,8 +613,6 @@ namespace ComponentFramework.Controls
             return _itemSource.Contains(item);
         }
 
-
-
         public bool IsDisabled(object item)
         {
             return ConfigType == ComponentFramework.Controls.IsagDataGridView.ComboboxConfigType.DISABLE && !IsValid(item);

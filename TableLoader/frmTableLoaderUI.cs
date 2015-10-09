@@ -49,10 +49,10 @@ namespace TableLoader
         private IsagComboBox _cmbDbCommand = new IsagComboBox();
         private IsagComboBox _cmbTransaction = new IsagComboBox();
 
-        private IsagVariableChooser _cmpVariableChooserCustomCommand = new IsagVariableChooser();
-        private IsagVariableChooser _cmpVariableChooserLog = new IsagVariableChooser();
-        private IsagVariableChooser _cmpVariableChooserPreSql = new IsagVariableChooser();
-        private IsagVariableChooser _cmpVariableChooserPostSql = new IsagVariableChooser();
+        private IsagVariableChooser _cmbVariableChooserCustomCommand = new IsagVariableChooser();
+        private IsagVariableChooser _cmbVariableChooserLog = new IsagVariableChooser();
+        private IsagVariableChooser _cmbVariableChooserPreSql = new IsagVariableChooser();
+        private IsagVariableChooser _cmbVariableChooserPostSql = new IsagVariableChooser();
 
         private MenuItem _miLimitOutputColumnNames;
         private MenuItem _miRemoveRows;
@@ -126,7 +126,12 @@ namespace TableLoader
 
         #region Initialize
 
-        void ugMapping_DataBindingComplete(object sender, DataGridViewBindingCompleteEventArgs e)
+        /// <summary>
+        /// After binding the grid its datasource the combobox itemlists also need databinding
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ugMapping_DataBindingComplete(object sender, DataGridViewBindingCompleteEventArgs e)
         {
             PopulateOutputColumnList();
             ugMapping.AddCellBoundedComboBox("OutputColumnName", _mappingOutputColumnItemSource, IsagDataGridView.ComboboxConfigType.DISABLE);
@@ -134,7 +139,9 @@ namespace TableLoader
             ugMapping.CellValueChanged += ugMapping_CellValueChanged;           
         }
 
-
+        /// <summary>
+        /// Add bindings to the GUI elements
+        /// </summary>
         private void CreateBindings()
         {
             //ugMapping.DataBindings.DefaultDataSourceUpdateMode = DataSourceUpdateMode.OnPropertyChanged;
@@ -157,7 +164,7 @@ namespace TableLoader
             uTabCustomCommand.DataBindings.Add("Enabled", _IsagCustomProperties, "CanUseCustomCommand");
 
 
-            _cmpVariableChooserCustomCommand.DataBindings.Add("Enabled", _IsagCustomProperties, "UseCustomMergeCommand");
+            _cmbVariableChooserCustomCommand.DataBindings.Add("Enabled", _IsagCustomProperties, "UseCustomMergeCommand");
             btnInsertVarCustomCommand.DataBindings.Add("Enabled", _IsagCustomProperties, "UseCustomMergeCommand");
 
 
@@ -204,7 +211,9 @@ namespace TableLoader
         }
 
         
-
+        /// <summary>
+        /// Initialize the components / add them to their gui containers
+        /// </summary>
         private void InitializeCustomComponents()
         {
 
@@ -212,7 +221,7 @@ namespace TableLoader
             pnlDGV.Controls.Add(ugMapping);
             ugMapping.Dock = DockStyle.Fill;
             ugMapping.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.Fill);
-            ugMapping.ColumnHeadersHeight = ugMapping.ColumnHeadersHeight * 2;
+            ugMapping.ColumnHeadersHeight = ugMapping.ColumnHeadersHeight * 2; 
 
             //ConnectionManager
             _connectionManagerBulk.Initialize(_metadata, _serviceProvider, _connections, Constants.CONNECTION_MANAGER_NAME_BULK);
@@ -268,15 +277,15 @@ namespace TableLoader
             //Variable Chooser
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmTableLoaderUI));
             Icon icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            _cmpVariableChooserLog.Initialize(_variables, icon);
-            pnlVariableChooserLog.Controls.Add(_cmpVariableChooserLog);
-            _cmpVariableChooserCustomCommand.Initialize(_variables, icon);
-            pnlVariablesCustomCommand.Controls.Add(_cmpVariableChooserCustomCommand);
-            _cmpVariableChooserPreSql.Initialize(_variables, icon);
-            _cmpVariableChooserPreSql.Dock = DockStyle.Fill;
-            pnlVariablesPreSql.Controls.Add(_cmpVariableChooserPreSql);
-            _cmpVariableChooserPostSql.Initialize(_variables, icon);
-            pnlVariablesPostSql.Controls.Add(_cmpVariableChooserPostSql);
+            _cmbVariableChooserLog.Initialize(_variables, icon);
+            pnlVariableChooserLog.Controls.Add(_cmbVariableChooserLog);
+            _cmbVariableChooserCustomCommand.Initialize(_variables, icon);
+            pnlVariablesCustomCommand.Controls.Add(_cmbVariableChooserCustomCommand);
+            _cmbVariableChooserPreSql.Initialize(_variables, icon);
+            _cmbVariableChooserPreSql.Dock = DockStyle.Fill;
+            pnlVariablesPreSql.Controls.Add(_cmbVariableChooserPreSql);
+            _cmbVariableChooserPostSql.Initialize(_variables, icon);
+            pnlVariablesPostSql.Controls.Add(_cmbVariableChooserPostSql);
 
 
             //Standard Configuration
@@ -292,6 +301,39 @@ namespace TableLoader
 
         }
 
+
+        /// <summary>
+        /// - Initialisieren der Events
+        /// - Aktualisiert die Auswahlliste mit den DB Commands 
+        /// - Aktualisiert Anzeigeinstellungen der GUI (Warnung bei unterschiedlichen Datentypen, Schreibschutz für nicht Properties setzen, ...)
+        /// </summary>
+        private void FinishInitializingAfterFormLoad()
+        {
+            _cmbDbCommand.SelectedIndexChanged += new EventHandler(_DbCommand_SelectedIndexChanged);
+            _connectionManagerMain.ConnectionManagerChanged += new EventHandler(connectionManagerChanged);
+            _connectionManagerBulk.ConnectionManagerChanged += new EventHandler(connectionManagerChanged);
+            _cmbTransaction.SelectedIndexChanged += new EventHandler(_cmbTransaction_SelectedIndexChanged);
+            _cmbDestinationTable.SelectedIndexChanged += new EventHandler(cmbDestinationTable_SelectedIndexChanged);
+            ugMapping.SelectionChanged += ugMapping_SelectionChanged;
+            ugMapping.CellValueChanged += ugMapping_CellValueChanged;
+            _cmbStandardConfig.SelectedValueChanged += new EventHandler(cmbStandardConfig_SelectedIndexChanged);
+            cmbStandardConfig_SelectedIndexChanged(null, null);
+            UpdateDbCommandList();
+
+            MarkDifferentVarTypes();
+            AdjustSettingsForMerge();
+            DisableDefaultValue();
+
+            //TODO: uTabMapping.Show removes comboBox values from DataGrid. Should be fixed in IsagDataGridView
+            uTabMapping.Show();
+            ugMapping.RefreshCellBoundComboBox("OutputColumnName");
+        }
+        #endregion
+
+        #region Context Menu
+        /// <summary>
+        /// Add context menu to datagrid
+        /// </summary>
         private void InitializeContextMenu()
         {
             ugMapping.ContextMenu = new ContextMenu();
@@ -313,7 +355,12 @@ namespace TableLoader
             ugMapping.MouseDown += ugMapping_MouseDown;
         }
 
-        void ugMapping_MouseDown(object sender, MouseEventArgs e)
+        /// <summary>
+        /// Depending on the mouse click position some context menu entries are removed/added, then the context menu is shown
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ugMapping_MouseDown(object sender, MouseEventArgs e)
         {
             //Configure & show context menu
             if (e.Button == System.Windows.Forms.MouseButtons.Right)
@@ -324,18 +371,53 @@ namespace TableLoader
                 //Show/Hide Function Editor
                 bool showFunctionEditor = ugMapping.Columns[ugMapping.CurrentCell.ColumnIndex].Name == "Function" && !ugMapping.CurrentCell.ReadOnly;
                 _miFunctionEditor.Visible = showFunctionEditor;
-                ugMapping.ContextMenu.MenuItems[_miFunctionEditor.Index-1].Visible = showFunctionEditor;
+                ugMapping.ContextMenu.MenuItems[_miFunctionEditor.Index - 1].Visible = showFunctionEditor;
 
                 //Show context menu
                 ugMapping.ContextMenu.Show(ugMapping, new Point(e.X, e.Y));
             }
         }
 
-        void ContextMenu_Popup(object sender, EventArgs e)
+        /// <summary>
+        /// Exexutes the choosen context menu item
+        /// </summary>
+        /// <param name="sender"></param>
+        private void ReactOnContextMenuItemClicked(object sender)
         {
-            ugMapping.ContextMenu.MenuItems["Remove Row(s)"].Visible = btnRemoveRow.Enabled;
-        }
+            MenuItem item = (MenuItem) sender;
 
+            switch (item.Text)
+            {
+                case "Limit OutputColumnList":
+                    item.Checked = !item.Checked;
+                    AdjustOutputColumnItemList();
+                    break;
+                case "AutoMap":
+                    AutoMap();
+                    break;
+                case "AutoMap Selection":
+                    AuotMapSelection();
+                    break;
+                case "Select":
+                    DoSelect();
+                    break;
+                case "DeSelect":
+                    DoDeSelect();
+                    break;
+                case "Add Row":
+                    AddRow();
+                    break;
+                case "Remove Row(s)":
+                    RemoveRows();
+                    break;
+                    ;
+                case "Function Editor":
+                    ShowFunctionEditor();
+                    break;
+                default:
+                    break;
+            }
+        }
         #endregion
 
         #region Populate
@@ -398,16 +480,17 @@ namespace TableLoader
                     if (!string.IsNullOrEmpty(oldValue) && oldValue != tableName && oldValue.ToUpper() == tableName.ToUpper())
                     {
                         _IsagCustomProperties.DestinationTable = tableName;
-                        MessageBox.Show("Der gewählte Tabellenname hat sich bzgl. der Groß- und Kleinschreibung automatisch geändert!", "TableLoader", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        MessageBox.Show("Lowercase/uppercaseThe of the choosen table has changed automatically!", "TableLoader", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     }
                 }
-
-
-
                 conn.Close();
             }
         }
 
+
+        /// <summary>
+        /// Get standard configurations from database and fill the combobox
+        /// </summary>
         private void InitStandardConfig()
         {
             try
@@ -430,8 +513,6 @@ namespace TableLoader
             {
                 MessageBox.Show("Loading standard configuration failed: " + Environment.NewLine + ex.Message);
             }
-
-
         }
 
         #endregion
@@ -445,11 +526,12 @@ namespace TableLoader
         /// <param name="isMainConnection"></param>
         private void ReactOnConnectionManagerChanged(bool isMainConnection)
         {
-            //Aktualisieren der Destination Table?
+            //Update destination table if necessary
             if ((isMainConnection && !_IsagCustomProperties.UseExternalTransaction) ||
                 (!isMainConnection && _IsagCustomProperties.UseExternalTransaction))
                 PopulateDestinationTableName();
 
+            //Depending on the used database some db commands are not available
             UpdateDbCommandList();
         }
 
@@ -465,6 +547,7 @@ namespace TableLoader
             if (IsSqlServer2005()) items.RemoveItem(IsagCustomProperties.DbCommandType.Merge);
             else items.AddItem(IsagCustomProperties.DbCommandType.Merge);
 
+            //Dpending on the DB Command not all transactions are available
             UpdateTransactionList();
         }
 
@@ -505,55 +588,22 @@ namespace TableLoader
                 e.Cancel = _abortClosing;
         }
 
-        /// <summary>
-        /// - Initialisieren der Events
-        /// - Aktualisiert die Auswahlliste mit den DB Commands 
-        /// - Aktualisiert Anzeigeinstellungen der GUI (Warnung bei unterschiedlichen Datentypen, Schreibschutz für nicht Properties setzen, ...)
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void frmTableLoaderUI_Load(object sender, EventArgs e)
         {
-
-
-
-            _cmbDbCommand.SelectedIndexChanged += new EventHandler(_DbCommand_SelectedIndexChanged);
-            _connectionManagerMain.ConnectionManagerChanged += new EventHandler(connectionManagerChanged);
-            _connectionManagerBulk.ConnectionManagerChanged += new EventHandler(connectionManagerChanged);
-            _cmbTransaction.SelectedIndexChanged += new EventHandler(_cmbTransaction_SelectedIndexChanged);
-            _cmbDestinationTable.SelectedIndexChanged += new EventHandler(cmbDestinationTable_SelectedIndexChanged);
-            ugMapping.SelectionChanged += ugMapping_SelectionChanged;
-            ugMapping.CellValueChanged += ugMapping_CellValueChanged;
-            //_cmbStandardConfig.SelectedIndexChanged += new EventHandler(cmbStandardConfig_SelectedIndexChanged);
-            _cmbStandardConfig.SelectedValueChanged += new EventHandler(cmbStandardConfig_SelectedIndexChanged);
-            cmbStandardConfig_SelectedIndexChanged(null, null);
-            UpdateDbCommandList();
-
-            MarkDifferentVarTypes();
-            AdjustSettingsForMerge();
-            DisableDefaultValue();
-
-            //TODO: uTabMapping.Show removes comboBox values from DataGrid. Should be fixed in IsagDataGridView
-            uTabMapping.Show();
-            ugMapping.RefreshCellBoundComboBox("OutputColumnName");
-            
+            FinishInitializingAfterFormLoad();        
         }
-
-       
-
-
-
-
-
-
-
-
 
         private void btnOK_Click(object sender, EventArgs e)
         {
             _abortClosing = !save();
         }
 
+        /// <summary>
+        /// Change properties according to the choosen standard configuration.
+        /// The Checkbox check stated that determines if standard configuration is set to "checked".
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void cmbStandardConfig_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_cmbStandardConfig.Text != "")
@@ -562,7 +612,6 @@ namespace TableLoader
                 try
                 {
                     DataRow row = _cfgList[_cmbStandardConfig.Text];
-                    //_stdConfig.SetStandardConfiguration(ref _IsagCustomProperties, row);
 
                     IsagCustomProperties.TableLoaderType tableLoaderType =
                         (IsagCustomProperties.TableLoaderType)Enum.Parse(typeof(IsagCustomProperties.TableLoaderType), row["TableLoaderType"].ToString());
@@ -580,7 +629,6 @@ namespace TableLoader
                     tbMaxThreadCount.Text = row["MaxThreadCount"].ToString();
                     tbPrefixInput.Text = row["PreFixInput"].ToString();
                     tbPrefixOutput.Text = row["PreFixOutput"].ToString();
-                    //_IsagCustomProperties.StandarConfiguration = _cmbStandardConfig.Text;
                     _checkStandardConfigAuto.Checked = true;
                     _checkStandardConfigAuto.Enabled = true;
                 }
@@ -599,17 +647,23 @@ namespace TableLoader
 
         }
 
-
+        /// <summary>
+        /// The combobox value for the standard condiguration is cleared if the configartion will not be used.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void _checkStandardConfigAuto_CheckedChanged(object sender, EventArgs e)
         {
             if (!_checkStandardConfigAuto.Checked) _cmbStandardConfig.Text = "";
         }
 
-
-
+        #endregion
 
         #region Mapping
 
+        /// <summary>
+        /// Shows the function editor for a selected cell
+        /// </summary>
         private void ShowFunctionEditor()
         {
             ColumnConfig config = (ColumnConfig)ugMapping.CurrentRow.DataBoundItem; ;
@@ -622,12 +676,22 @@ namespace TableLoader
                 ugMapping.CurrentCell.Value = editor.Value;
         }
 
-        void ugMapping_SelectionChanged(object sender, EventArgs e)
+        /// <summary>
+        /// Only Rows without an input column can be remove. 
+        /// The Button for removing rows has to be enabled/disabled.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ugMapping_SelectionChanged(object sender, EventArgs e)
         {
-            //ugMapping.RefreshCellBoundComboBox("OutputColumnName");
             AdjustRemoveRowsButton();
         }
 
+        /// <summary>
+        /// If a cell value changed, several other cells (value, properties like color/readonly) might change. 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         void ugMapping_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
 
@@ -637,7 +701,6 @@ namespace TableLoader
             if (ugMapping.CurrentCell.ColumnIndex == ugMapping.Columns["OutputColumnName"].Index)
             {
                 MarkColumnAsKey(ugMapping.CurrentRow);
-                //if (_miLimitOutputColumnNames.Checked) AdjustOutputColumnItemList();
             }
             MarkAutoIdAsUnused(ugMapping.CurrentRow);
             AdjustSettingsForMerge(ugMapping.CurrentRow);
@@ -651,7 +714,7 @@ namespace TableLoader
         /// <param name="sender"></param>
         /// <param name="e"></param>
         /// 
-        private void AdjustRemoveRowsButton() //ugMapping_AfterCellUpdate
+        private void AdjustRemoveRowsButton()
         {
             bool canDelete = (ugMapping.SelectedRows.Count > 0);
 
@@ -664,8 +727,6 @@ namespace TableLoader
 
             btnRemoveRow.Enabled = canDelete;
         }
-
-
 
         private void btnSelect_Click(object sender, EventArgs e)
         {
@@ -694,41 +755,10 @@ namespace TableLoader
 
         private void menuItem_Click(object sender, EventArgs e)
         {
-
-
-            MenuItem item = (MenuItem)sender;
-
-            switch (item.Text)
-            {
-                case "Limit OutputColumnList":
-                    item.Checked = !item.Checked;
-                    AdjustOutputColumnItemList();
-                    break;
-                case "AutoMap":
-                    AutoMap();
-                    break;
-                case "AutoMap Selection":
-                    AuotMapSelection();
-                    break;
-                case "Select":
-                    DoSelect();
-                    break;
-                case "DeSelect":
-                    DoDeSelect();
-                    break;
-                case "Add Row":
-                    AddRow();
-                    break;
-                case "Remove Row(s)":
-                    RemoveRows();
-                    break;;
-                case "Function Editor":
-                    ShowFunctionEditor();
-                    break;
-                default:
-                    break;
-            }
+            ReactOnContextMenuItemClicked(sender);
         }
+
+    
 
        
         #region AutoMap
@@ -791,77 +821,18 @@ namespace TableLoader
 
         #endregion
 
-        #region StartPage
-
-        private void connectionManagerChanged(object sender, EventArgs e)
-        {
-            IsagConnectionManager control = (IsagConnectionManager)sender;
-
-            ReactOnConnectionManagerChanged(control.Equals(_connectionManagerMain));
-        }
-
-        private void _cmbTransaction_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            UpdateDbCommandList();
-        }
-
-        private void btnCreateTable_Click(object sender, EventArgs e)
-        {
-            CreateDestinationTable();
-        }
-
-        private void btnAlterTable_Click(object sender, EventArgs e)
-        {
-            AlterDestinationTable();
-        }
-
-        private void btnCreateScdTable_Click(object sender, EventArgs e)
-        {
-            CreateScdTable();
-        }
-
-        private void imgHelpTransactions_Click(object sender, EventArgs e)
-        {
-            ShowHelpTransaction();
-        }
-
-        private void imgHelpChunkSize_Click(object sender, EventArgs e)
-        {
-            ShowHelpChunkSize();
-        }
-
-        private void imgHelpStandardConfig_Click(object sender, EventArgs e)
-        {
-            ShowHelpStandardConfig();
-        }
-
-        private void _DbCommand_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            UpdateTransactionList();
-            AdjustSettingsForMerge();
-            DisableDefaultValue();
-        }
-
-        private void cmbDestinationTable_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            _IsagCustomProperties.RemoveOutput();
-            PopulateOutputColumnList();
-            ShowWarningOnDestinationTableChanged();
-        }
-
-
-        #endregion
+      
 
         #region Pre-/Post Sql
 
         private void btnInsertVariablePreSql_Click(object sender, EventArgs e)
         {
-            tbPreSql.Text = tbPreSql.Text.Insert(tbPreSql.SelectionStart, "@(" + _cmpVariableChooserPreSql.SelectedVariable + ")");
+            tbPreSql.Text = tbPreSql.Text.Insert(tbPreSql.SelectionStart, "@(" + _cmbVariableChooserPreSql.SelectedVariable + ")");
         }
 
         private void btnInsertVariablePostSql_Click(object sender, EventArgs e)
         {
-            tbPostSql.Text = tbPostSql.Text.Insert(tbPostSql.SelectionStart, "@(" + _cmpVariableChooserPostSql.SelectedVariable + ")");
+            tbPostSql.Text = tbPostSql.Text.Insert(tbPostSql.SelectionStart, "@(" + _cmbVariableChooserPostSql.SelectedVariable + ")");
         }
 
         private void btnInsertTruncatePreSql_Click(object sender, EventArgs e)
@@ -956,7 +927,7 @@ namespace TableLoader
 
         private void btnInsertVarCustomCommand_Click(object sender, EventArgs e)
         {
-            tbCustomMergeCommand.Text = tbCustomMergeCommand.Text.Insert(tbCustomMergeCommand.SelectionStart, "@(" + _cmpVariableChooserCustomCommand.SelectedVariable + ")");
+            tbCustomMergeCommand.Text = tbCustomMergeCommand.Text.Insert(tbCustomMergeCommand.SelectionStart, "@(" + _cmbVariableChooserCustomCommand.SelectedVariable + ")");
         }
 
         /// <summary>
@@ -971,10 +942,67 @@ namespace TableLoader
 
         #endregion
 
-        #endregion
-
         #region StartPage
 
+        #region Events
+
+        private void connectionManagerChanged(object sender, EventArgs e)
+        {
+            IsagConnectionManager control = (IsagConnectionManager) sender;
+
+            ReactOnConnectionManagerChanged(control.Equals(_connectionManagerMain));
+        }
+
+        private void _cmbTransaction_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            UpdateDbCommandList();
+        }
+
+        private void btnCreateTable_Click(object sender, EventArgs e)
+        {
+            CreateDestinationTable();
+        }
+
+        private void btnAlterTable_Click(object sender, EventArgs e)
+        {
+            AlterDestinationTable();
+        }
+
+        private void btnCreateScdTable_Click(object sender, EventArgs e)
+        {
+            CreateScdTable();
+        }
+
+        private void imgHelpTransactions_Click(object sender, EventArgs e)
+        {
+            ShowHelpTransaction();
+        }
+
+        private void imgHelpChunkSize_Click(object sender, EventArgs e)
+        {
+            ShowHelpChunkSize();
+        }
+
+        private void imgHelpStandardConfig_Click(object sender, EventArgs e)
+        {
+            ShowHelpStandardConfig();
+        }
+
+        private void _DbCommand_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            UpdateTransactionList();
+            AdjustSettingsForMerge();
+            DisableDefaultValue();
+        }
+
+        private void cmbDestinationTable_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            _IsagCustomProperties.RemoveOutput();
+            PopulateOutputColumnList();
+            ShowWarningOnDestinationTableChanged();
+        }
+
+        #endregion
         /// <summary>
         /// Warnung anzeigen, wenn die Destination Table geändert wurde und das PreSql Statement einen truncate-Befehl enthält
         /// </summary>
@@ -987,8 +1015,6 @@ namespace TableLoader
             }
         }
 
-
-
         /// <summary>
         /// Den Hilfetext für die StandardConfigs anzeigen
         /// </summary>
@@ -998,7 +1024,6 @@ namespace TableLoader
             messageBox.SetHelpText(Properties.Resources.Help_StdConfig);
             messageBox.Show();
         }
-
 
         /// <summary>
         /// Den Hilfetext für die Transaktionen anzeigen
@@ -1169,8 +1194,6 @@ namespace TableLoader
             ColumnConfig config = (ColumnConfig)row.DataBoundItem;
 
             config.Key = config.IsOutputPrimaryKey;
-
-            //row.Update();
         }
 
         private void MarkAutoIdAsUnused()
@@ -1227,7 +1250,6 @@ namespace TableLoader
                 row.Cells["DataTypeOutput"].Style.BackColor = Color.LightGray;
             }
         }
-
 
         private void AdjustSettingsForMerge()
         {
@@ -1294,9 +1316,12 @@ namespace TableLoader
             return result;
         }
 
+        /// <summary>
+        /// OutputColumnlist (Itemlist) is filled depending on the choosen database table.
+        /// Also the list is limited to those columns that are not already assigned if "Limit OutpuColumnList is choosen"
+        /// </summary>
         private void AdjustOutputColumnItemList()
         {
-            //ugMapping.DisableListChangedEvent(_mappingOutputColumnItemSource);
             _mappingOutputColumnItemSource.RaiseListChangedEvents = false;
             _mappingOutputColumnItemSource.Clear();            
 
@@ -1307,7 +1332,6 @@ namespace TableLoader
                 _mappingOutputColumnItemSource.Add(column);
             }
 
-            //ugMapping.EnableListChangedEvent(_mappingOutputColumnItemSource);
             _mappingOutputColumnItemSource.RaiseListChangedEvents = true;
             _mappingOutputColumnItemSource.Insert(0, "");
         }
@@ -1324,10 +1348,7 @@ namespace TableLoader
         }
         #endregion
 
-        private void CloseConfigConnection()
-        {
-            if (_configConnection != null && _configConnection.State == ConnectionState.Open) _configConnection.Close();
-        }
+    
 
         /// <summary>
         /// - Speichern der Custom Properties
@@ -1446,7 +1467,7 @@ namespace TableLoader
 
         private void btnInsert_Click(object sender, EventArgs e)
         {
-            tbMessage.Text = tbMessage.Text.Insert(tbMessage.SelectionStart, "@(" + _cmpVariableChooserLog.SelectedVariable + ")");
+            tbMessage.Text = tbMessage.Text.Insert(tbMessage.SelectionStart, "@(" + _cmbVariableChooserLog.SelectedVariable + ")");
         }
 
         #endregion
@@ -1525,11 +1546,11 @@ namespace TableLoader
             lblLayoutMapping.Visible = (uTabConfig.SelectedTab == uTabMapping);
         }
 
-        //private void cmbTableLoaderType_SelectedIndexChanged(object sender, EventArgs e)
-        //{
-        //    _cmbTableLoaderType.DataBindings["SelectedItem"].WriteValue(); 
-        //}
-
+        private void CloseConfigConnection()
+        {
+            if (_configConnection != null && _configConnection.State == ConnectionState.Open)
+                _configConnection.Close();
+        }
 
 
 
