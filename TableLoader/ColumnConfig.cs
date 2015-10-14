@@ -5,12 +5,27 @@ using System.ComponentModel;
 using System.Xml.Serialization;
 using TableLoader.ComponentFramework.Mapping;
 using Microsoft.SqlServer.Dts.Pipeline.Wrapper;
+using System.Runtime.CompilerServices;
 
 namespace TableLoader
 {
-    public class ColumnConfig : IXmlSerializable
+    public class ColumnConfig: IXmlSerializable, INotifyPropertyChanged
     {
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private void NotifyPropertyChanged(String info)
+        {
+            if (PropertyChanged != null)
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(info));
+            }
+        }
+
+
         #region Properties
+
+
 
         private SqlColumnList _sqlColumns;
 
@@ -19,7 +34,11 @@ namespace TableLoader
         public bool Insert
         {
             get { return _insert; }
-            set { _insert = value;}
+            set
+            {
+                _insert = value;
+                NotifyPropertyChanged("Insert");
+            }
         }
 
         private bool _update;
@@ -27,7 +46,11 @@ namespace TableLoader
         public bool Update
         {
             get { return _update; }
-            set { _update = value; }
+            set
+            {
+                _update = value;
+                NotifyPropertyChanged("Update");
+            }
         }
 
         private bool _key;
@@ -35,7 +58,11 @@ namespace TableLoader
         public bool Key
         {
             get { return _key; }
-            set { _key = value; }
+            set
+            {
+                _key = value;
+                NotifyPropertyChanged("Key");
+            }
         }
 
         private string _inputColumnName;
@@ -43,7 +70,11 @@ namespace TableLoader
         public string InputColumnName
         {
             get { return _inputColumnName; }
-            set { _inputColumnName = value; }
+            set
+            {
+                _inputColumnName = value;
+                NotifyPropertyChanged("InputColumnName");
+            }
         }
 
         private string _outputColumnName;
@@ -54,7 +85,9 @@ namespace TableLoader
             set
             {
                 _outputColumnName = value;
-                if (_sqlColumns != null) SetOutputColumnDefinition();
+                if (_sqlColumns != null)
+                    SetOutputColumnDefinition();
+                NotifyPropertyChanged("OutputColumnName");
             }
         }
 
@@ -63,9 +96,14 @@ namespace TableLoader
         public string Default
         {
             get { return _default; }
-            set {
-                if (value == null) _default = "";
-                else _default = value; 
+            set
+            {
+                if (value == null)
+                    _default = "";
+                else
+                    _default = value;
+
+                NotifyPropertyChanged("Default");
             }
         }
 
@@ -76,8 +114,12 @@ namespace TableLoader
             get { return _function; }
             set
             {
-                if (value == null) _function = "";
-                else _function = value;
+                if (value == null)
+                    _function = "";
+                else
+                    _function = value;
+
+                NotifyPropertyChanged("Function");
             }
         }
 
@@ -87,7 +129,11 @@ namespace TableLoader
         public string DataTypeInput
         {
             get { return _dataTypeInput; }
-            set { _dataTypeInput = value; }
+            set
+            {
+                _dataTypeInput = value;
+                NotifyPropertyChanged("DataTypeInput");
+            }
         }
 
         private string _dataTypeOutput;
@@ -95,7 +141,11 @@ namespace TableLoader
         public string DataTypeOutput
         {
             get { return _dataTypeOutput; }
-            set { _dataTypeOutput = value; }
+            set
+            {
+                _dataTypeOutput = value;
+                NotifyPropertyChanged("DataTypeOutput");
+            }
         }
 
         private string _dataTypeOutputNet;
@@ -103,7 +153,11 @@ namespace TableLoader
         public string DataTypeOutputNet
         {
             get { return _dataTypeOutputNet; }
-            set { _dataTypeOutputNet = value; }
+            set
+            {
+                _dataTypeOutputNet = value;
+                NotifyPropertyChanged("DataTypeOutputNet");
+            }
         }
 
         private bool _isOutputPrimaryKey;
@@ -111,7 +165,11 @@ namespace TableLoader
         public bool IsOutputPrimaryKey
         {
             get { return _isOutputPrimaryKey; }
-            set { _isOutputPrimaryKey = value; }
+            set
+            {
+                _isOutputPrimaryKey = value;
+                NotifyPropertyChanged("IsOutputPrimaryKey");
+            }
         }
 
         private bool _allowOutputDbNull;
@@ -119,7 +177,11 @@ namespace TableLoader
         public bool AllowOutputDbNull
         {
             get { return _allowOutputDbNull; }
-            set { _allowOutputDbNull = value; }
+            set
+            {
+                _allowOutputDbNull = value;
+                NotifyPropertyChanged("AllowOutputDbNull");
+            }
         }
 
         private bool _isOutputAutoId;
@@ -127,7 +189,11 @@ namespace TableLoader
         public bool IsOutputAutoId
         {
             get { return _isOutputAutoId; }
-            set { _isOutputAutoId = value;}
+            set
+            {
+                _isOutputAutoId = value;
+                NotifyPropertyChanged("IsOutputAutoId");
+            }
         }
 
         private int _inputColumnId;
@@ -135,7 +201,11 @@ namespace TableLoader
         public int InputColumnId
         {
             get { return _inputColumnId; }
-            set { _inputColumnId = value; }
+            set
+            {
+                _inputColumnId = value;
+                NotifyPropertyChanged("InputColumnId");
+            }
         }
 
         [XmlIgnore, BrowsableAttribute(false)]
@@ -152,8 +222,10 @@ namespace TableLoader
         {
             get
             {
-                if (HasInput) return InputColumnName;
-                else return OutputColumnName;
+                if (HasInput)
+                    return InputColumnName;
+                else
+                    return OutputColumnName;
             }
         }
 
@@ -162,8 +234,10 @@ namespace TableLoader
         {
             get
             {
-                if (HasInput) return DataTypeInput;
-                else return DataTypeOutput;
+                if (HasInput)
+                    return DataTypeInput;
+                else
+                    return DataTypeOutput;
             }
         }
 
@@ -206,7 +280,7 @@ namespace TableLoader
         [XmlIgnore, BrowsableAttribute(false), ReadOnly(true)]
         public bool HasScd
         {
-            get { return IsScdColumn || IsScdValidFrom || !string.IsNullOrEmpty(ScdTable); }           
+            get { return IsScdColumn || IsScdValidFrom || !string.IsNullOrEmpty(ScdTable); }
         }
         #endregion
 
@@ -236,7 +310,8 @@ namespace TableLoader
             _allowOutputDbNull = outputNullAllowed;
             _isOutputAutoId = isOutputAutoId;
 
-            if (inputColumnId != null) _inputColumnId = (int) inputColumnId;
+            if (inputColumnId != null)
+                _inputColumnId = (int) inputColumnId;
         }
 
 
@@ -259,7 +334,7 @@ namespace TableLoader
             _isOutputPrimaryKey = false;
             _allowOutputDbNull = false;
             _isOutputAutoId = false;
-            
+
             _inputColumnId = inputColumn.ID;
 
             //ID Mapping
@@ -373,7 +448,7 @@ namespace TableLoader
                 this.IsOutputAutoId = false;
                 this.AllowOutputDbNull = false;
             }
-        }      
+        }
 
         public void RemoveOutput()
         {

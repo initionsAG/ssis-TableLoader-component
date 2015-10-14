@@ -19,8 +19,18 @@ using TableLoader.ComponentFramework;
 
 namespace TableLoader
 {
-    public class IsagCustomProperties
+    public class IsagCustomProperties: INotifyPropertyChanged
     {
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private void NotifyPropertyChanged(String info)
+        {
+            if (PropertyChanged != null)
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(info));
+            }
+
+        }
         #region Properties
 
         [BrowsableAttribute(false), XmlIgnore]
@@ -114,6 +124,7 @@ namespace TableLoader
                 _dbCommand = value;
                 if ((_dbCommand == DbCommandType.BulkInsert || _dbCommand == DbCommandType.BulkInsertRowLock) && _transaction == TransactionType.External)
                     _transaction = TransactionType.Internal;
+                NotifyPropertyChanged("DbCommand");
             }
         }
 

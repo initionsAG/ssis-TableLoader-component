@@ -25,9 +25,10 @@ namespace ComponentFramework.Controls
     /// the column name of the DataGridView is "SqlColumn")
     /// 
     /// </summary>
-    public partial class IsagDataGridView : DataGridView
+    public partial class IsagDataGridView: DataGridView
     {
         public enum ComboboxConfigType { MARK_INVALID = 0, DISABLE = 1 }
+        private bool IsCellValueChangeEventDisabled = false;
 
         /// <summary>
         /// DataSources for the ItemLists
@@ -47,26 +48,22 @@ namespace ComponentFramework.Controls
         public IsagDataGridView()
         {
             InitializeComponent();
+
             this.AllowUserToAddRows = false;
-
-            this.DataBindingComplete += IsagDataGridView_DataBindingComplete;
             this.DataBindings.DefaultDataSourceUpdateMode = DataSourceUpdateMode.OnPropertyChanged;
-            this.ColumnHeaderMouseClick += IsagDataGridView_ColumnHeaderMouseClick;
         }
-
 
         /// <summary>
         /// Sort Datagrid
         /// </summary>
-        /// <param name="sender"></param>
         /// <param name="e"></param>
-        void IsagDataGridView_ColumnHeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e)
+        protected override void OnColumnHeaderMouseClick(DataGridViewCellMouseEventArgs e)
         {
             bool sortComboBoxCell = _cmbItemSources.ContainsKey(e.ColumnIndex);
 
             //Get the sort column (if it is a columnbox, the column that is bounded to the datasource has to be sorted)
-            DataGridViewColumn column = sortComboBoxCell ? 
-                this.Columns[GetBoundedColumnIndex(e.ColumnIndex)] : this.Columns[e.ColumnIndex];                              
+            DataGridViewColumn column = sortComboBoxCell ?
+                this.Columns[GetBoundedColumnIndex(e.ColumnIndex)] : this.Columns[e.ColumnIndex];
 
 
             //sort order is ascending, if columns last sort order has not been ascending
@@ -89,78 +86,56 @@ namespace ComponentFramework.Controls
             if (sortComboBoxCell)
             {
                 this.Columns[e.ColumnIndex].SortMode = DataGridViewColumnSortMode.Programmatic;
-                this.Columns[e.ColumnIndex].HeaderCell.SortGlyphDirection = sortOrder;                
+                this.Columns[e.ColumnIndex].HeaderCell.SortGlyphDirection = sortOrder;
             }
 
-            column.SortMode = DataGridViewColumnSortMode.Programmatic; 
+            column.SortMode = DataGridViewColumnSortMode.Programmatic;
             column.HeaderCell.SortGlyphDirection = sortOrder;
             this.Sort(column, listSortOrder);
 
-            //Refresh comboboxes (displayed value is lost because comboBox cell is not direectly bounded to the datasource
+            //Refresh comboboxes (displayed value is lost because comboBox cell is not directly bounded to the datasource
             foreach (int colIdx in _cmbItemSources.Keys)
             {
                 string columnName = this.Columns[GetBoundedColumnIndex(colIdx)].Name;
                 RefreshCellBoundComboBox(columnName);
             }
 
+            base.OnColumnHeaderMouseClick(e);
         }
 
         /// <summary>
-        /// TODO
+        /// Each combobox column has to be updated whenever the bounded column has changed
         /// </summary>
-        /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void IsagDataGridView_DataBindingComplete(object sender, DataGridViewBindingCompleteEventArgs e)
+        protected override void OnDataBindingComplete(DataGridViewBindingCompleteEventArgs e)
         {
-            this.DataBindingComplete -= IsagDataGridView_DataBindingComplete;
+            foreach (int columnIndex in _cmbItemSources.Keys)
+            {
+                RefreshCellBoundComboBox(this.Columns[GetBoundedColumnIndex(columnIndex)].Name);
+            }
 
-            UpdateCellBoundComboBox();
-
-            this.CellValueChanged += IsagDataGridView_CellValueChanged;
-            this.EditingControlShowing += IsagDataGridView_EditingControlShowing;
-            this.CurrentCellDirtyStateChanged += IsagDataGridView_CurrentCellDirtyStateChanged;
-
-            //foreach (DataGridViewColumn column in this.Columns)
-            //{
-            //    column.SortMode = DataGridViewColumnSortMode.Programmatic;
-            //    column.HeaderCell.SortGlyphDirection = System.Windows.Forms.SortOrder.Ascending;
-            //    this.Sort(column, ListSortDirection.Ascending);
-
-            //}
+            base.OnDataBindingComplete(e);
         }
-
-   
 
         /// <summary>
         /// Whenn a Combox is opened register to the DrawItem Event
         /// </summary>
-        /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void IsagDataGridView_EditingControlShowing(object sender, DataGridViewEditingControlShowingEventArgs e)
+        protected override void OnEditingControlShowing(DataGridViewEditingControlShowingEventArgs e)
         {
             if (_cmbItemSources.Keys.Contains(this.SelectedCells[0].ColumnIndex))
             {
-                ComboBox cmb = (ComboBox)e.Control;
+                ComboBox cmb = (ComboBox) e.Control;
 
                 if (cmb != null)
                 {
                     cmb.DrawMode = DrawMode.OwnerDrawFixed;
                     cmb.DrawItem -= cmb_DrawItem;
                     cmb.DrawItem += cmb_DrawItem;
-
-                    cmb.SelectedIndexChanged -= cmb_SelectedIndexChanged;
-                    cmb.SelectedIndexChanged += cmb_SelectedIndexChanged;
                 }
+
             }
-        }
-
-        void cmb_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            ComboBox cmb = (ComboBox)sender;
-
-            //Undo change as user has selected a disabled item
-            if (_cmbItemSources[this.CurrentCell.ColumnIndex].IsDisabled(cmb.SelectedItem))
-                cmb.SelectedItem = this.CurrentCell.Value;
+            base.OnEditingControlShowing(e);
         }
 
         /// <summary>
@@ -175,9 +150,9 @@ namespace ComponentFramework.Controls
 
             if (e.Index != -1)
             {
-                ComboBox cmb = (ComboBox)EditingControl;
+                ComboBox cmb = (ComboBox) EditingControl;
 
-                object itemValue = ((ComboBox)sender).Items[e.Index];
+                object itemValue = ((ComboBox) sender).Items[e.Index];
                 Color color = _cmbItemSources[this.SelectedCells[0].ColumnIndex].GetForeColor(itemValue);
 
                 using (var brush = new SolidBrush(color))
@@ -188,123 +163,130 @@ namespace ComponentFramework.Controls
         }
 
         /// <summary>
-        /// Commits the cells value change earlier
+        /// Commits the cells value change earlier (does not apply to textbox cells)
         /// This way the cell does not have to loose focus to trigger cell value change event.
+        /// </summary>
+        /// <param name="e"></param>
+        protected override void OnCurrentCellDirtyStateChanged(EventArgs e)
+        {
+            if (this.IsCurrentCellDirty && !(this.CurrentCell is DataGridViewTextBoxCell))
+                this.CommitEdit(DataGridViewDataErrorContexts.Commit);
+
+            base.OnCurrentCellDirtyStateChanged(e);
+        }
+        /// <summary>
         /// 
         /// </summary>
-        /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void IsagDataGridView_CurrentCellDirtyStateChanged(object sender, EventArgs e)
+        protected override void OnCellValueChanged(DataGridViewCellEventArgs e)
         {
-            if (this.IsCurrentCellDirty) this.CommitEdit(DataGridViewDataErrorContexts.Commit);
+            if (!IsCellValueChangeEventDisabled)
+            {
+                DoCellValueChanged(e);
+                base.OnCellValueChanged(e);
+            }
+        }
+
+
+        /// <summary>
+        /// Set cells back color. Color depends on ReadOnly Property of the cell.
+        /// </summary>
+        /// <param name="e"></param>
+        protected override void OnCellFormatting(DataGridViewCellFormattingEventArgs e)
+        {
+            if (e.RowIndex != -1 && e.ColumnIndex != -1)
+            {
+                bool readOnly = this.Rows[e.RowIndex].Cells[e.ColumnIndex].ReadOnly;
+                e.CellStyle.BackColor = readOnly ? Color.LightGray : Color.White;
+            }
+
+            base.OnCellFormatting(e);
         }
 
         /// <summary>
-        /// If a cell value has change the ItemList has to be updated.
+        /// When the ReadOnly Property of a cell has changed, the cell has to be redrawn in order to change the back color.
+        /// </summary>
+        /// <param name="e"></param>
+        protected override void OnCellStateChanged(DataGridViewCellStateChangedEventArgs e)
+        {
+            if (e.StateChanged == DataGridViewElementStates.ReadOnly)
+                Refresh();
+            base.OnCellStateChanged(e);
+        }
+        /// <summary>
+        ///    If a cell value has change the ItemList has to be updated.
         /// - invalid items (not included in the ItemSource but in the ItemList) has to be removed from the ItemList
         /// - if the cell value is not contained in the ItemList it has to be added
         /// </summary>
-        /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void IsagDataGridView_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        private void DoCellValueChanged(DataGridViewCellEventArgs e)
         {
-            this.CellValueChanged -= IsagDataGridView_CellValueChanged;
+            IsCellValueChangeEventDisabled = true;
 
             if (_cmbItemSources.Keys.Contains(e.ColumnIndex))
             {
+                DataGridViewRow row = this.Rows[e.RowIndex];
+                ComboBoxConfiguration config = _cmbItemSources[e.ColumnIndex];
 
                 //Get the new value of the cell (if value has been choosen by a an EdintingControl like a combobox, the cell still contains the old value)
                 object value = (EditingControl != null ? EditingControl.Text : this.Rows[e.RowIndex].Cells[e.ColumnIndex].Value);
+                if (value == null)
+                    value = "";
 
+                //Update combobox Itemlist
+                List<object> itemList = _cmbItemSources[e.ColumnIndex].GetItemList(row.DataBoundItem);
 
-                //if (_cmbItemSources[e.ColumnIndex].IsDisabled(value))
-                //{
-                //    //Undo change as user has selected a disabled item
-
-                //    // this.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = this.Rows[e.RowIndex].Cells[GetBoundedColumnIndex(e.ColumnIndex)].Value;
-                //    this.CancelEdit();
-
-                //    //this.CommitEdit(DataGridViewDataErrorContexts.Commit); 
-                //    //this.RefreshEdit();
-                //}
+                if (!itemList.Contains(value))
+                    itemList.Insert(0, value);
+                DataGridViewComboBoxCell cell = ((DataGridViewComboBoxCell) row.Cells[e.ColumnIndex]);
+                SetItemList(cell, itemList);
 
                 //Update Cell that is databounded to the GridViews DataSource
                 this.Rows[e.RowIndex].Cells[GetBoundedColumnIndex(e.ColumnIndex)].Value = value;
-
-                if (_cmbItemSources[e.ColumnIndex].ConfigType == ComboboxConfigType.MARK_INVALID)
-                {
-                    //Remove invalid items from ItemList (except Cell Values)
-                    RemoveUnusedInvalidItems(e.ColumnIndex);
-
-                    UpdateColumnBoxStyle(e.ColumnIndex, this.Rows[e.RowIndex]);
-                }
             }
 
-            //if (this.IsCurrentCellDirty) this.CommitEdit(DataGridViewDataErrorContexts.Commit);
-            this.CellValueChanged += IsagDataGridView_CellValueChanged;
+
+            IsCellValueChangeEventDisabled = false;
         }
 
-        /// <summary>
-        /// Removes invalid Items from the ItemList if the item does not equal the cell value
-        /// </summary>
-        /// <param name="columnIndex">the column Index of the combobox column</param>
-        private void RemoveUnusedInvalidItems(int columnIndex)
+        protected override void OnRowsAdded(DataGridViewRowsAddedEventArgs e)
         {
-            DataGridViewComboBoxColumn cmbColumn = (DataGridViewComboBoxColumn)this.Columns[columnIndex];
+            if (RowCount > 0)
+            {
+                foreach (ComboBoxConfiguration config in _cmbItemSources.Values)
+                {
+                    config.AddItemSourceElement(this.Rows[e.RowIndex].DataBoundItem);
+                }
+            }
+            base.OnRowsAdded(e);
+        }
 
-            // invalid items that are still necessary in the itemlist
-            List<object> invalidItems = new List<object>();
+        protected override void OnRowsRemoved(DataGridViewRowsRemovedEventArgs e)
+        {
+            if (RowCount > 0)
+            {
+                foreach (ComboBoxConfiguration config in _cmbItemSources.Values)
+                {
+                    config.RemoveItemSourceElement(this.Rows[e.RowIndex].DataBoundItem);
+                }
+            }
+            base.OnRowsRemoved(e);
+        }
+
+
+        private ComboBoxConfiguration GetComboBoxConfigFromSingleDataSource(BindingList<object> dataSource, ComboboxConfigType configurationType)
+        {
+            Dictionary<object, BindingList<object>> dataSourceDictionary = new Dictionary<object, BindingList<object>>();
 
             foreach (DataGridViewRow row in this.Rows)
             {
-                object rowValue = row.Cells[columnIndex].Value;
-                if (!_cmbItemSources[columnIndex].GetItemList().Contains(rowValue))
-                {
-                    invalidItems.Add(rowValue);
-                }
+                dataSourceDictionary.Add(row.DataBoundItem, dataSource);
             }
-            for (int i = cmbColumn.Items.Count - 1; i >= 0; i--)
-            {
 
-                object item = cmbColumn.Items[i];
-                if (!invalidItems.Contains(item) && !_cmbItemSources[columnIndex].GetItemList().Contains(item)) cmbColumn.Items.RemoveAt(i);
-            }
-        }
+            //only one registration is necessary because all datasources are equal
+            dataSource.ListChanged += DataSource_ListChanged;
 
-        /// <summary>
-        /// Updates the style of a combobox for each row
-        /// </summary>
-        /// <param name="columnIndex">the column Index of the combobox column</param>
-        private void UpdateColumnBoxStyle(int columnIndex)
-        {
-            foreach (DataGridViewRow row in Rows)
-            {
-                UpdateColumnBoxStyle(columnIndex, row);
-            }
-        }
-        /// <summary>
-        /// Updates the style of a combobox cell
-        /// (change colors depending on item state (valid or invalid) 
-        /// </summary>
-        /// <param name="columnIndex">the column Index of the combobox column</param>
-        /// <param name="row">the row that contains the combobox cell that has to be updated</param>
-        private void UpdateColumnBoxStyle(int columnIndex, DataGridViewRow row)
-        {
-            DataGridViewComboBoxCell cell = (DataGridViewComboBoxCell)row.Cells[columnIndex];
-
-            if (cell.Value != null)
-            {
-                ComboBoxConfiguration config = _cmbItemSources[columnIndex];
-                if (config.ConfigType == ComboboxConfigType.MARK_INVALID)
-                {
-                    Color color = config.GetForeColor(cell.Value);
-                    Color backColor = config.GetBackColor(cell.Value);
-
-                    cell.Style.ForeColor = color;
-                    cell.Style.SelectionBackColor = backColor;
-                    cell.Style.SelectionForeColor = color;
-                }
-            }
+            return new ComboBoxConfiguration(dataSourceDictionary, configurationType);
         }
 
         /// <summary>
@@ -314,8 +296,9 @@ namespace ComponentFramework.Controls
         /// <param name="dataSource">the DataSource for the ItemList of the combobox</param>
         public void AddCellBoundedComboBox(string srcColumnName, BindingList<object> dataSource, ComboboxConfigType configurationType)
         {
-            dataSource.ListChanged += DataSource_ListChanged;
-            ComboBoxConfiguration comboConfig = new ComboBoxConfiguration(dataSource, configurationType);
+            IsCellValueChangeEventDisabled = true;
+
+            ComboBoxConfiguration comboConfig = GetComboBoxConfigFromSingleDataSource(dataSource, configurationType);
 
             DataGridViewComboBoxColumn cmbColumn = new DataGridViewComboBoxColumn();
             DataGridViewColumn srcColumn = this.Columns[srcColumnName];
@@ -323,11 +306,7 @@ namespace ComponentFramework.Controls
 
             cmbColumn.Name = CMB_COLUMN_PREFIX + srcColumnName;
             cmbColumn.HeaderText = srcColumn.HeaderText;
-            cmbColumn.Sorted = true;
             cmbColumn.ValueType = srcColumn.ValueType;
-
-
-            cmbColumn.Items.AddRange(comboConfig.GetItemList());
             cmbColumn.FlatStyle = FlatStyle.Flat;
 
             int index = _cmbItemSources.Count;
@@ -338,8 +317,17 @@ namespace ComponentFramework.Controls
             //Copy Values from cell (bounded to grid datasource) to cell (combobox cell)
             foreach (DataGridViewRow row in this.Rows)
             {
+                List<object> itemList = comboConfig.GetItemList(row.DataBoundItem);
+                object value = row.Cells[srcColumn.Index].Value;
+                if (!itemList.Contains(value))
+                    itemList.Insert(0, value);
+                DataGridViewComboBoxCell cell = ((DataGridViewComboBoxCell) row.Cells[cmbColumn.Index]);
+                SetItemList(cell, itemList);
+
                 row.Cells[cmbColumn.Index].Value = row.Cells[srcColumn.Index].Value;
             }
+
+            IsCellValueChangeEventDisabled = false;
         }
 
         public void AddCellBoundedComboBox(string srcColumnName, Type srcEnum)
@@ -356,117 +344,46 @@ namespace ComponentFramework.Controls
         }
 
         /// <summary>
-        /// Updates the "bounded" combobox column
-        /// (remove invalid items, add invalid items that euqals a cell value of the combobox column
-        /// </summary>
-        /// <param name="columnIndex">the column index of the combobox column</param>
-        private void UpdateCellBoundComboBox(int columnIndex)
-        {           
-            this.CellValueChanged -= IsagDataGridView_CellValueChanged;
-            _cmbItemSources[columnIndex]._itemSource.ListChanged -= DataSource_ListChanged;
-
-            DataGridViewComboBoxColumn cmbColumn = (DataGridViewComboBoxColumn)this.Columns[columnIndex];
-            DataGridViewColumn srcColumn = this.Columns[columnIndex + 1];
-            int boundedColumnIndex = GetBoundedColumnIndex(columnIndex);
-
-
-            if (_cmbItemSources[columnIndex].ConfigType == ComboboxConfigType.MARK_INVALID)
-            {
-                cmbColumn.Items.Clear();
-                cmbColumn.Items.AddRange(_cmbItemSources[columnIndex].GetItemList());
-            }
-
-            foreach (DataGridViewRow row in this.Rows)
-            {
-                DataGridViewCell boundedCell = row.Cells[boundedColumnIndex];
-                if (boundedCell.Value == null) boundedCell.Value = "";
-
-                if (_cmbItemSources[columnIndex].ConfigType == ComboboxConfigType.MARK_INVALID)
-                {
-                    if (!_cmbItemSources[columnIndex].GetItemList().Contains(boundedCell.Value))
-                    {
-                        cmbColumn.Items.Add(boundedCell.Value);
-                    }
-                }
-                try
-                {
-                    row.Cells[columnIndex].Value = boundedCell.Value;
-                }
-                catch (Exception)
-                {
-
-                }
-            }
-
-            _cmbItemSources[columnIndex]._itemSource.ListChanged += DataSource_ListChanged;
-            this.CellValueChanged += IsagDataGridView_CellValueChanged;
-
-        }
-
-        public void RefreshCellBoundComboBox(string columnName)
-        {
-            this.CellValueChanged -= IsagDataGridView_CellValueChanged;
-            int columnIndex = this.Columns[CMB_COLUMN_PREFIX + columnName].Index;
-            int boundedColumnIndex = GetBoundedColumnIndex(columnIndex);
-
-
-            foreach (DataGridViewRow row in this.Rows)
-            {
-                DataGridViewCell boundedCell = row.Cells[boundedColumnIndex];
-                try
-                {
-                  //  this.CurrentCell = row.Cells[columnIndex]; 
-                    row.Cells[columnIndex].Value = boundedCell.Value;
-                    //this.UpdateCellValue(columnIndex, row.Index);
-                }
-                catch (Exception)
-                {
-
-                }
-            }
-
-            this.CellValueChanged += IsagDataGridView_CellValueChanged;
-
-            //this.Update();
-            //this.Refresh();
-            
-
-        }
-
-        /// <summary>
-        /// Updates all "bounded" combobox columns
-        /// </summary>
-        public void UpdateCellBoundComboBox()
-        {
-            foreach (int key in _cmbItemSources.Keys)
-            {
-                UpdateCellBoundComboBox(key);
-            }
-        }
-
-        /// <summary>
         /// React if the DataSource for the ItemList has changed
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void DataSource_ListChanged(object sender, ListChangedEventArgs e)
         {
-            BindingList<object> datasource = (BindingList<object>)sender;
+            IsCellValueChangeEventDisabled = true;
+            BindingList<object> itemListDataSource = (BindingList<object>) sender;
 
-            foreach (int key in _cmbItemSources.Keys)
+            foreach (int columnIndex in _cmbItemSources.Keys)
             {
-                if (_cmbItemSources[key].HasItemSource(datasource) && _cmbItemSources[key].ConfigType == ComboboxConfigType.MARK_INVALID)
+                ComboBoxConfiguration comboConfig = _cmbItemSources[columnIndex];
+
+                if (comboConfig.HasItemListDataSource(itemListDataSource))
                 {
-                    UpdateCellBoundComboBox(key);
-                    UpdateColumnBoxStyle(key);
+                    foreach (DataGridViewRow row in this.Rows)
+                    {
+                        if (comboConfig.HasItemListDataSource(itemListDataSource, row.DataBoundItem))
+                        {
+                            List<object> itemList = comboConfig.GetItemList(row.DataBoundItem);
+
+                            object value = row.Cells[columnIndex].Value;
+                            // if (value == null) value = ""; //TODO: Warum ist der Wert der ComboBoxCell null und nicht ""? Diese Methode dürfte in diesem Fall ("" vom User gewählt)garnicht aufgerufen werden!"
+                            if (!itemList.Contains(value))
+                                itemList.Insert(0, value);
+                            DataGridViewComboBoxCell cell = ((DataGridViewComboBoxCell) row.Cells[columnIndex]);
+
+                            SetItemList(cell, itemList);
+
+                        }
+                    }
                 }
             }
 
-            //  this.CommitEdit(DataGridViewDataErrorContexts.Commit);
-            //this.Update();
-            //this.Refresh();
 
+
+            IsCellValueChangeEventDisabled = false;
         }
+
+
 
         /// <summary>
         /// Gets the column index of the column that the combobox column is bounded to
@@ -488,16 +405,15 @@ namespace ComponentFramework.Controls
             }
         }
 
-
         public void SelectCheckBoxes(bool select)
         {
-            this.CellValueChanged -= IsagDataGridView_CellValueChanged;
-            
+            IsCellValueChangeEventDisabled = true;
+
             foreach (DataGridViewCell cell in this.SelectedCells)
             {
                 if (cell is DataGridViewCheckBoxCell && !cell.ReadOnly)
-                {                    
-                    DirtyEditCell(cell, select);                
+                {
+                    DirtyEditCell(cell, select);
                 }
             }
 
@@ -507,7 +423,7 @@ namespace ComponentFramework.Controls
                 {
                     if (cell is DataGridViewCheckBoxCell && !cell.ReadOnly)
                     {
-                        DirtyEditCell(cell, select); 
+                        DirtyEditCell(cell, select);
                     }
                 }
             }
@@ -520,13 +436,13 @@ namespace ComponentFramework.Controls
                     {
                         if (!row.Cells[col.Index].ReadOnly)
                         {
-                            DirtyEditCell(row.Cells[col.Index], select); 
+                            DirtyEditCell(row.Cells[col.Index], select);
                         }
                     }
                 }
             }
 
-            this.CellValueChanged += IsagDataGridView_CellValueChanged;
+            IsCellValueChangeEventDisabled = false;
         }
 
         public void DirtyEditCell(DataGridViewCell cell, object value)
@@ -537,32 +453,82 @@ namespace ComponentFramework.Controls
             this.CurrentCell = currentCell;
         }
 
-        public void SetCompleteItemSource(List<object> itemSource, string columnName)
+        public void RefreshCellBoundComboBox(string columnName)
         {
-            DataGridViewColumn col = this.Columns[CMB_COLUMN_PREFIX + columnName];
+            IsCellValueChangeEventDisabled = true;
 
-            if (col != null)
+            int columnIndex = this.Columns[CMB_COLUMN_PREFIX + columnName].Index;
+            int boundedColumnIndex = GetBoundedColumnIndex(columnIndex);
+
+            ComboBoxConfiguration comboConfig = _cmbItemSources[columnIndex];
+
+            foreach (DataGridViewRow row in this.Rows)
             {
-                _cmbItemSources[col.Index].SetCompleteItemSource(itemSource);
-                UpdateCellBoundComboBox(col.Index);
+                DataGridViewCell boundedCell = row.Cells[boundedColumnIndex];
+                try
+                {
+                    List<object> itemList = comboConfig.GetItemList(row.DataBoundItem);
+
+                    object value = boundedCell.Value;
+                    if (value == null)
+                    {
+                        boundedCell.Value = "";
+                        value = "";
+                    }
+                    if (!itemList.Contains(value))
+                        itemList.Insert(0, value);
+                    DataGridViewComboBoxCell cell = ((DataGridViewComboBoxCell) row.Cells[columnIndex]);
+                    SetItemList(cell, itemList);
+                    cell.Value = value;
+                }
+                catch (Exception)
+                {
+
+                }
+            }
+
+            IsCellValueChangeEventDisabled = false;
+        }
+
+        private void SetItemList(DataGridViewComboBoxCell cell, List<object> itemList)
+        {
+            int count = cell.Items.Count;
+            cell.Items.AddRange(itemList.ToArray<object>());
+            for (int i = 0; i < count; i++)
+            {
+                cell.Items.RemoveAt(0);
             }
         }
+
+
+
     }
 
 
 
     class ComboBoxConfiguration
     {
-       
-        public BindingList<object> _itemSource;
+
+        private Dictionary<object, BindingList<object>> _itemSource;
         private List<object> _completeItemSource { get; set; }
         public ComponentFramework.Controls.IsagDataGridView.ComboboxConfigType ConfigType { get; set; }
 
-        public ComboBoxConfiguration(BindingList<object> itemSource, ComponentFramework.Controls.IsagDataGridView.ComboboxConfigType configType)
+        public ComboBoxConfiguration(Dictionary<object, BindingList<object>> itemSource, ComponentFramework.Controls.IsagDataGridView.ComboboxConfigType configType)
         {
             _itemSource = itemSource;
-            _completeItemSource = itemSource.ToList<object>();
             ConfigType = configType;
+        }
+
+        public void AddItemSourceElement(object dataBoundItem)
+        {
+            if (_itemSource.Count > 0 && !_itemSource.ContainsKey(dataBoundItem))
+                _itemSource.Add(dataBoundItem, _itemSource.Values.First());
+        }
+
+        public void RemoveItemSourceElement(object dataBoundItem)
+        {
+            if (_itemSource.Count > 0 && !_itemSource.ContainsKey(dataBoundItem))
+                _itemSource.Remove(dataBoundItem);
         }
 
         public void SetCompleteItemSource(List<object> itemSource)
@@ -572,55 +538,59 @@ namespace ComponentFramework.Controls
 
         public Color GetForeColor(object item)
         {
-            bool isValid = IsValid(item);
+            //bool isValid = IsValid(item);
 
-            if (ConfigType == ComponentFramework.Controls.IsagDataGridView.ComboboxConfigType.MARK_INVALID)
-                return isValid ? Color.Black : Color.Red;
-            else if (ConfigType == ComponentFramework.Controls.IsagDataGridView.ComboboxConfigType.DISABLE)
-                return isValid ? Color.Black : Color.LightGray;
+            //if (ConfigType == ComponentFramework.Controls.IsagDataGridView.ComboboxConfigType.MARK_INVALID)
+            //    return isValid ? Color.Black : Color.Red;
+            //else if (ConfigType == ComponentFramework.Controls.IsagDataGridView.ComboboxConfigType.DISABLE)
+            //    return isValid ? Color.Black : Color.LightGray;
 
             return Color.Black;
         }
 
         public Color GetBackColor(object item)
         {
-            bool isValid = IsValid(item);
-            if (ConfigType == ComponentFramework.Controls.IsagDataGridView.ComboboxConfigType.MARK_INVALID)
-                return isValid ? Color.Empty : Color.White;
-            else if (ConfigType == ComponentFramework.Controls.IsagDataGridView.ComboboxConfigType.DISABLE)
-                return isValid ? Color.Empty : Color.White;
+            //bool isValid = IsValid(item);
+            //if (ConfigType == ComponentFramework.Controls.IsagDataGridView.ComboboxConfigType.MARK_INVALID)
+            //    return isValid ? Color.Empty : Color.White;
+            //else if (ConfigType == ComponentFramework.Controls.IsagDataGridView.ComboboxConfigType.DISABLE)
+            //    return isValid ? Color.Empty : Color.White;
 
             return Color.Empty;
         }
 
-        public object[] GetItemList()
+        public List<object> GetItemList(object databoundedItem)
         {
-            switch (ConfigType)
-            {
-                case ComponentFramework.Controls.IsagDataGridView.ComboboxConfigType.MARK_INVALID:
-                    return _itemSource.ToArray<object>();
-                case ComponentFramework.Controls.IsagDataGridView.ComboboxConfigType.DISABLE:
-                    return _completeItemSource.ToArray<object>();
-                default:
-                    break;
-            }
-
-            return null;
+            List<object> itemList = _itemSource[databoundedItem].ToList();
+            itemList.Sort();
+            return itemList;
         }
 
-        private bool IsValid(object item)
+
+
+        private bool IsValid(object databoundedItem, object item)
         {
-            return _itemSource.Contains(item);
+            return _itemSource[databoundedItem].Contains(item);
         }
 
         public bool IsDisabled(object item)
         {
-            return ConfigType == ComponentFramework.Controls.IsagDataGridView.ComboboxConfigType.DISABLE && !IsValid(item);
+            return false; //            ConfigType == ComponentFramework.Controls.IsagDataGridView.ComboboxConfigType.DISABLE && !IsValid(item);
         }
 
-        public bool HasItemSource(BindingList<object> itemSource)
+        public bool HasItemListDataSource(BindingList<object> itemSource)
         {
-            return _itemSource == itemSource;
+            return _itemSource.ContainsValue(itemSource);
+        }
+
+        public bool HasItemListDataSource(BindingList<object> itemSource, object databoundedItem)
+        {
+            return _itemSource.ContainsKey(databoundedItem) && _itemSource[databoundedItem] == itemSource;
+        }
+
+        public object GetDataBoundedItem(BindingList<object> dataSource)
+        {
+            return _itemSource.FirstOrDefault(x => x.Value.Contains(dataSource)).Key;
         }
     }
 }
