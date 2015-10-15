@@ -296,7 +296,7 @@ namespace TableLoader
         private void FinishInitializingAfterFormLoad()
         {
             PopulateOutputColumnList();
-            ugMapping.AddCellBoundedComboBox("OutputColumnName", _mappingOutputColumnItemSource, IsagDataGridView.ComboboxConfigType.DISABLE);
+            ugMapping.AddCellBoundedComboBox("OutputColumnName", _mappingOutputColumnItemSource,true);
 
             _cmbDbCommand.SelectedIndexChanged += new EventHandler(_DbCommand_SelectedIndexChanged);
             _connectionManagerMain.ConnectionManagerChanged += new EventHandler(connectionManagerChanged);
