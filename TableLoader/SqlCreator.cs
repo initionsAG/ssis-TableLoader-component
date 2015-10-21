@@ -6,38 +6,49 @@ using Microsoft.SqlServer.Dts.Runtime.Wrapper;
 using System.Windows.Forms;
 using System.ComponentModel;
 
-namespace TableLoader
-{
-    public static class SqlCreator
-    {
+namespace TableLoader {
+    /// <summary>
+    /// Holds static methods for creating sql statements
+    /// </summary>
+    public static class SqlCreator {
 
         #region DB Commands
 
+        /// <summary>
+        /// Creates pseudo SQL merge command
+        /// (merge statement is not available for SQL Server < 2008)
+        /// </summary>
+        /// <param name="properties">componets custom properties</param>
+        /// <param name="tempTableName">temporary table name</param>
+        /// <returns></returns>
         public static string GetSqlMerge2005(IsagCustomProperties properties, string tempTableName)
         {
             return GetSqlMerge2005(properties, tempTableName, false);
         }
 
+
         /// <summary>
-        /// Erzeugt ein Pseudo Merge Command (Merge ist erst ab SQL Server 2008 vorhanden)
+        /// Creates pseudo SQL merge command
+        /// (merge statement is not available for SQL Server < 2008)
         /// </summary>
-        /// <param name="properties"></param>
-        /// <param name="tempTableName"></param>
-        /// <returns></returns>
+        /// <param name="properties">componets custom properties</param>
+        /// <param name="tempTableName">temporary table name</param>
+        /// <param name="overrideCustomMergeCommand">If true, only the updated_id tablename is replaced (used for preview) </param>
+        /// <returns>pseudo sql merge command</returns>
         public static string GetSqlMerge2005(IsagCustomProperties properties, string tempTableName, bool overrideCustomMergeCommand)
         {
             if (properties.UseCustomMergeCommand && !overrideCustomMergeCommand)
             {
                 return properties.CustomMergeCommand
-                    //.Replace(Constants.TEMP_TABLE_PLACEHOLDER_BRACKETS, tempTableName)
-                    //.Replace(Constants.TEMP_TABLE_PLACEHOLDER, tempTableName)
                     .Replace(Constants.TEMP_UPD_TABLE_PLACEHOLDER, "[#updated_ids_" + Guid.NewGuid().ToString() + "]");
             }
             else
             {
                 string varUpdated_ids;
-                if (properties.UseCustomMergeCommand) varUpdated_ids = Constants.TEMP_UPD_TABLE_PLACEHOLDER;
-                else varUpdated_ids = "[#updated_ids_" + Guid.NewGuid().ToString() + "]";
+                if (properties.UseCustomMergeCommand)
+                    varUpdated_ids = Constants.TEMP_UPD_TABLE_PLACEHOLDER;
+                else
+                    varUpdated_ids = "[#updated_ids_" + Guid.NewGuid().ToString() + "]";
 
                 string destTable = properties.DestinationTable;
                 string declare = "";
@@ -62,48 +73,57 @@ namespace TableLoader
                     if (config.Key)
                     {
                         //Declare
-                        if (declare != "") declare += ", ";
+                        if (declare != "")
+                            declare += ", ";
                         declare += config.OutputColumnName + " " + config.DataTypeOutput;
 
                         //Output
-                        if (sqlUpdateOutput != "") sqlUpdateOutput += ", ";
+                        if (sqlUpdateOutput != "")
+                            sqlUpdateOutput += ", ";
                         sqlUpdateOutput += "inserted." + Brackets(config.OutputColumnName);
 
                         //where (Update)
-                        if (sqlUpdateWhere != "") sqlUpdateWhere += " AND ";
+                        if (sqlUpdateWhere != "")
+                            sqlUpdateWhere += " AND ";
                         sqlUpdateWhere += "src." + Brackets(config.BulkColumnName) + " = " + "dest." + Brackets(config.OutputColumnName);
 
                         //where (insert: Left Join On)
-                        if (sqlInsertLeftJoinOn != "") sqlInsertLeftJoinOn += " AND ";
+                        if (sqlInsertLeftJoinOn != "")
+                            sqlInsertLeftJoinOn += " AND ";
                         sqlInsertLeftJoinOn += "upd." + Brackets(config.OutputColumnName) + " = " + "src." + Brackets(config.BulkColumnName);
 
                         //where (insert: Left Join WHere)
-                        if (sqlInsertLeftJoinWhere != "") sqlInsertLeftJoinWhere += " AND ";
+                        if (sqlInsertLeftJoinWhere != "")
+                            sqlInsertLeftJoinWhere += " AND ";
                         sqlInsertLeftJoinWhere += "upd." + Brackets(config.OutputColumnName) + " IS NULL";
                     }
 
                     //Update
                     if (config.Update)
                     {
-                        if (sqlUpdate != "") sqlUpdate += ", ";
+                        if (sqlUpdate != "")
+                            sqlUpdate += ", ";
 
 
                         sqlUpdate += Brackets(config.OutputColumnName) + " = ";
 
-                        if (config.HasFunction) sqlUpdate += config.Function + " ";
-                        else sqlUpdate += "src." + Brackets(config.BulkColumnName) + " ";
+                        if (config.HasFunction)
+                            sqlUpdate += config.Function + " ";
+                        else
+                            sqlUpdate += "src." + Brackets(config.BulkColumnName) + " ";
                     }
 
                     //Insert
                     if (config.Insert)
                     {
-                        if (sqlInsertValuesDefinition != "") sqlInsertValuesDefinition += ", ";
-                        if (sqlInsertValues != "") sqlInsertValues += ", ";
+                        if (sqlInsertValuesDefinition != "")
+                            sqlInsertValuesDefinition += ", ";
+                        if (sqlInsertValues != "")
+                            sqlInsertValues += ", ";
 
                         sqlInsertValuesDefinition += Brackets(config.OutputColumnName);
 
-                        //Berücksichtigen des Default Values bei Insert: isnull(<Columnname>, <defaultValue>)
-                        if (config.HasDefault)
+                        if (config.HasDefault) //Default Values for Insert: isnull(<columnname>, <defaultValue>)
                         {
                             sqlInsertValues += " isnull(cast(src." + Brackets(config.BulkColumnName) + " as " + config.DataTypeOutput + ") ," + config.Default + ")";
                         }
@@ -112,21 +132,24 @@ namespace TableLoader
                             sqlInsertValues += config.Function + " ";
                         }
                         else
-                        { //kein Default Value vorhanden
+                        { //no Default Value or function
                             sqlInsertValues += "src." + Brackets(config.BulkColumnName) + " ";
                         }
                     }
                 }
 
 
-                if (sqlUpdate != "") declare = "CREATE TABLE " + varUpdated_ids + "  (" + declare + ");" + Environment.NewLine;
-                else declare = "";
+                if (sqlUpdate != "")
+                    declare = "CREATE TABLE " + varUpdated_ids + "  (" + declare + ");" + Environment.NewLine;
+                else
+                    declare = "";
 
                 //update
                 if (sqlUpdate != "")
                 {
                     string sqlUpdateTmp = "UPDATE " + destTable + Environment.NewLine;
-                    if (!properties.DisableTablock) sqlUpdateTmp += "WITH (Tablockx)" + Environment.NewLine;
+                    if (!properties.DisableTablock)
+                        sqlUpdateTmp += "WITH (Tablockx)" + Environment.NewLine;
                     sqlUpdateTmp += "SET " + sqlUpdate + Environment.NewLine +
                                     "OUTPUT " + sqlUpdateOutput + " INTO " + varUpdated_ids + Environment.NewLine +
                                     "FROM " + destTable + " dest, " + tempTableName + " src" + Environment.NewLine +
@@ -134,37 +157,47 @@ namespace TableLoader
                     sqlUpdate = sqlUpdateTmp;
                 }
                 //insert
-                sqlInsert = "INSERT INTO " + destTable; // +" WITH (Tablockx)" + Environment.NewLine +
-                if (!properties.DisableTablock) sqlInsert += " WITH (Tablockx)";
+                sqlInsert = "INSERT INTO " + destTable;
+                if (!properties.DisableTablock)
+                    sqlInsert += " WITH (Tablockx)";
                 sqlInsert += Environment.NewLine +
                              "(" + sqlInsertValuesDefinition + ")" + Environment.NewLine +
                              "SELECT " + sqlInsertValues + " FROM " + tempTableName + " src" + Environment.NewLine;
-                if (sqlUpdate != "") sqlInsert +=
-                            "LEFT JOIN " + varUpdated_ids + " upd" + Environment.NewLine +
-                            "ON " + sqlInsertLeftJoinOn + Environment.NewLine +
-                            "WHERE " + sqlInsertLeftJoinWhere + Environment.NewLine;
-                //"where not exists(" + Environment.NewLine +
-                //"  select 1 from " + varUpdated_ids + " upd where " + Environment.NewLine +
-                //"  " + sqlInsertWhere + Environment.NewLine + ")";
-                sqlInsert += ";";
+                if (sqlUpdate != "")
+                    sqlInsert +=
+                        "LEFT JOIN " + varUpdated_ids + " upd" + Environment.NewLine +
+                        "ON " + sqlInsertLeftJoinOn + Environment.NewLine +
+                        "WHERE " + sqlInsertLeftJoinWhere + Environment.NewLine;
 
+                sqlInsert += ";";
 
                 return ReplacePlaceHolderInputColumn(declare + sqlUpdate + sqlInsert, "src.");
             }
         }
 
+        /// <summary>
+        /// Creates SQL merge command (only SQL Server 2008 and above)
+        /// </summary>
+        /// <param name="properties">componets custom properties</param>
+        /// <param name="tempTableName">temporary table name</param>
+        /// <returns>sql merge command</returns>
         public static string GetSqlMerge(IsagCustomProperties properties, string tempTableName)
         {
             return GetSqlMerge(properties, tempTableName, false);
         }
 
+        /// <summary>
+        /// Creates SQL merge command (only SQL Server 2008 and above)
+        /// </summary>
+        /// <param name="properties">componets custom properties</param>
+        /// <param name="tempTableName">temporary table name</param>
+        /// <param name="overrideCustomMergeCommand">If true, only custom merge template is returned (used for preview) </param>
+        /// <returns>sql merge command</returns>
         public static string GetSqlMerge(IsagCustomProperties properties, string tempTableName, bool overrideCustomMergeCommand)
         {
             if (properties.UseCustomMergeCommand && !overrideCustomMergeCommand)
             {
                 return properties.CustomMergeCommand;
-                //.Replace(Constants.TEMP_TABLE_PLACEHOLDER_BRACKETS, tempTableName)
-                //                                    .Replace(Constants.TEMP_TABLE_PLACEHOLDER, tempTableName);
             }
             else
             {
@@ -173,7 +206,8 @@ namespace TableLoader
 
                 string result = "merge ";
                 string sqlInto = "into " + Brackets(destTable); // +" with (tablockx) as dest ";
-                if (!properties.DisableTablock) sqlInto += " with (tablockx)";
+                if (!properties.DisableTablock)
+                    sqlInto += " with (tablockx)";
                 sqlInto += " as dest ";
                 string sqlUsing = "using " + Brackets(tempTable) + " as src ";
                 string sqlOn = "";
@@ -181,49 +215,47 @@ namespace TableLoader
                 string sqlInsert = "";
                 string sqlValues = "";
 
-
                 foreach (ColumnConfig config in properties.ColumnConfigList)
                 {
-
-
-
-                    //string colName = Brackets(config.OutputColumnName);
-
-
                     //Update
                     if (config.Update)
                     {
-                        if (sqlUpdate != "") sqlUpdate += ", ";
+                        if (sqlUpdate != "")
+                            sqlUpdate += ", ";
                         sqlUpdate += "dest." + Brackets(config.OutputColumnName) + " = ";
-                        if (config.HasFunction) sqlUpdate += config.Function + " ";
-                        else sqlUpdate += "src." + Brackets(config.BulkColumnName) + " ";
+                        if (config.HasFunction)
+                            sqlUpdate += config.Function + " ";
+                        else
+                            sqlUpdate += "src." + Brackets(config.BulkColumnName) + " ";
 
                     }
 
                     //Insert
                     if (config.Insert)
                     {
-                        if (sqlInsert != "") sqlInsert += ", ";
-                        if (sqlValues != "") sqlValues += ", ";
+                        if (sqlInsert != "")
+                            sqlInsert += ", ";
+                        if (sqlValues != "")
+                            sqlValues += ", ";
 
                         sqlInsert += Brackets(config.OutputColumnName);
 
-                        //Berücksichtigen des Default Values bei Insert: isnull(<Columnname>, <defaultValue>)
-
+                        //Default Values for Insert: isnull(<columnname>, <defaultValue>)
                         sqlValues += config.GetColumnExpression();
-           
                     }
 
                     //Join
                     if (config.Key)
                     {
-                        if (sqlOn != "") sqlOn += " and ";
-                        sqlOn += config.GetColumnExpression()  + " = " + "dest." + Brackets(config.OutputColumnName) + " "; //"src." + Brackets(config.BulkColumnName)
+                        if (sqlOn != "")
+                            sqlOn += " and ";
+                        sqlOn += config.GetColumnExpression() + " = " + "dest." + Brackets(config.OutputColumnName) + " "; //"src." + Brackets(config.BulkColumnName)
                     }
                 }
 
                 sqlOn = "ON " + sqlOn;
-                if (sqlUpdate != "") sqlUpdate = "WHEN MATCHED THEN UPDATE SET " + sqlUpdate;
+                if (sqlUpdate != "")
+                    sqlUpdate = "WHEN MATCHED THEN UPDATE SET " + sqlUpdate;
                 if (sqlInsert != "")
                 {
                     sqlInsert = "WHEN NOT MATCHED BY TARGET THEN INSERT (" + sqlInsert + ") ";
@@ -236,7 +268,7 @@ namespace TableLoader
                           sqlUpdate + Environment.NewLine + sqlInsert + Environment.NewLine + sqlValues;
 
 
-                result =  ReplacePlaceHolderInputColumn(result, "src.");
+                result = ReplacePlaceHolderInputColumn(result, "src.");
 
                 if (properties.HasScd)
                 {
@@ -248,14 +280,19 @@ namespace TableLoader
             }
         }
 
+        /// <summary>
+        /// Creates SQL Update command
+        /// <param name="properties">componets custom properties</param>
+        /// <param name="tempTableName">temporary table name</param>
+        /// <returns>sql update command</returns>
         public static string GetSqlUpdate(IsagCustomProperties properties, string tempTableName)
         {
-
             string destTable = Brackets(properties.DestinationTable);
             string tempTable = Brackets(tempTableName);
 
-            string result = "update " + destTable; // +" WITH (Tablockx)" + Environment.NewLine + "set ";
-            if (!properties.DisableTablock) result += " WITH (tablockx)";
+            string result = "update " + destTable;
+            if (!properties.DisableTablock)
+                result += " WITH (tablockx)";
             result += Environment.NewLine + "set ";
             string sqlSet = "";
             string sqlfrom = "from " + tempTable;
@@ -266,16 +303,20 @@ namespace TableLoader
 
                 if (config.Update)
                 {
-                    if (sqlSet != "") sqlSet += "," + Environment.NewLine + "      ";
+                    if (sqlSet != "")
+                        sqlSet += "," + Environment.NewLine + "      ";
 
-                    sqlSet += destTable + "." + Brackets(config.OutputColumnName) + "="; // +tempTable + "." + GetBulkColumnName(row);
-                    if (config.HasFunction) sqlSet += config.Function + " ";
-                    else sqlSet += tempTable + "." + Brackets(config.BulkColumnName);
+                    sqlSet += destTable + "." + Brackets(config.OutputColumnName) + "=";
+                    if (config.HasFunction)
+                        sqlSet += config.Function + " ";
+                    else
+                        sqlSet += tempTable + "." + Brackets(config.BulkColumnName);
                 }
-                //Where Bedingung erzeugen
+                //create where clause
                 if (config.Key)
                 {
-                    if (sqlWhere != "") sqlWhere += " and ";
+                    if (sqlWhere != "")
+                        sqlWhere += " and ";
                     sqlWhere += tempTable + "." + Brackets(config.BulkColumnName) + "=" + destTable + "." + Brackets(config.OutputColumnName);
                 }
             }
@@ -286,6 +327,12 @@ namespace TableLoader
 
         }
 
+        /// <summary>
+        /// Creates SQL update (using stored procedure) command
+        /// </summary>
+        /// <param name="properties">componets custom properties</param>
+        /// <param name="tempTableName">temporary table name</param>
+        /// <returns>sql update (using stored procedure) command</returns>
         public static string GetSqlUpdateSP(IsagCustomProperties properties, string tempTableName)
         {
             string result = "";
@@ -316,16 +363,19 @@ namespace TableLoader
 
                 if (config.Update)
                 {
-                    if (initCursor != "") initCursor += ", ";
+                    if (initCursor != "")
+                        initCursor += ", ";
                     initCursor += Brackets(tempTableName) + "." + Brackets(config.BulkColumnName);
 
                     initVar += "  Declare @" + config.BulkColumnName +
                                " as " + config.BulkDataType + Environment.NewLine;
 
-                    if (fetch != "") fetch += ", ";
+                    if (fetch != "")
+                        fetch += ", ";
                     fetch += "  @" + config.BulkColumnName;
 
-                    if (updateSet != "") updateSet += "," + Environment.NewLine + "      ";
+                    if (updateSet != "")
+                        updateSet += "," + Environment.NewLine + "      ";
                     updateSet += Brackets(properties.DestinationTable) + "." + Brackets(config.OutputColumnName) +
                                  " = ";
                     if (config.HasFunction)
@@ -336,24 +386,22 @@ namespace TableLoader
 
                 if (config.Key)
                 {
-
-
                     if (!config.Update)
                     {
-                        if (initCursor != "") initCursor += ", ";
+                        if (initCursor != "")
+                            initCursor += ", ";
                         initCursor += Brackets(tempTableName) + "." + config.BulkColumnName;
 
                         initVar += "  Declare @" + config.BulkColumnName +
                                    " as " + config.BulkDataType + Environment.NewLine;
 
-                        if (fetch != "") fetch += ", ";
+                        if (fetch != "")
+                            fetch += ", ";
                         fetch += "  @" + config.BulkColumnName;
                     }
 
-
-
-
-                    if (initCursorLeftJoin != "") initCursorLeftJoin += " and ";
+                    if (initCursorLeftJoin != "")
+                        initCursorLeftJoin += " and ";
                     initCursorLeftJoin += Brackets(tempTableName) + "." + config.BulkColumnName +
                                         " = " +
                                         Brackets(properties.DestinationTable) + "." + config.OutputColumnName;
@@ -364,13 +412,12 @@ namespace TableLoader
                                           " Is Null";
                     }
 
-                    if (updateWhere != "") updateWhere += "        and ";
+                    if (updateWhere != "")
+                        updateWhere += "        and ";
                     updateWhere += "@" + config.BulkColumnName +
                                    " = " +
                                    Brackets(properties.DestinationTable) + "." + Brackets(config.OutputColumnName)
                                    + Environment.NewLine;
-
-
                 }
             }
 
@@ -396,18 +443,29 @@ namespace TableLoader
             return ReplacePlaceHolderInputColumn(result, "@");
         }
 
+        /// <summary>
+        /// Creates SQL insert command
+        /// </summary>
+        /// <param name="properties">componets custom properties</param>
+        /// <param name="tempTableName">temporary table name</param>
+        /// <returns>sql insert command</returns>
         public static string GetSqlInsert(IsagCustomProperties properties, string tempTableName)
         {
             return GetSqlInsert(properties, tempTableName, false);
         }
 
+        /// <summary>
+        /// Creates SQL insert command
+        /// </summary>
+        /// <param name="properties">componets custom properties</param>
+        /// <param name="tempTableName">temporary table name</param>
+        /// <param name="overrideCustomMergeCommand">If true, only custom sql template is returned (used for preview) </param>
+        /// <returns></returns>
         public static string GetSqlInsert(IsagCustomProperties properties, string tempTableName, bool overrideCustomMergeCommand)
         {
             if (properties.UseCustomMergeCommand && !overrideCustomMergeCommand)
             {
                 return properties.CustomMergeCommand;
-                //.Replace(Constants.TEMP_TABLE_PLACEHOLDER_BRACKETS, tempTableName)
-                  //                                  .Replace(Constants.TEMP_TABLE_PLACEHOLDER, tempTableName);
             }
             else
             {
@@ -422,8 +480,10 @@ namespace TableLoader
 
                     if (config.Insert)
                     {
-                        if (insert != "") insert += ", ";
-                        if (insertValues != "") insertValues += ", ";
+                        if (insert != "")
+                            insert += ", ";
+                        if (insertValues != "")
+                            insertValues += ", ";
                         insert += Brackets(config.OutputColumnName);
 
 
@@ -434,35 +494,41 @@ namespace TableLoader
                                             + config.Default + ")";
                             if (config.HasFunction)
                             {
-                                placeholder = "@(" + config.BulkColumnName +")";
+                                placeholder = "@(" + config.BulkColumnName + ")";
                                 insertValues += config.Function.Replace(placeholder, insertDefault);
                             }
-                            else insertValues += insertDefault;
+                            else
+                                insertValues += insertDefault;
                         }
                         else if (config.HasFunction)
                         {
                             placeholder = "@(" + config.BulkColumnName + ")";
                             insertValues += config.Function.Replace(placeholder, config.BulkColumnName);
                         }
-                        // insertValues += config.Function;
-                        else insertValues += insertValue;
+                        else
+                            insertValues += insertValue;
                     }
                 }
 
-                string insertTmp = "INSERT INTO " + Brackets(properties.DestinationTable); // + " WITH (Tablockx)" + Environment.NewLine +
-                if (!properties.DisableTablock) insertTmp += " WITH (tablockx)";
+                string insertTmp = "INSERT INTO " + Brackets(properties.DestinationTable);
+                if (!properties.DisableTablock)
+                    insertTmp += " WITH (tablockx)";
                 insertTmp += Environment.NewLine +
                              "  (" + insert + ")" + Environment.NewLine +
                              "SELECT " + insertValues + Environment.NewLine +
                              "FROM " + Brackets(tempTableName);
                 insert = insertTmp;
 
-
-
                 return ReplacePlaceHolderInputColumn(insert, "");
             }
         }
 
+        /// <summary>
+        /// Creates SQL insert (using stored procedure) command
+        /// </summary>
+        /// <param name="properties">componets custom properties</param>
+        /// <param name="tempTableName">temporary table name</param>
+        /// <returns>sql insert (using stored procedure) command</returns>
         public static string GetSqlInsertSP(IsagCustomProperties properties, string tempTableName)
         {
             string result = "";
@@ -496,37 +562,44 @@ namespace TableLoader
 
                 if (config.Insert)
                 {
-                    if (insert != "") insert += ", ";
-                    if (insertValues != "") insertValues += ", ";
+                    if (insert != "")
+                        insert += ", ";
+                    if (insertValues != "")
+                        insertValues += ", ";
                     insert += config.OutputColumnName;
 
 
-                    insertValue = "@(" + config.BulkColumnName +")";
+                    insertValue = "@(" + config.BulkColumnName + ")";
                     if (config.HasDefault)
                     {
                         insertDefault = "isnull(cast(" + insertValue + " as " + config.DataTypeOutput + ") , "
                                         + config.Default + ")";
                         if (config.HasFunction)
                             insertValues += config.Function.Replace(insertValue, insertDefault);
-                        else insertValues += insertDefault;
+                        else
+                            insertValues += insertDefault;
                     }
-                    else if (config.HasFunction) insertValues += config.Function;
-                    else insertValues += insertValue;
+                    else if (config.HasFunction)
+                        insertValues += config.Function;
+                    else
+                        insertValues += insertValue;
 
-                    if (initCursor != "") initCursor += ", ";
+                    if (initCursor != "")
+                        initCursor += ", ";
                     initCursor += Brackets(tempTableName) + "." + Brackets(config.BulkColumnName);
 
                     initVar += "  Declare @" + config.BulkColumnName +
                                " as " + config.BulkDataType + Environment.NewLine;
 
-                    if (fetch != "") fetch += ", ";
+                    if (fetch != "")
+                        fetch += ", ";
                     fetch += "  @" + config.BulkColumnName;
                 }
 
                 if (config.Key)
                 {
-
-                    if (initCursorLeftJoin != "") initCursorLeftJoin += " and ";
+                    if (initCursorLeftJoin != "")
+                        initCursorLeftJoin += " and ";
                     initCursorLeftJoin += Brackets(tempTableName) + "." + Brackets(config.BulkColumnName) +
                                         " = " +
                                         Brackets(properties.DestinationTable) + "." + Brackets(config.OutputColumnName);
@@ -552,10 +625,6 @@ namespace TableLoader
                          "  On " + initCursorLeftJoin + Environment.NewLine +
                          "  Where " + initCursorWhere + Environment.NewLine + Environment.NewLine;
 
-
-
-
-
             fetch = Environment.NewLine + Environment.NewLine +
                     "  FETCH NEXT from myInsertCursor into" + Environment.NewLine + fetch + Environment.NewLine;
 
@@ -573,29 +642,26 @@ namespace TableLoader
         #region Table
 
         /// <summary>
-        /// Liefert das SQL Statement zum erzeugen der temporären Tabelle (bei Merge mit Erstellung eines Index)
+        /// Create SQL statement for creating temporary table (if merge command is used, an index is created) 
         /// </summary>
-        /// <param name="input"> Die InputCollection, die als Vorlage für die Struktur der temporären Tabelle dient.</param>
-        /// <returns></returns>
-        public static string GetCreateTempTable(IDTSInput100 input, IsagCustomProperties properties, string tempTableName)
+        /// <returns>sql create temporary table command</returns>
+        public static string GetCreateTempTable( IsagCustomProperties properties, string tempTableName)
         {
             string returnValue = "";
             string indexColumns = "";
 
             foreach (ColumnConfig config in properties.BulkCopyColumnConfigLIst)
             {
+                if (returnValue != "")
+                    returnValue += ", ";
 
-                //if (config.Insert || config.Update || config.Key)
-                //{
-                    if (returnValue != "") returnValue += ", ";
-
-                    returnValue += Brackets(config.BulkColumnName) + " ";
-                    returnValue += config.BulkDataType + Environment.NewLine;
-                //}
+                returnValue += Brackets(config.BulkColumnName) + " ";
+                returnValue += config.BulkDataType + Environment.NewLine;
 
                 if (properties.UseMerge && config.Key)
                 {
-                    if (indexColumns != "") indexColumns += ", ";
+                    if (indexColumns != "")
+                        indexColumns += ", ";
                     indexColumns += Brackets(config.BulkColumnName) + " ASC";
                 }
             }
@@ -607,8 +673,13 @@ namespace TableLoader
                 returnValue += ";" + Environment.NewLine + Constants.CREATE_INDEX.Replace("<table>", tempTableName).Replace("<columns>", indexColumns);
 
             return returnValue;
-        }      
+        }
 
+        /// <summary>
+        /// Create SQL statement for creating destination table
+        /// </summary>
+        /// <param name="properties">componets custom properties</param>
+        /// <returns>sql statement for creating destination table</returns>
         public static string GetCreateDestinationTable(IsagCustomProperties properties)
         {
             StringBuilder result = new StringBuilder("CREATE TABLE [TableLoader Destination] (" + Environment.NewLine);
@@ -620,7 +691,8 @@ namespace TableLoader
 
                 if (config.HasInput)
                 {
-                    if (appendComma) result.Append("," + Environment.NewLine);
+                    if (appendComma)
+                        result.Append("," + Environment.NewLine);
                     appendComma = true;
                     result.Append("  ");
                     result.Append(Brackets(config.InputColumnName));
@@ -635,9 +707,14 @@ namespace TableLoader
             return result.ToString();
         }
 
+        /// <summary>
+        /// Create SQL statement for altering destination table
+        /// </summary>
+        /// <param name="properties">componets custom properties</param>
+        /// <param name="tempTableName">temporary table name</param>
+        /// <returns>sql statement for altering destination table</returns>
         public static string GetAlterDestinationTable(IsagCustomProperties properties, SqlColumnList sqlColumns)
         {
-
             string result = "";
 
             if (properties.HasDestinationTable)
@@ -647,8 +724,10 @@ namespace TableLoader
                     string outputColumnName = sqlColumns.GetMatchingColumnname(config.InputColumnName, properties.PrefixInput, properties.PrefixOutput);
                     if (config.HasInput && outputColumnName == "")
                     {
-                        if (result == "") result += "  ADD ";
-                        else result += "," + Environment.NewLine + "      ";
+                        if (result == "")
+                            result += "  ADD ";
+                        else
+                            result += "," + Environment.NewLine + "      ";
                         result += Brackets(config.InputColumnName) + " " + config.DataTypeInput;
                     }
                 }
@@ -661,11 +740,17 @@ namespace TableLoader
 
         #region Helper
 
+        /// <summary>
+        /// Surrounds sql parts (tablename, schema,...) with brackets
+        /// </summary>
+        /// <param name="value">s</param>
+        /// <returns>sql parts (tablename, schema,...) with brackets</returns>
         public static string Brackets(string value)
         {
             string result = "";
 
-            if (value.Contains("[")) return value;
+            if (value.Contains("["))
+                return value;
 
             if (!value.Contains("."))
             {
@@ -685,12 +770,25 @@ namespace TableLoader
             return result;
         }
 
+        /// <summary>
+        /// Gets sql datatype for an SSIS input column
+        /// </summary>
+        /// <param name="inputCol">SSIS input column</param>
+        /// <returns>sql datatype for an SSIS input column</returns>
         public static string GetSQLServerDataTypeFromInput(IDTSInputColumn100 inputCol)
         {
             return GetSQLServerDataTypeFromInput(inputCol.DataType, inputCol.Length.ToString(),
                                         inputCol.Precision.ToString(), inputCol.Scale.ToString());
         }
 
+        /// <summary>
+        /// Gets sql datatype for SSIS input columns datatype porperties
+        /// </summary>
+        /// <param name="dataType">SSIS datatype</param>
+        /// <param name="ColumnSize">column size</param>
+        /// <param name="NumericPrecision">numeric precision</param>
+        /// <param name="NumericScale">numeric scale</param>
+        /// <returns>sql datatype for SSIS input columns datatype porperties</returns>
         public static string GetSQLServerDataTypeFromInput(DataType dataType, string ColumnSize,
                                          string NumericPrecision, string NumericScale)
         {
@@ -708,18 +806,14 @@ namespace TableLoader
                     return "date";
                 case DataType.DT_DBTIME:
                     return "time";
-                //Converter: Remove Start
                 case DataType.DT_DBTIME2:
                     return "time";
-                //Converter: Remove End
                 case DataType.DT_DBTIMESTAMP:
                     return "datetime";
-                //Converter: Remove Start
                 case DataType.DT_DBTIMESTAMP2:
                     return "datetime2";
                 case DataType.DT_DBTIMESTAMPOFFSET:
                     return "datetimeoffset";
-                //Converter: Remove End
                 case DataType.DT_DECIMAL:
                     return "decimal(29," + NumericScale + ")";
                 case DataType.DT_GUID:
@@ -762,72 +856,11 @@ namespace TableLoader
             }
         }
 
-        //public static string GetSQLServerDataType(string dataType, string ColumnSize,
-        //                                          string NumericPrecision, string NumericScale)
-        //{
-        //    switch (dataType)
-        //    {
-        //        case "DataType.DT_BOOL":
-        //            return "bit";
-        //        case "DataType.DT_BYTES":
-        //            return "varbinary(" + ColumnSize + ")";
-        //        case "DataType.DT_CY":
-        //            return "money";
-        //        case "DataType.DT_DATE":
-        //            return "date";
-        //        case "DataType.DT_DBDATE":
-        //            return "date";
-        //        case "DataType.DT_DBTIME":
-        //            return "time";
-        //        case "DataType.DT_DBTIME2":
-        //            return "time";
-        //        case "DataType.DT_DBTIMESTAMP":
-        //            return "datetime";
-        //        case "DataType.DT_DBTIMESTAMP2":
-        //            return "datetime2";
-        //        case "DataType.DT_DBTIMESTAMPOFFSET":
-        //            return "datetimeoffset";
-        //        case "DataType.DT_DECIMAL":
-        //            return "numeric(" + NumericPrecision + "," + NumericScale + ")";
-        //        case "DataType.DT_GUID":
-        //            return "uniqueidentifier";
-        //        case "DataType.DT_I1":
-        //            return "smallint";
-        //        case "DataType.DT_I2":
-        //            return "smallint";
-        //        case "DataType.DT_I4":
-        //            return "int";
-        //        case "DataType.DT_I8":
-        //            return "bigint";
-        //        case "DataType.DT_IMAGE":
-        //            return "image";
-        //        case "DataType.DT_NTEXT":
-        //            return "ntext";
-        //        case "DataType.DT_NUMERIC":
-        //            return "numeric(" + NumericPrecision + "," + NumericScale + ")";
-        //        case "DataType.DT_R4":
-        //            return "real";
-        //        case "DataType.DT_R8":
-        //            return "real";
-        //        case "DataType.DT_STR":
-        //            return "varchar(" + ColumnSize + ")";
-        //        case "DataType.DT_TEXT":
-        //            return "text";
-        //        case "DataType.DT_UI1":
-        //            return "tinyint";
-        //        case "DataType.DT_UI2":
-        //            return "int";
-        //        case "DataType.DT_UI4":
-        //            return "bigint";
-        //        case "DataType.DT_UI8":
-        //            return "bigint";
-        //        case "DataType.DT_WSTR":
-        //            return "nvarchar(" + ColumnSize + ")";
-        //        default:
-        //            return string.Empty;
-        //    }
-        //}
-
+        /// <summary>
+        /// Gets .NET datatype from SSIS datatype
+        /// </summary>
+        /// <param name="dataType">SSIS datatype</param>
+        /// <returns>.NET datatype</returns>
         public static System.Type GetNetDataType(DataType dataType)
         {
             switch (dataType)
@@ -840,30 +873,24 @@ namespace TableLoader
                     return typeof(System.Byte[]);
                 case DataType.DT_BYTES:
                     return typeof(System.Byte[]);
-
                 case DataType.DT_NUMERIC:
                     return typeof(System.Decimal);
                 case DataType.DT_DECIMAL:
                     return typeof(System.Decimal);
-
                 case DataType.DT_DATE:
                     return typeof(DateTime);
                 case DataType.DT_DBDATE:
                     return typeof(DateTime);
                 case DataType.DT_DBTIME:
                     return typeof(DateTime);
-                //Converter: Remove Start
                 case DataType.DT_DBTIME2:
                     return typeof(DateTime);
-                //Converter: Remove End
                 case DataType.DT_DBTIMESTAMP:
                     return typeof(DateTime);
-                //Converter: Remove Start
                 case DataType.DT_DBTIMESTAMP2:
                     return typeof(DateTime);
                 case DataType.DT_DBTIMESTAMPOFFSET:
                     return typeof(DateTimeOffset);
-                //Converter: Remove End
                 case DataType.DT_I1:
                     return typeof(System.Byte);
                 case DataType.DT_I2:
@@ -884,7 +911,6 @@ namespace TableLoader
                     return typeof(System.UInt32);
                 case DataType.DT_UI8:
                     return typeof(UInt64);
-
                 case DataType.DT_WSTR:
                     return typeof(System.String);
                 case DataType.DT_STR:
@@ -898,11 +924,17 @@ namespace TableLoader
                 default:
                     System.Windows.Forms.MessageBox.Show("Unsupported DataType: " + dataType.ToString());
                     throw new Exception();
-                //return typeof(System.String);
-
             }
         }
 
+        /// <summary>
+        /// Gets sql datatype
+        /// </summary>
+        /// <param name="sqlDataType">sql datatype as string</param>
+        /// <param name="ColumnSize">sql column size</param>
+        /// <param name="NumericPrecision">sql numeric precision</param>
+        /// <param name="NumericScale">sql numeric scale</param>
+        /// <returns>sql datatype</returns>
         public static string GetSQLServerDataType(string sqlDataType, string ColumnSize,
                                                   string NumericPrecision, string NumericScale)
         {
@@ -928,11 +960,11 @@ namespace TableLoader
         }
 
         /// <summary>
-        /// Ersetzt Platzhalter des Formats @(<InputColumnName>) mit dem prefix + InputColumnName
+        /// Replaces placeholder like @(&lt;InputColumnName&gt;) with prefix + input column name
         /// </summary>
-        /// <param name="sqlCommand">Das Sql Statement (z.B. ein Merge)</param>
-        /// <param name="prefix">Das Prefix (z.B. "src.")</param>
-        /// <returns></returns>
+        /// <param name="sqlCommand">sql statement</param>
+        /// <param name="prefix">column prefix (i.e. "src.")</param>
+        /// <returns>sql statement</returns>
         private static string ReplacePlaceHolderInputColumn(string sqlCommand, string prefix)
         {
             while (sqlCommand.Contains("@("))
@@ -940,7 +972,8 @@ namespace TableLoader
 
                 int pos = sqlCommand.IndexOf("@(");
                 int posEnd = sqlCommand.IndexOf(")", pos);
-                if (posEnd == -1) sqlCommand = "Fehler in der Function!";
+                if (posEnd == -1)
+                    sqlCommand = "Function ist not valid!";
                 else
                 {
                     string placeHolder = sqlCommand.Substring(pos, posEnd - pos + 1);

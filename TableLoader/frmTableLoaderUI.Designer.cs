@@ -882,7 +882,8 @@
             // cmbTransaction
             // 
             this.cmbTransaction.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmbTransaction.EnableDoubleBinding = false;
+
+
             this.cmbTransaction.FormattingEnabled = true;
             this.cmbTransaction.Location = new System.Drawing.Point(653, 48);
             this.cmbTransaction.Name = "cmbTransaction";

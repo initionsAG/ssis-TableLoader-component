@@ -7,17 +7,44 @@ using Microsoft.SqlServer.Dts.Runtime.Wrapper;
 
 namespace TableLoader
 {
-
+    /// <summary>
+    /// Handles SSIS Events
+    /// </summary>
     public class IsagEvents
     {
-
+        /// <summary>
+        /// SSIS component metadata
+        /// </summary>
         private IDTSComponentMetaData100 ComponentMetaData { get; set; }
+
+        /// <summary>
+        /// SSIS variable dispenser
+        /// </summary>
         private IDTSVariableDispenser100 VariableDispenser { get; set; }
+
+        /// <summary>
+        /// destination table name
+        /// </summary>
         private string DestinationTableName { get; set; }
+
+        /// <summary>
+        /// custom event value (event message text)
+        /// </summary>
         private string CustomEventValue { get; set; }
+
+        /// <summary>
+        /// log level (1-3)
+        /// </summary>
         private int _logLevel;
 
-
+        /// <summary>
+        /// constructor
+        /// </summary>
+        /// <param name="componentMetaData">SSIS component metadata</param>
+        /// <param name="variableDispenser">SSIS variable dispenser</param>
+        /// <param name="destinationTableName">destination table name</param>
+        /// <param name="customEventTemplate">template for the custom event</param>
+        /// <param name="logLEvel">log level</param>
         public IsagEvents(IDTSComponentMetaData100 componentMetaData, IDTSVariableDispenser100 variableDispenser, string destinationTableName, string customEventTemplate, int logLEvel)
         {
             ComponentMetaData = componentMetaData;
@@ -28,7 +55,12 @@ namespace TableLoader
 
         }
 
-
+        /// <summary>
+        /// Get custom event value from template
+        /// (replaces variables with their values)
+        /// </summary>
+        /// <param name="customEventTemplate">custom event template</param>
+        /// <returns>custom event value</returns>
         public string GetCustomEventValue(string customEventTemplate)
         {
             try
@@ -56,6 +88,10 @@ namespace TableLoader
             return customEventTemplate;
         }
 
+        /// <summary>
+        /// Event type 
+        /// (determines how many events are fired)
+        /// </summary>
         private enum SSIS_EventType
         {
             Information = 0,
@@ -64,16 +100,31 @@ namespace TableLoader
             Error = 3
         }
 
-
+        /// <summary>
+        /// Fire event
+        /// </summary>
+        /// <param name="eventType">event type</param>
+        /// <param name="description">event description</param>
         public void Fire(IsagEventType eventType, string description)
         {
             Fire(eventType, description, new string[0]);
         }
+
+        /// <summary>
+        /// Fire event
+        /// </summary>
+        /// <param name="eventType">event type</param>
+        /// <param name="description">event description</param>
+        /// <param name="parameter">event parameter</param>
         public void Fire(IsagEventType eventType, string description, string parameter)
         {
             Fire(eventType, description, new string[] { parameter });
         }
 
+        /// <summary>
+        /// Fire error event
+        /// </summary>
+        /// <param name="parameter">event parameter list</param>
         public void FireError(string[] parameter)
         {
             string description = "Error in [";
@@ -89,12 +140,19 @@ namespace TableLoader
             Fire(IsagEventType.Error, description, parameter);
         }
 
+        /// <summary>
+        /// Fire event
+        /// </summary>
+        /// <param name="eventType">event type</param>
+        /// <param name="description">event description</param>
+        /// <param name="parameter">event parameter list</param>
         public void Fire(IsagEventType eventType, string description, string[] parameter)
         {
-            if (!DoLog(eventType)) return; //Aufgrund des LogLevels nicht loggen
+            if (!DoLog(eventType)) return; //loglevel disables logging
 
             bool cancel = false;
 
+            //insert parameter into description
             description = string.Format(description, parameter);
 
             description += " | " + DestinationTableName + " | " + CustomEventValue;
@@ -123,6 +181,11 @@ namespace TableLoader
             }
         }
 
+        /// <summary>
+        /// Log event for the given error type and log level?
+        /// </summary>
+        /// <param name="errorType">error type and log level</param>
+        /// <returns>Log event for the given error type?</returns>
         private bool DoLog(IsagEventType errorType)
         {
             int code = (int)errorType;
@@ -133,6 +196,11 @@ namespace TableLoader
             else return false;
         }
 
+        /// <summary>
+        /// Get SSIS event type by isag event type
+        /// </summary>
+        /// <param name="type">idag event type</param>
+        /// <returns>SSIS event type</returns>
         private static SSIS_EventType GetSSISEventType(IsagEventType type)
         {
             int n = (int)type;
@@ -141,6 +209,9 @@ namespace TableLoader
             else return SSIS_EventType.Information;
         }
 
+        /// <summary>
+        /// Isag event type
+        /// </summary>
         public enum IsagEventType
         {
             //LogLevel = 1

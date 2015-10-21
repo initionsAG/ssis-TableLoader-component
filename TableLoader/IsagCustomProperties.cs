@@ -20,20 +20,33 @@ using TableLoader.Framework;
 
 namespace TableLoader
 {
+    /// <summary>
+    /// custom properties for this component
+    /// </summary>
     public class IsagCustomProperties: INotifyPropertyChanged
     {
+        /// <summary>
+        /// Property changed event
+        /// (implements Interface of INotifyPropertyChanged)
+        /// </summary>
         public event PropertyChangedEventHandler PropertyChanged;
 
+        /// <summary>
+        /// Announces that a properties value has changed
+        /// </summary>
+        /// <param name="info">property name</param>
         private void NotifyPropertyChanged(String info)
         {
             if (PropertyChanged != null)
             {
                 PropertyChanged(this, new PropertyChangedEventArgs(info));
             }
-
         }
         #region Properties
 
+        /// <summary>
+        /// file version of the assembly
+        /// </summary>
         [BrowsableAttribute(false), XmlIgnore]
         public string Version
         {
@@ -43,6 +56,9 @@ namespace TableLoader
             }
         }
 
+        /// <summary>
+        /// List of column configurations
+        /// </summary>
         SortableBindingList<ColumnConfig> _columnConfigList;
         public SortableBindingList<ColumnConfig> ColumnConfigList
         {
@@ -54,6 +70,9 @@ namespace TableLoader
             set { _columnConfigList = value; }
         }
 
+        /// <summary>
+        /// List of column configurations for bulk copy
+        /// </summary>
         public BindingList<ColumnConfig> BulkCopyColumnConfigLIst
         {
             get
@@ -71,16 +90,44 @@ namespace TableLoader
 
         }
 
-
+        /// <summary>
+        /// destination table name
+        /// </summary>
         public string DestinationTable { get; set; }
+
+        /// <summary>
+        /// Bulk chunk size (number of rows) written with each bulk copy
+        /// </summary>
         public long ChunckSizeBulk { get; set; }
+        /// <summary>
+        /// Database command chunk size 
+        /// (number of rows used for each execution of the db command (i.e. merge)
+        /// </summary>
         public long ChunkSizeDbCommand { get; set; }
 
+        /// <summary>
+        /// Maximum number if concurrent threads
+        /// </summary>
         public long MaxThreadCount { get; set; }
+
+        /// <summary>
+        /// database timeout in seconds
+        /// </summary>
         public int TimeOutDb { get; set; }
+
+        /// <summary>
+        /// Number of reattampts for the database command
+        /// </summary>
         public int Reattempts { get; set; }
 
+        /// <summary>
+        /// Input column prefix
+        /// </summary>
         private string _prefixInput;
+
+        /// <summary>
+        /// Input column prefix
+        /// </summary>
         public string PrefixInput
         {
             get
@@ -95,7 +142,14 @@ namespace TableLoader
             }
         }
 
+        /// <summary>
+        /// Output column prefix
+        /// </summary>
         private string _prefixOutput;
+
+        /// <summary>
+        /// Output column prefix
+        /// </summary>
         public string PrefixOutput
         {
             get
@@ -110,13 +164,34 @@ namespace TableLoader
             }
         }
 
+        /// <summary>
+        /// Post sql database command
+        /// </summary>
         public string PostSql { get; set; }
+
+        /// <summary>
+        /// Pre sql database command
+        /// </summary>
         public string PreSql { get; set; }
+
+        /// <summary>
+        /// Exclude pre sql database command from transaction?
+        /// </summary>
         public bool ExcludePreSqlFromTransaction { get; set; }
 
+        /// <summary>
+        /// TableLoader type 
+        /// </summary>
         public TableLoaderType TlType { get; set; }
 
+        /// <summary>
+        /// database command type
+        /// </summary>
         DbCommandType _dbCommand;
+
+        /// <summary>
+        /// database command type
+        /// </summary>
         public DbCommandType DbCommand
         {
             get { return _dbCommand; }
@@ -129,15 +204,28 @@ namespace TableLoader
             }
         }
 
+        /// <summary>
+        /// Disable Tablock?
+        /// </summary>
         public bool DisableTablock { get; set; }
 
+        /// <summary>
+        /// Transaction type
+        /// </summary>
         TransactionType _transaction;
+
+        /// <summary>
+        /// Transaction type
+        /// </summary>
         public TransactionType Transaction
         {
             get { return _transaction; }
             set { _transaction = value; }
         }
 
+        /// <summary>
+        /// Custom database command (user can overide standard database commands)
+        /// </summary>
         private string _customMergeCommand;
         public string CustomMergeCommand
         {
@@ -145,10 +233,19 @@ namespace TableLoader
             set { _customMergeCommand = value; }
         }
 
+        /// <summary>
+        /// Use custom database command?
+        /// </summary>
         public bool UseCustomMergeCommand { get; set; }
 
-
+        /// <summary>
+        /// Standard configuration
+        /// </summary>
         private string _standarConfiguration;
+
+        /// <summary>
+        /// Standard configuration
+        /// </summary>
         public string StandarConfiguration
         {
             get
@@ -163,14 +260,27 @@ namespace TableLoader
             }
         }
 
+        /// <summary>
+        /// Use Standard configuration from database to update properties?
+        /// </summary>
         public bool AutoUpdateStandardConfiguration { get; set; }
 
         [BrowsableAttribute(false), XmlIgnore]
         public bool NoAutoUpdateStandardConfiguration { get { return !AutoUpdateStandardConfiguration; } }
 
+        /// <summary>
+        /// Custom template for logging
+        /// </summary>
         public string CustumLoggingTemplate { get; set; }
 
+        /// <summary>
+        /// Loglevel (1-3)
+        /// </summary>
         private int _logLevel;
+
+        /// <summary>
+        /// Loglevel (1-3)
+        /// </summary>
         public int LogLevel
         {
             get
@@ -185,6 +295,9 @@ namespace TableLoader
             }
         }
 
+        /// <summary>
+        /// Has configuration fro slowly changing dimension?
+        /// </summary>
         [BrowsableAttribute(false), XmlIgnore]
         public bool HasScd
         {
@@ -203,84 +316,127 @@ namespace TableLoader
 
         #region Binding Helper
 
+        /// <summary>
+        /// Use db command megre?
+        /// </summary>
         [XmlIgnore]
         public bool UseMerge
         {
             get { return (DbCommand == DbCommandType.Merge || DbCommand == DbCommandType.Merge2005); }
         }
 
+        /// <summary>
+        /// Use multi threading?
+        /// </summary>
         [XmlIgnore]
         public bool UseMultiThreading
         {
             get { return (TlType == TableLoaderType.FastLoad); }
         }
 
+        /// <summary>
+        /// Is Transaction available?
+        /// </summary>
         [XmlIgnore]
         public bool IsTransactionAvailable
         {
             get { return (TlType == TableLoaderType.TxAll); }
         }
 
+        /// <summary>
+        /// Is transaction used?
+        /// </summary>
         [XmlIgnore]
         public bool IsTransactionUsed
         {
             get { return (Transaction == TransactionType.Internal || Transaction == TransactionType.External); }
         }
 
+        /// <summary>
+        /// Can use custom command?
+        /// </summary>
         [XmlIgnore]
         public bool CanUseCustomCommand
         {
             get { return (DbCommand == DbCommandType.Merge || DbCommand == DbCommandType.Merge2005 || DbCommand == DbCommandType.Insert); }
         }
 
+        /// <summary>
+        /// Use external transaction?
+        /// </summary>
         [XmlIgnore]
         public bool UseExternalTransaction
         {
             get { return Transaction == TransactionType.External && TlType == TableLoaderType.TxAll; }
         }
 
+
+        /// <summary>
+        /// Use internal transaction?
+        /// </summary>
         [XmlIgnore]
         public bool UseInternalTransaction
         {
             get { return Transaction == TransactionType.Internal; }
         }
 
+        /// <summary>
+        /// Use chunk size for db command?
+        /// </summary>
         [XmlIgnore]
         public bool UseChunkSizeDbCommand
         {
             get { return DbCommand != DbCommandType.BulkInsert && DbCommand != DbCommandType.BulkInsertRowLock; }
         }
 
+        /// <summary>
+        /// Is destination table set?
+        /// </summary>
         [XmlIgnore]
         public bool HasDestinationTable
         {
             get { return (DestinationTable != null && DestinationTable != ""); }
         }
 
+        /// <summary>
+        /// Use temporary table?
+        /// </summary>
         [XmlIgnore]
         public bool UseTempTable
         {
             get { return (DbCommand != DbCommandType.BulkInsert && DbCommand != DbCommandType.BulkInsertRowLock); }
         }
 
+        /// <summary>
+        /// Use bulk insert?
+        /// </summary>
         [XmlIgnore]
         public bool UseBulkInsert
         {
             get { return (DbCommand == DbCommandType.BulkInsert || DbCommand == DbCommandType.BulkInsertRowLock); }
         }
 
+        /// <summary>
+        /// Has pre sql statement?
+        /// </summary>
         [XmlIgnore]
         public bool HasPreSql
         {
             get { return (PreSql != null && PreSql != ""); }
         }
 
+        /// <summary>
+        /// Has post sql statement?
+        /// </summary>
         [XmlIgnore]
         public bool HasPostSql
         {
             get { return (PostSql != null && PostSql != ""); }
         }
 
+        /// <summary>
+        /// Are number of threads limited?
+        /// </summary>
         [XmlIgnore]
         public bool HasMaxThreadCount
         {
@@ -296,9 +452,10 @@ namespace TableLoader
         #region Save & Load
 
         /// <summary>
-        /// Speichert den XML String der Instanz dieser Klasse in den CustomProperties
+        /// <summary>
+        /// Saves this custom properties
         /// </summary>
-        /// <param name="componentMetaData"></param>
+        /// <param name="componentMetaData">the components metddata</param>
         public void Save(IDTSComponentMetaData100 componentMetaData)
         {
             try
@@ -315,12 +472,12 @@ namespace TableLoader
         }
 
         /// <summary>
-        /// Erzeugt eine Instanz dieser Klasse anhand eines XML-Strings aus den CutsomProperties
-        /// und lädt ggfs. eine Standardkonfiguration nach.
+        /// load this properties from an xml string (taken from component metadatas custom properties
+        /// and loads standard configuration if needed
         /// </summary>
-        /// <param name="componentMetaData"></param>
-        /// <param name="variableDispenser"></param>
-        /// <returns></returns>
+        /// <param name="componentMetaData">the components metddata</param>
+        /// <param name="needsStandardConfiguration">Is standard configuration needed?</param>
+        /// <returns>instance of IsagCustomProperties</returns>
         public static IsagCustomProperties Load(IDTSComponentMetaData100 componentMetaData, bool needsStandardConfiguration)
         {
             IsagCustomProperties properties;
@@ -359,9 +516,9 @@ namespace TableLoader
         }
 
         /// <summary>
-        /// Serialisiert die Instanz dieser Klasse in einen XML-String
+        /// Saves this properties to an xml string
         /// </summary>
-        /// <returns></returns>
+        /// <returns>xml string</returns>
         public string SaveToXml()
         {
             StringBuilder builder;
@@ -380,10 +537,10 @@ namespace TableLoader
         }
 
         /// <summary>
-        /// Erzeugt anhand eines XML-Strings eine Instanz dieser Klasse
+        /// load this properties from an xml string
         /// </summary>
-        /// <param name="xml"></param>
-        /// <returns></returns>
+        /// <param name="xml">xml string</param>
+        /// <returns>instance of IsagCustomProperties</returns>
         public static IsagCustomProperties LoadFromXml(string xml)
         {
             XmlSerializer serializer = new XmlSerializer(typeof(IsagCustomProperties));
@@ -400,12 +557,20 @@ namespace TableLoader
 
         #region Enums
 
+        /// <summary>
+        /// TableLoader type
+        /// (Fastload with Multithreading, TxAll with transaction avialable)
+        /// </summary>
         public enum TableLoaderType
         {
             FastLoad = 0,
             TxAll = 1
         }
 
+        /// <summary>
+        /// Transaction type
+        /// external: used connection has an open transaction (set in an Exec Sql Task)
+        /// </summary>
         public enum TransactionType
         {
             Internal = 0,
@@ -413,6 +578,9 @@ namespace TableLoader
             None = 2
         }
 
+        /// <summary>
+        /// Database command type
+        /// </summary>
         public enum DbCommandType
         {
             Merge = 0,
@@ -424,7 +592,9 @@ namespace TableLoader
             BulkInsertRowLock = 6
         }
 
-
+        /// <summary>
+        /// Database command type string representations for GUI
+        /// </summary>
         public static string[] DB_COMMAND_MERGE_STRING_VALUES = {"Merge (table based)", "Merge (table based - SQL Server 2005)",
                                                                  "Update (table based) - Insert(row based)","Update (row based) - Insert(row based)",
                                                                   "Bulk Insert", "Insert", "Bulk Insert (rowlock)"};
@@ -432,6 +602,11 @@ namespace TableLoader
 
         #region ColumnConfig
 
+        /// <summary>
+        /// Creates, adds and returns a column configuration
+        /// </summary>
+        /// <param name="sqlColumns">Sql column list</param>
+        /// <returns>column configuration</returns>
         public ColumnConfig AddColumnConfig(SqlColumnList sqlColumns)
         {
             ColumnConfig result = new ColumnConfig();
@@ -443,6 +618,12 @@ namespace TableLoader
             return result;
         }
 
+        /// <summary>
+        /// Creates an sql column list from a database table
+        /// </summary>
+        /// <param name="con">sql connection</param>
+        /// <param name="destinationTableName">destination table name</param>
+        /// <returns>Sql column list</returns>
         public SqlColumnList AddSqlColumnDefinitions(SqlConnection con, string destinationTableName)
         {
             SqlColumnList result = new SqlColumnList();
@@ -485,6 +666,10 @@ namespace TableLoader
             return result;
         }
 
+        /// <summary>
+        /// Adds an sql column list
+        /// </summary>
+        /// <param name="sqlColumns"></param>
         public void AddSqlColumnDefinitions(SqlColumnList sqlColumns)
         {
             foreach (ColumnConfig config in this.ColumnConfigList)
@@ -493,6 +678,9 @@ namespace TableLoader
             }
         }
 
+        /// <summary>
+        /// Automap all input columns to output columns
+        /// </summary>
         public void AutoMap()
         {
             foreach (ColumnConfig config in ColumnConfigList)
@@ -501,11 +689,19 @@ namespace TableLoader
             }
         }
 
+        /// <summary>
+        /// Automap an input column to an output column
+        /// </summary>
+        /// <param name="config">column configuration
+        /// </param>
         public void AutoMap(ColumnConfig config)
         {
             config.AutoMap(PrefixInput, PrefixOutput);
         }
 
+        /// <summary>
+        /// Remove all output columns
+        /// </summary>
         public void RemoveOutput()
         {
             foreach (ColumnConfig config in ColumnConfigList)
@@ -517,9 +713,10 @@ namespace TableLoader
         #endregion
 
         /// <summary>
-        /// Baut das Mapping neu auf und korrigiert so ggfs. Fehler
+        /// Rebuilds mapping of input and output columns
+        /// (errors are corrected if possible)
         /// </summary>
-        /// <param name="componentMetaData"></param>
+        /// <param name="componentMetaData">SSIS components metadata</param>
         public void RebuildMappings(IDTSComponentMetaData100 componentMetaData, IsagEvents events)
         {
             IDTSInput100 input = componentMetaData.InputCollection[Constants.INPUT_NAME];
@@ -531,7 +728,7 @@ namespace TableLoader
 
             if (this.ContainsWrongUsageType(vInput.VirtualInputColumnCollection, events)) ComponentMetaDataTools.SetUsageTypeReadOnly(vInput);
 
-            //Speichern der bisherigen Mappings in 2 Listen (1x mit Input-Mapping, 1x ohne)
+            //Writre existing mappings in 2 lists (one with input columns, one without)
             foreach (ColumnConfig config in this.ColumnConfigList)
             {
 
@@ -541,8 +738,7 @@ namespace TableLoader
 
             }
 
-
-            //Generieren von neuen MappingRows anhand der InputColumns
+            //Generate new mapping using SSIS input columns
             foreach (IDTSInputColumn100 inputCol in input.InputColumnCollection)
             {
                 ColumnConfig config;
@@ -561,7 +757,7 @@ namespace TableLoader
                 newMappings.Add(config);
             }
 
-            //Aufbauen der neuen Mapping Properties
+            //Add properties to the newly created mapping
             ColumnConfigList.Clear();
 
             foreach (ColumnConfig config in newMappings) ColumnConfigList.Add(config);
@@ -572,6 +768,11 @@ namespace TableLoader
 
         #region Helpers
 
+        /// <summary>
+        /// Get column configuration by input column name
+        /// </summary>
+        /// <param name="inputColumnName">input column name</param>
+        /// <returns>column configuration</returns>
         public ColumnConfig GetColumnConfigByInputColumnName(string inputColumnName)
         {
             foreach (ColumnConfig config in ColumnConfigList)
@@ -582,11 +783,18 @@ namespace TableLoader
             return null;
         }
 
+        /// <summary>
+        /// Create temporary table name
+        /// </summary>
+        /// <returns></returns>
         public string CreateTempTableName()
         {
             return "[##tempTable" + Guid.NewGuid().ToString() + "]";
         }
 
+        /// <summary>
+        /// Set defalut values of properties
+        /// </summary>
         public void SetDefaultValues()
         {
             TimeOutDb = Constants.DB_TIMEOUT_DEFAULT;
@@ -598,6 +806,10 @@ namespace TableLoader
             TlType = TableLoaderType.FastLoad;
         }
 
+        /// <summary>
+        /// Gets an array with all input column names from column configuration list
+        /// </summary>
+        /// <returns>array with all input column names</returns>
         public string[] GetInputColumns()
         {
             List<string> result = new List<string>();
@@ -610,6 +822,11 @@ namespace TableLoader
             return result.ToArray();
         }
 
+        /// <summary>
+        /// Is a given output column name assigned to an input column?
+        /// </summary>
+        /// <param name="outputColumnName">output column name</param>
+        /// <returns>Is a given output column name assigned to an input column?</returns>
         public bool IsOutputColumnAssigned(string outputColumnName)
         {
 
@@ -622,6 +839,10 @@ namespace TableLoader
 
         }
 
+        /// <summary>
+        /// Gets assembly version
+        /// </summary>
+        /// <returns>assembly version</returns>
         public static string GetVersion()
         {
             Assembly asm = Assembly.GetExecutingAssembly();
@@ -630,6 +851,10 @@ namespace TableLoader
             return fvi.FileVersion;
         }
 
+        /// <summary>
+        /// Gets custom sql command
+        /// </summary>
+        /// <returns>custom sql command</returns>
         public string GetCustomCommand()
         {
             string result = "";
@@ -638,11 +863,9 @@ namespace TableLoader
             {
                 case IsagCustomProperties.DbCommandType.Merge:
                     result = SqlCreator.GetSqlMerge(this, Constants.TEMP_TABLE_PLACEHOLDER_BRACKETS, true);
-                    //.Replace("[" + Constants.TEMP_TABLE_PLACEHOLDER + "]", Constants.TEMP_TABLE_PLACEHOLDER);
                     break;
                 case IsagCustomProperties.DbCommandType.Merge2005:
-                    result = SqlCreator.GetSqlMerge2005(this, Constants.TEMP_TABLE_PLACEHOLDER_BRACKETS, true);//
-                    //.Replace("[" + Constants.TEMP_TABLE_PLACEHOLDER + "]", Constants.TEMP_TABLE_PLACEHOLDER);
+                    result = SqlCreator.GetSqlMerge2005(this, Constants.TEMP_TABLE_PLACEHOLDER_BRACKETS, true);
                     break;
                 case IsagCustomProperties.DbCommandType.UpdateTblInsertRow:
                     break;
@@ -653,8 +876,7 @@ namespace TableLoader
                 case IsagCustomProperties.DbCommandType.BulkInsertRowLock:
                     break;
                 case IsagCustomProperties.DbCommandType.Insert:
-                    result = SqlCreator.GetSqlInsert(this, Constants.TEMP_TABLE_PLACEHOLDER_BRACKETS, true);//;
-                    //Replace("[" + Constants.TEMP_TABLE_PLACEHOLDER + "]", Constants.TEMP_TABLE_PLACEHOLDER);
+                    result = SqlCreator.GetSqlInsert(this, Constants.TEMP_TABLE_PLACEHOLDER_BRACKETS, true);
                     break;
                 default:
                     break;
@@ -663,6 +885,11 @@ namespace TableLoader
             return result;
         }
 
+        /// <summary>
+        /// Gets a list of input and output column name mappings 
+        /// (if bulk insert is used)
+        /// </summary>
+        /// <returns></returns>
         public List<ColumnMapping> GetBulkColumnMapping()
         {
             List<ColumnMapping> result = null;
@@ -684,11 +911,10 @@ namespace TableLoader
         #region Validate
 
         /// <summary>
-        /// Gibt Fehlermeldungen und Warnungen aus, sofern die Metadaten nicht konsistent sind.
-        /// 
+        /// Validate configuration
         /// </summary>
-        /// <param name="componentMetaData"></param>
-        /// <returns>Gibt es Fehler, die automatisch korrigiert werden könnten?</returns>
+        /// <param name="componentMetaData">SSIS component metadata</param>
+        /// <returns>Configuration contains error that cann be corrected?</returns>
         public bool IsValid(IDTSComponentMetaData100 componentMetaData, IsagEvents events)
         {
             IDTSInput100 input = componentMetaData.InputCollection[Constants.INPUT_NAME];
@@ -706,6 +932,10 @@ namespace TableLoader
                    !ContainsInputWithoutColumnConfig(vInput, events) && !ContainsColumnConfigWithoutOutput(events);
         }
 
+        /// <summary>
+        /// Checks if SCD configuration is correct and returns Isag events if problems are found
+        /// </summary>
+        /// <param name="events">Isag events</param>
         private void WarnIfScdIsNotValid(IsagEvents events)
         {
             SCDList scdList = new SCDList(ColumnConfigList, DestinationTable);
@@ -735,6 +965,10 @@ namespace TableLoader
             if (!isValid) events.Fire(IsagEvents.IsagEventType.Warning, @"If filling out ""SCD Table"" you have to choose ""SCD Column"" or ""SCD ValidFrom"".");
         }
 
+        /// <summary>
+        /// Checks if more that one key is selected and returns Isag events if problems are found
+        /// </summary>
+        /// <param name="events">Isag events</param>
         private void WarnIfMoreThanOneKeyIsSelected(IsagEvents events)
         {
             if (DbCommand == DbCommandType.Merge || DbCommand == DbCommandType.Merge2005)
@@ -752,19 +986,17 @@ namespace TableLoader
             }
         }
         /// <summary>
-        /// Existiert im Mapping eine Zeile, die kein Bezug (über die Input Column ID) zu einer Column des Inputs hat?
-        /// Existiert im Mapping eine Zeile, die einen Bezug zu einer Input Column hat, bei der aber der Name abweicht?
+        /// Checks if column names and datatype are valid
+        /// Does the mapping contain a row without a match (input column ids are compared) in the SSIS input column collection?
+        /// If match is found: Are mappings input columm name and datatype equal to SSIS input column name and datatype?
         /// </summary>
-        /// <param name="input"></param>
-        /// <param name="componentMetaData"></param>
-        /// <returns></returns>
+        /// <param name="input">SSIS input</param>
+        /// <param name="componentMetaData">SSIS component metadata</param>
+        /// <returns>Are column names and datatypes valid?</returns>
         private bool AreColumnNamesAndDataTypesValid(IDTSInput100 input, IsagEvents events)
         {
-
             foreach (ColumnConfig config in this.ColumnConfigList)
             {
-
-
                 if (config.HasInput)
                 {
                     IDTSInputColumn100 inputColumn;
@@ -793,11 +1025,11 @@ namespace TableLoader
         }
 
         /// <summary>
-        /// Existiert im Mapping eine Zeile, die kein Bezug zu einer Column des Inputs hat?
+        /// Does the SSIS input column collection contain an input column without a match in the oclumn configuration list?
         /// </summary>
-        /// <param name="vInput"></param>
-        /// <param name="componentMetaData"></param>
-        /// <returns></returns>
+        /// <param name="vInput">SSIS virtual input</param>
+        /// <param name="componentMetaData">SSIS component metadata</param>
+        /// <returns>Does the SSIS input column collection contain an input column without a match in the oclumn configuration list?</returns>
         private bool ContainsInputWithoutColumnConfig(IDTSVirtualInput100 vInput, IsagEvents events)
         {
             for (int i = 0; i < vInput.VirtualInputColumnCollection.Count; i++)
@@ -813,10 +1045,10 @@ namespace TableLoader
         }
 
         /// <summary>
-        /// Sofern Update oder Insert gesetzt ist, muss auch eine Zielspalte gewählt sein
+        /// If update or insert is set, a destination column has to be set, too. Checks if condition is fullfilled.
         /// </summary>
-        /// <param name="componentMetaData"></param>
-        /// <returns></returns>
+        /// <param name="componentMetaData">SSIS component metadata</param>
+        /// <returns>If update or insert is set, a destination column has to be set, too. Is condition is fullfilled?</returns>
         private bool ContainsColumnConfigWithoutOutput(IsagEvents events)
         {
             foreach (ColumnConfig config in ColumnConfigList)
@@ -832,11 +1064,11 @@ namespace TableLoader
         }
 
         /// <summary>
-        /// Alle UsageTypes müssen auf ReadOnly gesetzt sein
+        /// Are all columns usage types set to readonly?
         /// </summary>
-        /// <param name="vInputColumnCollection"></param>
-        /// <param name="componentMetaData"></param>
-        /// <returns></returns>
+        /// <param name="vInputColumnCollection">SSIS virtual input column collection</param>
+        /// <param name="componentMetaData">SSIS component metadata</param>
+        /// <returns>Are all columns usage types set to readonly?</returns>
         private bool ContainsWrongUsageType(IDTSVirtualInputColumnCollection100 vInputColumnCollection, IsagEvents events)
         {
             for (int i = 0; i < vInputColumnCollection.Count; i++)
@@ -853,11 +1085,10 @@ namespace TableLoader
 
 
         /// <summary>
-        /// Sofern es sich nicht um das DB Command "Bulk Insert" oder "Insert" handelt,
-        /// muss mind. ein Key ausgewählt sein
+        /// For database commands other "Bulk Insert" and "Insert", at least one column has to be marked as a key.
         /// </summary>
-        /// <param name="componentMetaData"></param>
-        /// <returns></returns>
+        /// <param name="componentMetaData">SSIS component metadata</param>
+        /// <returns>For database commands other "Bulk Insert" and "Insert", at least one column has to be marked as a key. Is condition fulfilled?</returns>
         private bool IsKeyMissing(IsagEvents events)
         {
             if (DbCommand != DbCommandType.BulkInsert && DbCommand != DbCommandType.BulkInsertRowLock && DbCommand != DbCommandType.Insert)
@@ -875,11 +1106,11 @@ namespace TableLoader
         }
 
         /// <summary>
-        /// Wenn eine Zielspalte eine AutoID ist, so darf weder Insert noch Update auf true gesetzt sein.
-        /// (Ausnahme: Custom Command)
+        /// If destination column is identity, neither insert nor update must be marked
+        /// (exception: custom database command)
         /// </summary>
-        /// <param name="componentMetaData"></param>
-        /// <returns></returns>
+        /// <param name="componentMetaData">SSIS component metadata</param>
+        /// <returns>If destination column is identity, neither insert nor update must be marked. Is condition fulfilled</returns>
         private bool InsertOrUpdateAutoIdColumn(IsagEvents events)
         {
             if (!UseCustomMergeCommand)
@@ -897,16 +1128,17 @@ namespace TableLoader
         }
 
         /// <summary>
-        /// Die ConnectionManager sind gültig, wenn
-        /// - die Main Connection vorhanden ist
+        /// Connection managers are valid, if 
+        /// - main connection is set
         /// 
         /// Sofern die externe Transaktion gewählt ist, 
-        /// - muss die Bulk Connection vorhanden sein
-        /// - muss mit der Main Connection auf die in der Bulk Connection erzeugte Tempräre Tabelle zugegriffen werden können
-        /// - dürfen die beiden Connection Manager nicht identisch sien
+        /// If external transaction is used
+        /// - bulk connection must be set
+        /// - main connection must be able to access tthe temporary table created with the bulk connection 
+        /// - main connection and bulk connection must not be the same connections
         /// </summary>
-        /// <param name="componentMetaData"></param>
-        /// <returns></returns>
+        /// <param name="componentMetaData">SSIS component metadata</param>
+        /// <returns>Are all connection managers valid?</returns>
         private bool AreConnectionManagersValid(IDTSComponentMetaData100 componentMetaData, IsagEvents events)
         {
             IDTSRuntimeConnection100 runtimeConn = null;
@@ -1002,6 +1234,12 @@ namespace TableLoader
             return true;
         }
 
+        /// <summary>
+        /// Is an output column assigned to an input column twice?
+        /// </summary>
+        /// <param name="events">Isag events</param>
+        /// <returns>Is an output column assigned to an input column twice?
+        /// </returns>
         private bool ContainsDuplicateOutputColumn(IsagEvents events)
         {
             List<string> outputColumns = new List<string>();
@@ -1022,11 +1260,10 @@ namespace TableLoader
         }
 
         /// <summary>
-        /// Gibt es im Mapping Columns mit Zielspalte und Quellspalte/Default/Function 
-        /// ohne Häkchen bei Use (Insert) oder Use (Update)?
+        /// Does the mapping contian ia destination column, but insert or update is not marked?
         /// </summary>
-        /// <param name="componentMetaData"></param>
-        /// <returns></returns>
+        /// <param name="componentMetaData">SSIS component metadata</param>
+        /// <returns>Does the mapping contian ia destination column, but insert or update is not marked?</returns>
         private bool ContainsUnusedColumns(IsagEvents events)
         {
             foreach (ColumnConfig config in ColumnConfigList)

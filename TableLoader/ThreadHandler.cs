@@ -8,25 +8,75 @@ using System.Data.SqlClient;
 
 namespace TableLoader
 {
+    /// <summary>
+    /// Handles bulk copy and database threads
+    /// </summary>
     class ThreadHandler
-    {
-    
-
-
+    {   
+        /// <summary>
+        /// Number of finished bulk copy threads
+        /// </summary>
         private int _finishedBulkCopyThreads = 0;
+        /// <summary>
+        /// Number of created bulk copy threads
+        /// </summary>
         private int _createdBulkCopyThreads = 0;
+        /// <summary>
+        /// Maximum number of concurrent threads
+        /// </summary>
         private long _maxAllowdThreads;
+        /// <summary>
+        /// List of bulk copy threads
+        /// </summary>
         private List<ThreadBulkCopy> _bulkCopyThreads = new List<ThreadBulkCopy>();
+        /// <summary>
+        /// SSIS input
+        /// </summary>
         private IDTSInput100 _input;
+        /// <summary>
+        /// components custom properties
+        /// </summary>
         private IsagCustomProperties _isagCustomProperties;
+        /// <summary>
+        /// database timeout in seconds
+        /// </summary>
         private int _timeoutDb;
+        /// <summary>
+        /// number of reattempts for database command
+        /// </summary>
         private int _reattempts;
+        /// <summary>
+        /// connectionstring
+        /// </summary>
         private string _cstr;
+        /// <summary>
+        /// Database command thread
+        /// </summary>
         private ThreadDbCommand _dbCmdThread = null;
+        /// <summary>
+        /// Siag events
+        /// </summary>
         private IsagEvents _events;
+        /// <summary>
+        /// Sql connection
+        /// </summary>
         private SqlConnection _conn;
+        /// <summary>
+        /// Status
+        /// </summary>
         private Status _status;
 
+        /// <summary>
+        /// constructor
+        /// </summary>
+        /// <param name="input">SSIS input</param>
+        /// <param name="isagCustomProperties">Components custom properties</param>
+        /// <param name="cstr">Conectionststring</param>
+        /// <param name="conn">Sql connection</param>
+        /// <param name="events">Isag events</param>
+        /// <param name="dbCommandEventType">Database command event type</param>
+        /// <param name="dbCommandTemplate">Database command template</param>
+        /// <param name="status"></param>
         public ThreadHandler(IDTSInput100 input, IsagCustomProperties isagCustomProperties,
                              string cstr, SqlConnection conn, IsagEvents events,
                              IsagEvents.IsagEventType dbCommandEventType, string[] dbCommandTemplate, Status status)
@@ -45,13 +95,19 @@ namespace TableLoader
             _status = status;
         }
 
+        /// <summary>
+        /// Add a bulk copy thread
+        /// </summary>
+        /// <param name="tempTableName">temporary tablename</param>
+        /// <param name="dt">Datatable (buffer with rows to write to the temporary table)</param>
+        /// <param name="useTableLock">Use tablock?</param>
         public void AddBulkCopyThread(string tempTableName, DataTable dt, bool useTableLock)
         {
             //Logging.Log(IsagEvents.IsagEventType.BulkInsert, string.Format("DataTable {0} created with {1} rows.", (_createdBulkCopyThreads + 1).ToString(), dt.Rows.Count.ToString()));
             _status.AddStatus(_createdBulkCopyThreads + 1, dt.Rows.Count, Status.StatusType.dataTableCreated, IsagEvents.IsagEventType.Status);
             UpdateStatus();
 
-            string templateCreateTempTable = SqlCreator.GetCreateTempTable(_input, _isagCustomProperties, Constants.TEMP_TABLE_PLACEHOLDER_BRACKETS);
+            string templateCreateTempTable = SqlCreator.GetCreateTempTable(_isagCustomProperties, Constants.TEMP_TABLE_PLACEHOLDER_BRACKETS);
             ThreadBulkCopy thread = new ThreadBulkCopy(_dbCmdThread, tempTableName, dt, templateCreateTempTable, _timeoutDb, _reattempts, (_createdBulkCopyThreads + 1).ToString(), 
                                                        _cstr, _conn, useTableLock, _isagCustomProperties.UseBulkInsert);
             bool showWaitMessage = true;
@@ -77,21 +133,29 @@ namespace TableLoader
                 //    _createdBulkCopyThreads.ToString(), _createdBulkCopyThreads.ToString(), dt.Rows.Count.ToString()));
 
                 thread.Start();
-                 ///TODO StatusLog
                 Logging.Log(IsagEvents.IsagEventType.BulkInsert, string.Format("BulkCopyThread Status: {0} finished, {1} created", 
                     _finishedBulkCopyThreads.ToString(), _createdBulkCopyThreads.ToString()));
 
             }
         }
 
+        /// <summary>
+        /// Updates status
+        /// 
+        /// Threads gather events/status messages, ThreadHandler fires those events
+        /// </summary>
         public void UpdateStatus()
         {
+            //Fire database command thread events & messages
             if (_dbCmdThread != null) _dbCmdThread.FireMessages(_events, _status);
             
+            ///Iterate over bulk copy threads
             for (int i = _bulkCopyThreads.Count-1; i >= 0; i--)
             {
+                //Fire bulk copy thread events & messages
                 _bulkCopyThreads[i].FireMessages(_events, _status);
                 
+                //Remove finished threads and incerease count for finished threads
                 if (_bulkCopyThreads[i].Status == ThreadBulkCopy.StatusType.Finished)
                 {
                     _bulkCopyThreads.Remove(_bulkCopyThreads[i]);
@@ -101,11 +165,20 @@ namespace TableLoader
 
         }
 
+        /// <summary>
+        /// If number of concurrent threads is limited, creating a new bulk copy thread is possible only if maximum number of threads has not
+        /// been reached. Determines if it is necessarry to wait for a free bulk copy thread slot.
+        /// </summary>
+        /// <returns>Is it necessarry to wait for a free bulk copy thread slot?</returns>
         private bool WaitForFreeBulkCopyThread()
         {
             return _maxAllowdThreads != 0 && (!HasError() && _bulkCopyThreads.Count >= _maxAllowdThreads);
         }
 
+        /// <summary>
+        /// Does the database command thread or a bulk copy thread has an error?
+        /// </summary>
+        /// <returns>Does the database command thread or a bulk copy thread has an error?</returns>
         private bool HasError()
         {
             
@@ -130,6 +203,10 @@ namespace TableLoader
             return false;
         }
 
+        /// <summary>
+        /// Log statistic for all threads
+        /// (log number of bulk copy/database command threads created/finished)
+        /// </summary>
         public void LogThreadStatistic()
         {
             if (_dbCmdThread != null)
@@ -141,7 +218,11 @@ namespace TableLoader
         }
 
 
-  
+        /// <summary>
+        /// Waits for bulk copy threads
+        /// 
+        /// In post execute phase all bulk copy threads have been created and maybe started but usually not finished.
+        /// </summary>
         public void WaitForBulkCopyThreads()
         {
             bool showMessage = false;
@@ -168,6 +249,11 @@ namespace TableLoader
             if (_dbCmdThread != null) _dbCmdThread.SetBulkCopyFinished();
         }
 
+        /// <summary>
+        /// Waits for database command threads
+        /// 
+        /// In post execute phase all database threads have been created but usually not started/finished.
+        /// </summary>
         public void WaitForDbCommands()
         {
             if (_dbCmdThread != null)

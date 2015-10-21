@@ -6,13 +6,38 @@ using Microsoft.SqlServer.Dts.Runtime.Wrapper;
 
 namespace TableLoader
 {
+    /// <summary>
+    /// Creates TlDbCommand database command 
+    /// </summary>
     class TlDbCommand
     {
+        /// <summary>
+        /// custom properties for the component
+        /// </summary>
         private IsagCustomProperties _IsagCustomProperties;
+
+        /// <summary>
+        /// Isag events
+        /// </summary>
         private IsagEvents _events;
+
+        /// <summary>
+        /// SSIS metadata for the component
+        /// </summary>
         private IDTSComponentMetaData100 _componentMetaData;
+
+        /// <summary>
+        /// SSIS variable dispenser
+        /// </summary>
         private IDTSVariableDispenser100 _variableDispenser;
 
+        /// <summary>
+        /// constructor
+        /// </summary>
+        /// <param name="isagCustomProperties">custom properties for the component</param>
+        /// <param name="events">Isag events</param>
+        /// <param name="componentMetaData">SSIS metadata for the component</param>
+        /// <param name="variableDispenser">SSIS variable dispenser</param>
         public TlDbCommand(IsagCustomProperties isagCustomProperties, IsagEvents events, 
                          IDTSComponentMetaData100 componentMetaData, IDTSVariableDispenser100 variableDispenser)
         {
@@ -22,6 +47,11 @@ namespace TableLoader
             _variableDispenser = variableDispenser;
         }
 
+        /// <summary>
+        /// Gets sql command with placeholders for tables, columns, etc.
+        /// </summary>
+        /// <param name="eventType">event type</param>
+        /// <param name="sqlTemplate">sql command template</param>
         public void GetDbCommandDefinition(out IsagEvents.IsagEventType eventType, out string[] sqlTemplate)
         {
             switch (_IsagCustomProperties.DbCommand)
@@ -73,17 +103,17 @@ namespace TableLoader
                     sqlTemplate = null;
                     break;
                 default:
-                    _events.FireError(new string[] { "Es wurde kein gültiges DBCommand gewählt." });
-                    throw new Exception("Es wurde kein gültiges DBCommand gewählt.");
+                    _events.FireError(new string[] { "Choosen DBCommand is invalid." });
+                    throw new Exception("Choosen DBCommand is invalid.");
             }
         }
 
         /// <summary>
-        /// Die Pre- und PostSql Statements können Platzhalter für SSIS Variablen enthalten.
-        /// Diese werden mit den aktuellen Werten der Variablen gefüllt.
+        /// Pre an dpost sql statements may contain placeholder for variables.
+        /// Those placeholder will be replaced with variable values.
         /// </summary>
-        /// <param name="templateStatement">Das vom Benutzer eingegebene SQL Statement</param>
-        /// <returns>Das ausführbare SQL Statement</returns>
+        /// <param name="templateStatement">sql statement</param>
+        /// <returns>sql statement without placeholder</returns>
         public string GetExecuteStatementFromTemplate(string templateStatement)
         {
             string result = templateStatement;
@@ -112,7 +142,6 @@ namespace TableLoader
             {
                 _events.Fire(IsagEvents.IsagEventType.ErrorVariableNotFound, "[{0}]: Variable not found: {1}",
                             new string[] { "Pre-/PostSql", ex.Message });
-                //Events.Fire(ComponentMetaData, Events.SSIS_EventType.Error, "Eine Variable im Pre-, bzw. PostSql Statement konnte nicht gefunden werden.");
             }
             return result;
         }

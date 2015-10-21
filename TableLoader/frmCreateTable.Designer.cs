@@ -31,7 +31,7 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmCreateTable));
             this.btnCancel = new System.Windows.Forms.Button();
             this.btnOk = new System.Windows.Forms.Button();
-            this.teSql = new System.Windows.Forms.TextBox();
+            this.tbSql = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // btnCancel
@@ -58,16 +58,16 @@
             this.btnOk.UseVisualStyleBackColor = true;
             this.btnOk.Click += new System.EventHandler(this.btnOk_Click);
             // 
-            // teSql
+            // tbSql
             // 
-            this.teSql.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.tbSql.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.teSql.Location = new System.Drawing.Point(12, 12);
-            this.teSql.Multiline = true;
-            this.teSql.Name = "teSql";
-            this.teSql.Size = new System.Drawing.Size(592, 402);
-            this.teSql.TabIndex = 16;
+            this.tbSql.Location = new System.Drawing.Point(12, 12);
+            this.tbSql.Multiline = true;
+            this.tbSql.Name = "tbSql";
+            this.tbSql.Size = new System.Drawing.Size(592, 402);
+            this.tbSql.TabIndex = 16;
             // 
             // frmCreateTable
             // 
@@ -76,7 +76,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
             this.ClientSize = new System.Drawing.Size(616, 455);
-            this.Controls.Add(this.teSql);
+            this.Controls.Add(this.tbSql);
             this.Controls.Add(this.btnOk);
             this.Controls.Add(this.btnCancel);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -91,6 +91,6 @@
 
         private System.Windows.Forms.Button btnCancel;
         private System.Windows.Forms.Button btnOk;
-        private System.Windows.Forms.TextBox teSql;
+        private System.Windows.Forms.TextBox tbSql;
     }
 }

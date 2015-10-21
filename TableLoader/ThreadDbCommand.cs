@@ -7,9 +7,22 @@ using System.Threading;
 
 namespace TableLoader
 {
+    /// <summary>
+    /// Database command thread
+    /// 
+    /// Executes database command for each finished bulk copy thread.
+    /// Database command execution is not concurrent.
+    /// </summary>
     public class ThreadDbCommand : BackgroundWorker
     {
+        /// <summary>
+        /// Has Error?
+        /// </summary>
         private bool _hasError = false;
+
+        /// <summary>
+        /// Has Error?
+        /// </summary>
         public bool HasError
         {
             get
@@ -17,13 +30,28 @@ namespace TableLoader
                 lock (this) { return _hasError; }
             }
         }
+
+        /// <summary>
+        /// Set error = true
+        /// </summary>
         private void SetError()
         {
             lock (this) { _hasError = true; }
         }
 
+        /// <summary>
+        /// Number of finished database commands
+        /// </summary>
         private int _finishedDbCommands = 0;
+
+        /// <summary>
+        /// Number of finished database commands
+        /// </summary>
         public int FinishedDbCommands { get { lock (this) { return _finishedDbCommands; } } }
+
+        /// <summary>
+        /// Increase number of finished database commands by one
+        /// </summary>
         private void IncreaseFinishedDbCommands()
         {
             lock (this)
@@ -32,6 +60,9 @@ namespace TableLoader
             }
         }
 
+        /// <summary>
+        /// Get number of created database commands
+        /// </summary>
         public int CreatedDbCommands
         {
             get
@@ -43,6 +74,9 @@ namespace TableLoader
             }
         }
 
+        /// <summary>
+        /// Get number of finished database commands
+        /// </summary>
         public bool Finished
         {
             get
@@ -56,27 +90,76 @@ namespace TableLoader
 
         #region member
 
+        /// <summary>
+        /// List of event messages
+        /// </summary>
         private EventMessageList _messageList = new EventMessageList();
+
+        /// <summary>
+        /// List of status events
+        /// </summary>
         private StatusEventList _statusList = new StatusEventList();
 
-        private List<string> _errorMessages = new List<string>(); //"No Error.";
+        /// <summary>
+        /// List of error messages
+        /// </summary>
+        private List<string> _errorMessages = new List<string>(); 
 
+        /// <summary>
+        /// Get array of all error messages
+        /// </summary>
+        /// <returns>array of all error messages</returns>
         public string[] GetErrorMessages()
         {
             return _errorMessages.ToArray();
         }
 
+        /// <summary>
+        /// Sql command type
+        /// </summary>
         private IsagEvents.IsagEventType _sqlCommandType;
+
+        /// <summary>
+        /// Database timout
+        /// </summary>
         private int _dbTimeout;
+
+        /// <summary>
+        /// Number of reattempts if database command failed
+        /// </summary>
         private int _reattempts;
+
+        /// <summary>
+        /// Sql connection
+        /// </summary>
         private SqlConnection _connection;
+
+        /// <summary>
+        /// Sql command templates
+        /// </summary>
         private string[] _templateSql;
+
+        /// <summary>
+        /// List of database command thread definitions
+        /// </summary>
         private List<ThreadDefiniton> _threadList = new List<ThreadDefiniton>();
 
+        /// <summary>
+        /// Have to wait for bulk copy thread?
+        /// (true unless all bulk copy threads have been finished)
+        /// </summary>
         private bool _waitForBulkCopy = true;
 
         #endregion
 
+        /// <summary>
+        /// constructor
+        /// </summary>
+        /// <param name="connection">Sql connection</param>
+        /// <param name="sqlCommandType">Sql command type</param>
+        /// <param name="dbTimeout">Database timout</param>
+        /// <param name="reattempts">Number of reattempts if database command failed</param>
+        /// <param name="templateSql">Sql command templates</param>
         public ThreadDbCommand(SqlConnection connection, IsagEvents.IsagEventType sqlCommandType, int dbTimeout, int reattempts, string[] templateSql)
         {
             _connection = connection;
@@ -91,6 +174,12 @@ namespace TableLoader
 
         #region Interface
 
+        /// <summary>
+        /// Adds a database command thread
+        /// </summary>
+        /// <param name="tempTableName">temporary table name</param>
+        /// <param name="threadNr">Thread number</param>
+        /// <param name="conn">Sql connection</param>
         public void AddThread(string tempTableName, string threadNr, SqlConnection conn)
         {
             lock (_threadList)
@@ -98,12 +187,13 @@ namespace TableLoader
                 _threadList.Add(new ThreadDefiniton() { TempTableName = tempTableName, ThreadNr = threadNr, Conn = conn });
 
                 _statusList.AddStatusEvent(FinishedDbCommands, CreatedDbCommands, Status.StatusType.dbThreadStatistic, IsagEvents.IsagEventType.Status);
-                //_messageListNew.AddMessage(string.Format("{0}/{1} DB Commands finished [{2}]", FinishedDbCommands.ToString(),
-                //    CreatedDbCommands.ToString(), DateTime.Now.ToString() + ":" + DateTime.Now.Millisecond.ToString()),
-                //    IsagEvents.IsagEventType.MergeBegin);
             }
         }
 
+        /// <summary>
+        /// "WaitForBulkCopy" is set to false.
+        /// This means a bulk copy has finished and a temporary table is ready for the database command
+        /// </summary>
         public void SetBulkCopyFinished()
         {
             lock (this)
@@ -112,6 +202,11 @@ namespace TableLoader
             }
         }
 
+        /// <summary>
+        /// Fire even, status and error messages
+        /// </summary>
+        /// <param name="events">Isag events</param>
+        /// <param name="status">Status</param>
         public void FireMessages(IsagEvents events, Status status)
         {
             _messageList.FireEvents(events);
@@ -129,8 +224,10 @@ namespace TableLoader
         }
         #endregion
 
-
-
+        /// <summary>
+        /// Removes a thread definition from the thread list (-> thread has finished)
+        /// </summary>
+        /// <param name="threadDef"></param>
         private void RemoveThread(ThreadDefiniton threadDef)
         {
             lock (_threadList)
@@ -139,9 +236,16 @@ namespace TableLoader
             }
         }
 
-
         #region Execute
 
+        /// <summary>
+        /// Reacton DoWork event:
+        /// 
+        /// While waiting for bulk copys or thread definition list is not empty (and no error occured) this method will not be left.
+        /// If thread definition list is not empty a new database command will be executed
+        /// </summary>
+        /// <param name="sender">evetn sender</param>
+        /// <param name="e"></param>
         private void ThreadDbCommand_DoWork(object sender, DoWorkEventArgs e)
         {
             while ((_waitForBulkCopy || _threadList.Count > 0) && !HasError)
@@ -157,27 +261,21 @@ namespace TableLoader
             }
         }
 
+        /// <summary>
+        /// Executes database command (using a thread deinition)
+        /// </summary>
+        /// <param name="threadDef">thread deinition</param>
         private void ExecDbCommand(ThreadDefiniton threadDef)
         {
-
-           
             try
             {
                 _statusList.AddStatusEvent(Int32.Parse(threadDef.ThreadNr),-1 , Status.StatusType.dbThreadProcessingDataTable, threadDef.TempTableName, IsagEvents.IsagEventType.Status);
-               // _messageListNew.AddMessage(string.Format("DB Command Thread: Processing TempTable {0} from BulkCopy Thread {1} [{2}]",
-               //threadDef.TempTableName, threadDef.ThreadNr, DateTime.Now.ToString() + ":" + DateTime.Now.Millisecond.ToString()),
-               //IsagEvents.IsagEventType.MergeBegin);
 
                 SqlCommand comm1 = threadDef.Conn.CreateCommand();
                 comm1.CommandText = "SELECT COUNT(*) FROM " + threadDef.TempTableName;
                 object result = comm1.ExecuteScalar();
 
                 _statusList.AddStatusEvent(Int32.Parse(threadDef.ThreadNr), (int)result, Status.StatusType.dbThreadCountTempTable, threadDef.TempTableName, IsagEvents.IsagEventType.Status);
-                //_messageListNew.AddMessage(string.Format("TempTable {0} contains {1} rows. [{2}]",
-                //     threadDef.TempTableName, result.ToString(), DateTime.Now.ToString() + ":" + DateTime.Now.Millisecond.ToString()),
-                //     IsagEvents.IsagEventType.MergeBegin);
-
-
 
                 int rowsAffected = 0;
                 string sql;
@@ -236,15 +334,11 @@ namespace TableLoader
                     _messageList.AddMessage(message, IsagEvents.IsagEventType.Sql);
 
                     _statusList.AddStatusEvent(Int32.Parse(threadDef.ThreadNr), rowsAffected, Status.StatusType.dbJobFinished, threadDef.TempTableName, IsagEvents.IsagEventType.Status);
-     //               _messageListNew.AddMessage(string.Format("DB Command for TempTable {0} of BulkCopy Thread {1} finished, {2} rows have been affected [{3}]",
-     //threadDef.TempTableName, threadDef.ThreadNr, rowsAffected.ToString(), DateTime.Now.ToString() + ":" + DateTime.Now.Millisecond.ToString()),
-     //IsagEvents.IsagEventType.Sql);
 
                     DropTemporaryTable(comm, threadDef);
 
                     threadDef.Conn.Close();
                     threadDef.Conn.Dispose();
-
                 }
             }
             catch (Exception ex)
@@ -258,6 +352,11 @@ namespace TableLoader
             }
         }
 
+        /// <summary>
+        /// Drops temporary table after database command has finished
+        /// </summary>
+        /// <param name="comm">Sql command</param>
+        /// <param name="threadDef">Thread definition</param>
         private void DropTemporaryTable(SqlCommand comm, ThreadDefiniton threadDef)
         {
             try
@@ -280,10 +379,25 @@ namespace TableLoader
 
         #endregion
 
+
+        /// <summary>
+        /// Database command thread definition
+        /// </summary>
         private class ThreadDefiniton
         {
+            /// <summary>
+            /// Thread number
+            /// </summary>
             public string ThreadNr { get; set; }
+
+            /// <summary>
+            /// Temporary table name
+            /// </summary>
             public string TempTableName { get; set; }
+
+            /// <summary>
+            /// Sql connection
+            /// </summary>
             public SqlConnection Conn { get; set; }
         }
     }

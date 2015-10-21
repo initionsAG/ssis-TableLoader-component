@@ -9,11 +9,20 @@ using TableLoader.Framework.Mapping;
 
 namespace TableLoader
 {
+    /// <summary>
+    /// input column configuration
+    /// </summary>
     public class ColumnConfig: IXmlSerializable, INotifyPropertyChanged
     {
-
+        /// <summary>
+        /// Interface for INotifyPropertyChanged
+        /// </summary>
         public event PropertyChangedEventHandler PropertyChanged;
 
+        /// <summary>
+        /// Triggers PropertyChangedEventHandler
+        /// </summary>
+        /// <param name="info">property name</param>
         private void NotifyPropertyChanged(String info)
         {
             if (PropertyChanged != null)
@@ -25,11 +34,18 @@ namespace TableLoader
 
         #region Properties
 
-
-
+        /// <summary>
+        /// List of columns of the destination table
+        /// </summary>
         private SqlColumnList _sqlColumns;
 
+        /// <summary>
+        /// Insert column value into the destination table?
+        /// </summary>
         private bool _insert;
+        /// <summary>
+        /// Insert column value into the destination table?
+        /// </summary>
         [DisplayName("Use\n(Insert)")]
         public bool Insert
         {
@@ -41,7 +57,13 @@ namespace TableLoader
             }
         }
 
+        /// <summary>
+        /// Update column value in the destination table?
+        /// </summary>
         private bool _update;
+        /// <summary>
+        /// Update column value in the destination table?
+        /// </summary>
         [DisplayName("Use\n(Update)")]
         public bool Update
         {
@@ -53,7 +75,13 @@ namespace TableLoader
             }
         }
 
+        /// <summary>
+        /// Use column as key for merge?
+        /// </summary>
         private bool _key;
+        /// <summary>
+        /// Use column as key for merge?
+        /// </summary>
         [DisplayName("Key")]
         public bool Key
         {
@@ -65,7 +93,13 @@ namespace TableLoader
             }
         }
 
+        /// <summary>
+        /// Input column name
+        /// </summary>
         private string _inputColumnName;
+        /// <summary>
+        /// Input column name
+        /// </summary>
         [DisplayName("Input Column"), ReadOnly(true)]
         public string InputColumnName
         {
@@ -77,7 +111,13 @@ namespace TableLoader
             }
         }
 
+        /// <summary>
+        /// Output column name
+        /// </summary>
         private string _outputColumnName;
+        /// <summary>
+        /// Output column name
+        /// </summary>
         [DisplayName("Output Column")]
         public string OutputColumnName
         {
@@ -91,6 +131,9 @@ namespace TableLoader
             }
         }
 
+        /// <summary>
+        /// Default value if value is null
+        /// </summary>
         private string _default;
         [DisplayName("Default")]
         public string Default
@@ -107,7 +150,15 @@ namespace TableLoader
             }
         }
 
+        /// <summary>
+        /// function that return the value that has to be written to the destination table
+        /// (no input column is used)
+        /// </summary>
         private string _function;
+        /// <summary>
+        /// function that return the value that has to be written to the destination table
+        /// (no input column is used)
+        /// </summary>
         [DisplayName("Function")]
         public string Function
         {
@@ -123,8 +174,13 @@ namespace TableLoader
             }
         }
 
-
+        /// <summary>
+        /// Input datatype
+        /// </summary>
         private string _dataTypeInput;
+        /// <summary>
+        /// Input datatype
+        /// </summary>
         [DisplayName("DataType\n(Input)"), ReadOnly(true)]
         public string DataTypeInput
         {
@@ -136,7 +192,13 @@ namespace TableLoader
             }
         }
 
+        /// <summary>
+        /// Output datatype
+        /// </summary>
         private string _dataTypeOutput;
+        /// <summary>
+        /// Output datatype
+        /// </summary>
         [DisplayName("DataType\n(Output)"), ReadOnly(true)]
         public string DataTypeOutput
         {
@@ -148,6 +210,9 @@ namespace TableLoader
             }
         }
 
+        /// <summary>
+        /// Output .NET datatype 
+        /// </summary>
         private string _dataTypeOutputNet;
         [BrowsableAttribute(false), ReadOnly(true)]
         public string DataTypeOutputNet
@@ -160,7 +225,13 @@ namespace TableLoader
             }
         }
 
+        /// <summary>
+        /// Is ouput column primary key?
+        /// </summary>
         private bool _isOutputPrimaryKey;
+        /// <summary>
+        /// Is ouput column primary key?
+        /// </summary>
         [DisplayName("PK\n(Output)"), ReadOnly(true)]
         public bool IsOutputPrimaryKey
         {
@@ -172,6 +243,9 @@ namespace TableLoader
             }
         }
 
+        /// <summary>
+        /// Does output column allow nulls?
+        /// </summary>
         private bool _allowOutputDbNull;
         [DisplayName("Null\n(Output)"), ReadOnly(true)]
         public bool AllowOutputDbNull
@@ -184,6 +258,9 @@ namespace TableLoader
             }
         }
 
+        /// <summary>
+        /// Is output column Identity?
+        /// </summary>
         private bool _isOutputAutoId;
         [DisplayName("AutoID\n(Output)"), ReadOnly(true)]
         public bool IsOutputAutoId
@@ -196,7 +273,13 @@ namespace TableLoader
             }
         }
 
+        /// <summary>
+        /// Input column Id
+        /// </summary>
         private int _inputColumnId;
+        /// <summary>
+        /// Input column Id
+        /// </summary>
         [BrowsableAttribute(false), ReadOnly(true)]
         public int InputColumnId
         {
@@ -208,15 +291,27 @@ namespace TableLoader
             }
         }
 
+        /// <summary>
+        /// Has configuration an input column?
+        /// </summary>
         [XmlIgnore, BrowsableAttribute(false)]
         public bool HasInput { get { return (InputColumnName != null && InputColumnName != ""); } }
 
+        /// <summary>
+        /// Has configuration an output column?
+        /// </summary>
         [XmlIgnore, BrowsableAttribute(false)]
         public bool HasOutput { get { return (OutputColumnName != null && OutputColumnName != ""); } }
 
+        /// <summary>
+        /// Is input column used?
+        /// </summary>
         [XmlIgnore, BrowsableAttribute(false)]
         public bool IsInputColumnUsed { get { return (Insert || Update || Key || IsScdValidFrom); } }
 
+        /// <summary>
+        /// Column name for bulk copy
+        /// </summary>
         [XmlIgnore, BrowsableAttribute(false)]
         public string BulkColumnName
         {
@@ -229,6 +324,9 @@ namespace TableLoader
             }
         }
 
+        /// <summary>
+        /// Dattype for bulk copy
+        /// </summary>
         [XmlIgnore, BrowsableAttribute(false)]
         public string BulkDataType
         {
@@ -241,6 +339,9 @@ namespace TableLoader
             }
         }
 
+        /// <summary>
+        /// Has function?
+        /// </summary>
         [XmlIgnore, BrowsableAttribute(false)]
         public bool HasFunction
         {
@@ -250,6 +351,9 @@ namespace TableLoader
             }
         }
 
+        /// <summary>
+        /// Has default value? (for null replacement)
+        /// </summary>
         [XmlIgnore, BrowsableAttribute(false)]
         public bool HasDefault
         {
@@ -259,7 +363,13 @@ namespace TableLoader
             }
         }
 
+        /// <summary>
+        /// custom id (GUID) ofr lineage id mapping
+        /// </summary>
         private string _customId;
+        /// <summary>
+        /// custom id (GUID) ofr lineage id mapping
+        /// </summary>
         [BrowsableAttribute(false), ReadOnly(true)]
         public string CustomId
         {
@@ -267,16 +377,26 @@ namespace TableLoader
             set { _customId = value; }
         }
 
+        /// <summary>
+        /// Is column used as an SCD (slowly changing dimension) column?
+        /// </summary>
         [DisplayName("SCD Column")]
         public bool IsScdColumn { get; set; }
 
+        /// <summary>
+        /// SCD (slowly changing dimension) table name?
+        /// </summary>
         [DisplayName("SCD Table")]
         public string ScdTable { get; set; }
-
+        /// <summary>
+        /// Is column used as an SCD (slowly changing dimension) validFrom column?
+        /// </summary>
         [DisplayName("SCD ValidFrom")]
         public bool IsScdValidFrom { get; set; }
 
-
+        /// <summary>
+        /// Is column used for a SCD?
+        /// </summary>
         [XmlIgnore, BrowsableAttribute(false), ReadOnly(true)]
         public bool HasScd
         {
@@ -286,8 +406,28 @@ namespace TableLoader
 
         #region Constructor
 
+        /// <summary>
+        /// constructor
+        /// </summary>
         public ColumnConfig() { }
 
+        /// <summary>
+        /// constructor
+        /// </summary>
+        /// <param name="insert">Insert column?</param>
+        /// <param name="update">Update column</param>
+        /// <param name="key">Use column as key?</param>
+        /// <param name="inputColumnName">input column name</param>
+        /// <param name="outputColumnName">output column nmme</param>
+        /// <param name="defaultValue">default value for null values</param>
+        /// <param name="function">function used to get value</param>
+        /// <param name="dataTypeInput">input datatype</param>
+        /// <param name="dataTypeOutput">output datatype</param>
+        /// <param name="dataTypeOutputNet">output .NET datatype</param>
+        /// <param name="isOutputPrimaryKey">Is output column primary key?</param>
+        /// <param name="outputNullAllowed">Does output column allow nulls?</param>
+        /// <param name="isOutputAutoId">Is output column identity?</param>
+        /// <param name="inputColumnId">input column id</param>
         public ColumnConfig(bool insert, bool update, bool key, string inputColumnName, string outputColumnName, string defaultValue,
                             string function, string dataTypeInput, string dataTypeOutput, string dataTypeOutputNet,
                             bool isOutputPrimaryKey, bool outputNullAllowed, bool isOutputAutoId, object inputColumnId)
@@ -314,7 +454,12 @@ namespace TableLoader
                 _inputColumnId = (int) inputColumnId;
         }
 
-
+        /// <summary>
+        /// constructor
+        /// </summary>
+        /// <param name="inputColumnName">input column name</param>
+        /// <param name="dataTypeInput">input datatype</param>
+        /// <param name="inputColumn">SSIS input column</param>
         public ColumnConfig(string inputColumnName, string dataTypeInput, IDTSInputColumn100 inputColumn)
         {
             _insert = false;
@@ -345,8 +490,16 @@ namespace TableLoader
 
         #region IXmlSerializable
 
+        /// <summary>
+        /// Gets XML schema (not used, so null is returned)
+        /// </summary>
+        /// <returns>XmlSchema (null)</returns>
         public System.Xml.Schema.XmlSchema GetSchema() { return null; }
 
+        /// <summary>
+        /// Reads a ColumnConfig from an XML reader
+        /// </summary>
+        /// <param name="reader">xml reader</param>
         public void ReadXml(System.Xml.XmlReader reader)
         {
 
@@ -393,6 +546,10 @@ namespace TableLoader
 
         }
 
+        /// <summary>
+        /// Writes this ColumnConfig to an XML writer
+        /// </summary>
+        /// <param name="writer">xml writer</param>
         public void WriteXml(System.Xml.XmlWriter writer)
         {
 
@@ -425,12 +582,19 @@ namespace TableLoader
 
         #endregion
 
+        /// <summary>
+        /// Sets list of description of sql columns
+        /// </summary>
+        /// <param name="sqlColumns">sql columns</param>
         public void SetSqlColumnDefinitions(SqlColumnList sqlColumns)
         {
             _sqlColumns = sqlColumns;
             SetOutputColumnDefinition();
         }
 
+        /// <summary>
+        /// Sets output column properties from sql column properties
+        /// </summary>
         private void SetOutputColumnDefinition()
         {
             if (this.OutputColumnName != null && _sqlColumns.ContainsKey(this.OutputColumnName))
@@ -450,6 +614,9 @@ namespace TableLoader
             }
         }
 
+        /// <summary>
+        /// Removes output from column
+        /// </summary>
         public void RemoveOutput()
         {
             _outputColumnName = "";
@@ -460,12 +627,22 @@ namespace TableLoader
             //_sqlColumns = null;
         }
 
+        /// <summary>
+        /// Sets output column by using input column name + input- and output prefix
+        /// </summary>
+        /// <param name="inputPrefix">input column prefix</param>
+        /// <param name="outputPrefix">output column prefix</param>
         public void AutoMap(string inputPrefix, string outputPrefix)
         {
             if (_sqlColumns != null)
                 OutputColumnName = _sqlColumns.GetMatchingColumnname(InputColumnName, inputPrefix, outputPrefix);
         }
 
+        /// <summary>
+        /// Gets sql expression for column 
+        /// (uses default value or function if available)
+        /// </summary>
+        /// <returns></returns>
         public string GetColumnExpression()
         {
             string result;

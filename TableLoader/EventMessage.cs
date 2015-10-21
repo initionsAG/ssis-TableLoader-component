@@ -4,6 +4,11 @@ using System.Text;
 
 namespace TableLoader
 {
+    /// <summary>
+    /// Event message list 
+    /// 
+    /// Message list is filled in threads. Main Process has to fire SSIS event messages
+    /// </summary>
     public class EventMessageList
     {
         private List<EventMessage> _messages = new List<EventMessage>();
@@ -22,7 +27,11 @@ namespace TableLoader
         }
 
       
-
+        /// <summary>
+        /// Adds a message
+        /// </summary>
+        /// <param name="message">message text</param>
+        /// <param name="eventType">event type</param>
         public void AddMessage(string message, IsagEvents.IsagEventType eventType)
         {
             lock (_messages)
@@ -31,6 +40,13 @@ namespace TableLoader
             }
             
         }
+
+        /// <summary>
+        /// Adds a message
+        /// </summary>
+        /// <param name="message">message text</param>
+        /// <param name="parameter">message parameter</param>
+        /// <param name="eventType">event type</param>
 
         public void AddMessage(string message, string[]  parameter, IsagEvents.IsagEventType eventType)
         {
@@ -43,11 +59,24 @@ namespace TableLoader
 
     }
 
-
+    /// <summary>
+    /// Definition for an SSIS event
+    /// </summary>
     public class EventMessage
     {
+        /// <summary>
+        /// message text
+        /// </summary>
         public string Message { get; set; }
+
+        /// <summary>
+        /// message parameter
+        /// </summary>
         public string[] Parameter { get; set; }
+
+        /// <summary>
+        /// event type
+        /// </summary>
         public IsagEvents.IsagEventType EventType { get; set; }
 
         public void FireEvent(IsagEvents events)

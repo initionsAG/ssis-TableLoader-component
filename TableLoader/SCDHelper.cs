@@ -2,38 +2,39 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace TableLoader
-{
-    class SCDHelper
-    {      
+namespace TableLoader {
+    /// <summary>
+    /// Helper methods for slowly changing dimensions
+    /// </summary>
+    class SCDHelper {
         /// <summary>
-        /// Fügt dem pre/postfix eckige Klammern hinzu, so dass die Spalte entsprechend geklammert ist
+        /// Adds brackets to pre/postfix, so that column will be enclosed by brackets
         /// </summary>
-        /// <param name="prefix"></param>
-        /// <param name="postfix"></param>
+        /// <param name="prefix">prefix</param>
+        /// <param name="postfix">postfix</param>
         public static void AddBrackets(ref string prefix, ref string postfix)
         {
             prefix += "[";
             postfix += "]";
         }
         /// <summary>
-        /// Fügt einer Spalte eckige Klammern hinzu
+        /// Adds brackets to a column
         /// </summary>
-        /// <param name="columnName"></param>
-        /// <returns></returns>
+        /// <param name="columnName">column name</param>
+        /// <returns>column name with brackets</returns>
         public static string AddBrackets(string columnName)
         {
             return "[" + columnName + "]";
-        } 
+        }
 
         /// <summary>
-        /// Generiert eine mit Kommas getrennte Spaltenliste (SQL Format) 
+        /// Generates comma separated columns list (sql formated)
         /// </summary>
-        /// <param name="scdColumns"></param>
-        /// <param name="prefix">wird der Spalte vorangestellt</param>
-        /// <param name="postfix">wird an die Spalte angefügt</param>
-        /// <param name="spaces">Anzahl Leerzeichen, die einer Zeile vorangestellt werden</param>
-        /// <returns></returns>
+        /// <param name="scdColumns">SCD column list</param>
+        /// <param name="prefix">prefix for a column</param>
+        /// <param name="postfix">postfix for a column</param>
+        /// <param name="spaces">ANumber of space at the beginnung of a row</param>
+        /// <returns>comma separated columns list (sql formated)</returns>
         public static string GetSqlAttributeList(List<SCDCOlumn> scdColumns, string prefix, string postfix, int spaces)
         {
             string result = "";
@@ -50,49 +51,58 @@ namespace TableLoader
             return result;
         }
 
-
-        //private static List<string> GetColumnList(List<SCDCOlumn> columnList)
-        //{
-        //    return GetColumnList(columnList, "");
-        //}
-        //private static List<string> GetColumnList(List<SCDCOlumn> columnList, string columnPrefix)
-        //{
-        //    List<string> result = new List<string>();
-
-        //    foreach (SCDCOlumn scdColumn in columnList)
-        //    {
-        //        result.Add(columnPrefix + scdColumn.ColumnName);
-        //    }
-
-        //    return result;
-        //}
-
+        /// <summary>
+        /// Gets sql attribute column list twice (differs in pre/posfix)
+        /// </summary>
+        /// <param name="scdColumns">SCD column list</param>
+        /// <param name="prefix1">Prefix first column</param>
+        /// <param name="prefix2">Prefix second column</param>
+        /// <param name="postfix1">Postfix first column</param>
+        /// <param name="postfix2">Postfix second column</param>
+        /// <param name="spaces">Number of space at the beginnung of a row</param>
+        /// <returns>sql attribute column list</returns>
         public static string GetSqlAttributeListDoubled(List<SCDCOlumn> scdColumns, string prefix1, string prefix2, string postfix1, string postfix2, int spaces)
         {
             return GetSqlColumnList(scdColumns, prefix1, prefix2, postfix1, postfix2, spaces, true, "");
         }
 
+        /// <summary>
+        /// Gets sql BK column list
+        /// </summary>
+        /// <param name="scdColumns">SCD column list</param>
+        /// <param name="prefix">prefix for a column</param>
+        /// <param name="spaces">Number of space at the beginnung of a row</param>
+        /// <returns>sql BK column list</returns>
         public static string GetSqlBkList(List<SCDCOlumn> scdColumns, string prefix, int spaces)
         {
             return GetSqlColumnList(scdColumns, prefix, "", "", "", spaces, false, "");
         }
 
+        /// <summary>
+        /// Gets sql BK column list
+        /// </summary>
+        /// <param name="scdColumns">SCD column list</param>
+        /// <param name="columnPrefix">Column name prefix</param>
+        /// <param name="prefix">prefix for a column</param>
+        /// <param name="spaces">Number of space at the beginnung of a row</param>
+        /// <returns>sql BK column list</returns>
         public static string GetSqlBkList(List<SCDCOlumn> scdColumns, string columnPrefix, string prefix, int spaces)
         {
             return GetSqlColumnList(scdColumns, prefix, "", "", "", spaces, false, columnPrefix);
         }
-       
+
         /// <summary>
-        ///     Liefert eine mit Kommas getrennte Liste von SCD Columns zurück. (im SQL Format)
+        /// Generates comma separated SCD columns list (sql formated)
         /// </summary>
-        /// <param name="scdColumnList"></param>
-        /// <param name="prefix1">Prefix für Spalte1</param>
-        /// <param name="prefix2">Prefix für Spalte2</param>
-        /// <param name="postfix1">Postfix für Spalte1</param>
-        /// <param name="postfix2">Postfix für Spalte2</param>
-        /// <param name="spaces">Anzahl Leerzeichen, die einer Zeile vorangestellt werden</param>
-        /// <param name="generate2ndColumn">Soll eine zweite Spalte erzeugt werden?</param>
-        /// <returns></returns>
+        /// <param name="scdColumns">SCD column list</param>
+        /// <param name="prefix1">Prefix first column</param>
+        /// <param name="prefix2">Prefix second column</param>
+        /// <param name="postfix1">Postfix first column</param>
+        /// <param name="postfix2">Postfix second column</param>
+        /// <param name="spaces">Number of space at the beginnung of a row</param>
+        /// <param name="generate2ndColumn">Generate 2nd column?</param>
+        /// <param name="columnPrefix">Column name prefix</param>
+        /// <returns>comma separated SCD columns list</returns>
         public static string GetSqlColumnList(List<SCDCOlumn> columnList, string prefix1, string prefix2, string postfix1, string postfix2, int spaces, bool generate2ndColumn, string columnPrefix)
         {
             string result = "";
@@ -104,17 +114,18 @@ namespace TableLoader
             foreach (SCDCOlumn scdColumn in columnList)
             {
                 result += (",").PadLeft(spaces + 1) + prefix1 + columnPrefix + scdColumn.ColumnName + postfix1 + newLine;
-                if (generate2ndColumn) result += (",").PadLeft(spaces + 1) + prefix2 + columnPrefix + scdColumn.ColumnName + postfix2 + newLine;
+                if (generate2ndColumn)
+                    result += (",").PadLeft(spaces + 1) + prefix2 + columnPrefix + scdColumn.ColumnName + postfix2 + newLine;
             }
 
             return result;
         }
 
         /// <summary>
-        /// Liefert den "On"-Teil eines Merge Befehls (SQL Format)
+        /// Gets "On" part of a merge statement
         /// </summary>
-        /// <param name="scdColumns">Liste von SCD Columns (BKs)</param>
-        /// <returns></returns>
+        /// <param name="scdColumns">SCD BK column list</param>
+        /// <returns>"On" part of a merge statement</returns>
         public static string GetBkOnList(List<SCDCOlumn> scdColumns, string columnPrefix)
         {
             string result = "";
@@ -122,7 +133,8 @@ namespace TableLoader
 
             foreach (SCDCOlumn column in scdColumns)
             {
-                if (result != "") result += " AND ";
+                if (result != "")
+                    result += " AND ";
                 result += "A.[" + columnPrefix + column.ColumnName + "] = MR.[" + columnPrefix + column.ColumnName + "]";
             }
 
@@ -130,34 +142,33 @@ namespace TableLoader
         }
 
         /// <summary>
-        /// Liefert die ValidFrom Spalte (SQL Format) 
+        /// Gets ValidFrom column (sql formatted) 
         /// </summary>
-        /// <param name="tableName">sofern angegeben, ist der Tabellenname Teil des Spaltennamens</param>
-        /// <param name="scdColumn">die SCD Column, die die ValidFrom Spalte enthält</param>
-        /// <param name="prefix">Prefix für die Spalte</param>
-        /// <param name="postfix">Postfix für die Spalte</param>
-        /// <param name="spaces">Anzahl Leerzeichen, die einer Zeile vorangestellt werden</param>
-        /// <returns></returns>
+        /// <param name="tableName">If not empty table name is part of column name</param>
+        /// <param name="scdColumn">SCD ValidFrom Column</param>
+        /// <param name="prefix">column prefix</param>
+        /// <param name="postfix">column postfix</param>
+        /// <param name="spaces">Number of space at the beginnung of a row</param>
+        /// <returns>ValidFrom column</returns>
         public static string GetSqlValidFrom(string tableName, SCDCOlumn scdColumn, string prefix, string postfix, int spaces)
         {
             string result = "";
             string columnName = tableName == "" ? scdColumn.ColumnName : tableName + "_" + scdColumn.ColumnName;
- 
+
             AddBrackets(ref prefix, ref postfix);
 
             result = prefix + columnName + postfix;
             result = result.PadLeft(result.Length + spaces);
 
-
             return result;
         }
 
         /// <summary>
-        /// Liefert den Vergleich der "_QUELLE"-Spalte und der "DWH_VOR_UPDATE" Spalte für die Where Clause
+        /// Gets compare statement of "_QUELLE" column and "DWH_VOR_UPDATE" column for where clause
         /// </summary>
-        /// <param name="scdColumns"></param>
-        /// <param name="prefix"></param>
-        /// <returns></returns>
+        /// <param name="scdColumns">SCD column list</param>
+        /// <param name="prefix">column prefix</param>
+        /// <returns>compare statement of "_QUELLE" column and "DWH_VOR_UPDATE" column for where clause</returns>
         public static string GetSqlAttributeWhere(List<SCDCOlumn> scdColumns, string prefix)
         {
             string result = "";
@@ -168,7 +179,8 @@ namespace TableLoader
 
             foreach (SCDCOlumn attribute in scdColumns)
             {
-                if (result != "") result += " OR " + Environment.NewLine;
+                if (result != "")
+                    result += " OR " + Environment.NewLine;
                 result += prefix + attribute.ColumnName + SCD.POSTFIX_COLUMN_QUELLE + postfix + " <> " + prefix + attribute.ColumnName + SCD.POSTFIX_COLUMN_DWH_VOR_UPDATE + postfix;
                 result += " OR (NOT " + prefix + attribute.ColumnName + SCD.POSTFIX_COLUMN_QUELLE + postfix + " IS NULL"
                           + " AND " + prefix + attribute.ColumnName + SCD.POSTFIX_COLUMN_DWH_VOR_UPDATE + postfix + " IS NULL)";
@@ -177,38 +189,84 @@ namespace TableLoader
             return result;
         }
 
+        /// <summary>
+        /// Gets list of SCD columns with datatypes (sql formatted)
+        /// </summary>
+        /// <param name="scdColumns">SCD column list</param>
+        /// <param name="postfix1">postfix first column</param>
+        /// <param name="postfix2">postfix second column</param>
+        /// <param name="spaces">Number of space at the beginnung of a row</param>
+        /// <returns>sql attribute list with datatypes</returns>
         public static string GetSqlAttributeListWithDataType(List<SCDCOlumn> scdColumnList, string postfix1, string postfix2, int spaces)
         {
             return GetSqlColumnListWithDataType(scdColumnList, postfix1, postfix2, spaces, true);
         }
+
+
+        /// <summary>
+        /// Gets list of SCD columns with datatypes (sql formatted)
+        /// </summary>
+        /// <param name="scdColumns">SCD column list</param>
+        /// <param name="postfix">postfix first column</param>
+        /// <param name="spaces">Number of space at the beginnung of a row</param>
+        /// <returns>list of SCD columns with datatypes (sql formatted)</returns>
         public static string GetSqlBkListWithDataType(List<SCDCOlumn> scdColumnList, string postfix, int spaces)
         {
             return GetSqlColumnListWithDataType(scdColumnList, postfix, "", spaces, false, "", "");
         }
 
+        /// <summary>
+        /// Gets list of SCD columns with datatypes (sql formatted)
+        /// </summary>
+        /// <param name="scdColumns">SCD column list</param>
+        /// <param name="prefixColumnName">Prefix for columnname</param>
+        /// <param name="postfix">postfix first column</param>
+        /// <param name="spaces">Number of space at the beginnung of a row</param>
+        /// <returns>list of SCD columns with datatypes (sql formatted)</returns>
         public static string GetSqlBkListWithDataType(List<SCDCOlumn> scdColumnList, string prefixColumnName, string postfix, int spaces)
         {
             return GetSqlColumnListWithDataType(scdColumnList, postfix, "", spaces, false, "", prefixColumnName);
         }
 
+        /// <summary>
+        /// Gets list of SCD columns with datatypes (sql formatted)
+        /// </summary>
+        /// <param name="scdColumns">SCD column list</param>
+        /// <param name="prefixColumnName">Prefix for columnname</param>
+        /// <param name="postfix">postfix first column</param>
+        /// <param name="spaces">Number of space at the beginnung of a row</param>
+        /// <param name="afterDataType">Text that is inserted after datatype (i.e. NULL)</param>
+        /// <returns>list of SCD columns with datatypes (sql formatted)</returns>
         public static string GetSqlBkListWithDataType(List<SCDCOlumn> scdColumnList, string postfix, int spaces, string afterDataType)
         {
             return GetSqlColumnListWithDataType(scdColumnList, postfix, "", spaces, false, afterDataType, "");
         }
+
+        /// <summary>
+        /// Gets list of SCD columns with datatypes (sql formatted)
+        /// </summary>
+        /// <param name="scdColumns">SCD column list</param>
+        /// <param name="postfix1">postfix first column</param>
+        /// <param name="postfix2">postfix second column</param>
+        /// <param name="spaces">Number of space at the beginnung of a row</param>
+        /// <param name="generate2ndColumn">Generate 2nd column?</param>
+        /// <returns>list of SCD columns with datatypes (sql formatted)</returns>
         public static string GetSqlColumnListWithDataType(List<SCDCOlumn> scdColumnList, string postfix1, string postfix2, int spaces, bool generate2ndColumn)
         {
             return GetSqlColumnListWithDataType(scdColumnList, postfix1, postfix2, spaces, generate2ndColumn, "", "");
         }
+
         /// <summary>
-        /// Liefert eine Liste von SCD Columns mit SQL Datentypen zurück. (im SQL Format)
+        /// Gets list of SCD columns with datatypes (sql formatted)
         /// </summary>
-        /// <param name="scdColumnList">SCD Column Liste</param>
-        /// <param name="postfix1">Postfix für Spalte1</param>
-        /// <param name="postfix2">Postfix für Spalte2</param>
-        /// <param name="spaces">Anzahl Leerzeichen, die einer Zeile vorangestellt werden</param>
-        /// <param name="generate2ndColumn">Soll eine zweite Spalte erzeugt werden?</param>
-        /// <param name="afterDataType">string, der nach dem Datatype eingefügt wird, z.B. "NULL"</param>
-        /// <returns></returns>
+        /// <param name="scdColumns">SCD column list</param>
+        /// <param name="postfix1">postfix first column</param>
+        /// <param name="postfix2">postfix second column</param>
+        /// <param name="spaces">Number of space at the beginnung of a row</param>
+        /// <param name="generate2ndColumn">Generate 2nd column?</param>
+        /// <param name="afterDataType">Text that is inserted after datatype (i.e. NULL)</param>
+        /// <param name="prefixColumnName">Prefix for columnname</param>
+        /// <returns>list of SCD columns with datatypes (sql formatted)</returns>
         public static string GetSqlColumnListWithDataType(List<SCDCOlumn> scdColumnList, string postfix1, string postfix2, int spaces, bool generate2ndColumn, string afterDataType, string prefixColumnName)
         {
             string result = "";
@@ -220,20 +278,21 @@ namespace TableLoader
             SCDHelper.AddBrackets(ref prefix2, ref postfix2);
 
             foreach (SCDCOlumn column in scdColumnList)
-            {                
+            {
                 result += (",").PadLeft(spaces + 1) + prefix1 + prefixColumnName + column.ColumnName + postfix1 + " " + column.DataType + " " + afterDataType + newLine;
-                if (generate2ndColumn) result += (",").PadLeft(spaces + 1) + prefix2 + prefixColumnName + column.ColumnName + postfix2 + " " + column.DataType + " " + afterDataType + newLine;
+                if (generate2ndColumn)
+                    result += (",").PadLeft(spaces + 1) + prefix2 + prefixColumnName + column.ColumnName + postfix2 + " " + column.DataType + " " + afterDataType + newLine;
             }
 
             return result;
         }
 
         /// <summary>
-        /// Liefert alle ValidFrom Columns(Komma separiert, SQL FORMAT)
+        /// Gets ValidFrom column (sql formatted) 
         /// </summary>
-        /// <param name="scdList">Liste aller SCDs</param>
-        /// <param name="spaces">Anzahl Leerzeichen, die einer Zeile vorangestellt werden</param>
-        /// <returns></returns>
+        /// <param name="scdColumns">SCD column list</param>
+        /// <param name="spaces">Number of space at the beginnung of a row</param>
+        /// <returns>ValidFrom column</returns>
         public static string GetSqlValidFromWithDataType(Dictionary<string, SCD> scdList, int spaces)
         {
             string newLine = spaces > 0 ? Environment.NewLine : "";
@@ -249,6 +308,14 @@ namespace TableLoader
             return result;
         }
 
+        /// <summary>
+        /// Gets ValidFrom column (sql formatted) 
+        /// </summary>
+        /// <param name="scdColumns">SCD column list</param>
+        /// <param name="addTableNamePrefix">Add table name prefix?</param>
+        /// <param name="prefix">Column prefix</param>
+        /// <param name="spaces">Number of space at the beginnung of a row</param>
+        /// <returns>ValidFrom column</returns>
         public static string GetSqlValidFrom(Dictionary<string, SCD> scdList, bool addTableNamePrefix, string prefix, int spaces)
         {
             string newLine = spaces > 0 ? Environment.NewLine : "";
@@ -265,6 +332,6 @@ namespace TableLoader
             return result;
         }
 
-        
+
     }
 }

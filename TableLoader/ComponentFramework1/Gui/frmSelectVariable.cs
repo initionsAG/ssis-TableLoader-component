@@ -15,8 +15,16 @@ namespace TableLoader.Framework.Gui
     /// </summary>
     public partial class frmSelectVariable : Form
     {
-        DataView _dvVariables;
+        /// <summary>
+        /// dataview with variables
+        /// </summary>
+        private DataView _dvVariables;
 
+        /// <summary>
+        /// constructor
+        /// </summary>
+        /// <param name="variables">SSIS variables</param>
+        /// <param name="icon">window icon</param>
         public frmSelectVariable(Variables variables, Icon icon)
         {
             InitializeComponent();
@@ -25,6 +33,9 @@ namespace TableLoader.Framework.Gui
             createDataView(variables);
         }
 
+        /// <summary>
+        /// Gets the variables qualified name from the first selected row
+        /// </summary>
         public object SelectedValue {
             get {
 
@@ -37,6 +48,9 @@ namespace TableLoader.Framework.Gui
             }
         }
 
+        /// <summary>
+        /// Gets the variables qualified name from the first selected row (returns an empty string if value is null)
+        /// </summary>
         public string SelectedVariable
         {
             get
@@ -53,6 +67,10 @@ namespace TableLoader.Framework.Gui
             }
         }
 
+        /// <summary>
+        /// creates a dataview from SSIS variables
+        /// </summary>
+        /// <param name="variables"></param>
         private void createDataView(Variables variables)
         {
             _dvVariables = new DataView();
@@ -86,6 +104,11 @@ namespace TableLoader.Framework.Gui
             dgvVariables.DataSource = _dvVariables;
         }
 
+        /// <summary>
+        /// filters datagridview if filter has changed
+        /// </summary>
+        /// <param name="sender">event sender</param>
+        /// <param name="e">event arguments</param>
         private void tbFilter_TextChanged(object sender, EventArgs e)
         {
             string filter = "";

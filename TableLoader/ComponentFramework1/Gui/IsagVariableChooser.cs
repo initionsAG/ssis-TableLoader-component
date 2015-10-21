@@ -16,11 +16,29 @@ namespace TableLoader.Framework.Gui
     /// </summary>
     public partial class IsagVariableChooser : UserControl
     {
+        /// <summary>
+        /// SSIS variables
+        /// </summary>
         private Variables _variables;
+
+        /// <summary>
+        /// the GUI (own window) for selecting a variable
+        /// </summary>
         private frmSelectVariable _frmSelectVariable = null;
+
+        /// <summary>
+        /// the GUIs window icon
+        /// </summary>
         private Icon _icon;
+
+        /// <summary>
+        /// datasource that contains variables and descriptions
+        /// </summary>
         private DataView _dataView;
 
+        /// <summary>
+        ///the selected variable
+        /// </summary>
         public string SelectedVariable
         {
             get
@@ -28,7 +46,10 @@ namespace TableLoader.Framework.Gui
                 return cmbVariableChooser.Text; 
             }
         }
-        
+
+        /// <summary>
+        /// the selected variable enclosed by "@()"
+        /// </summary>
         public string SelectedFormattedVariable
         {
             get
@@ -37,6 +58,9 @@ namespace TableLoader.Framework.Gui
             }
         }
 
+        /// <summary>
+        /// the constructor
+        /// </summary>
         public IsagVariableChooser()
         {
             InitializeComponent();
@@ -56,6 +80,11 @@ namespace TableLoader.Framework.Gui
             cmbVariableChooser.DataSource = _dataView;
         }
 
+        /// <summary>
+        /// Shows the GUI for selecting variables
+        /// </summary>
+        /// <param name="sender">event sender</param>
+        /// <param name="e">event arguments</param>
         private void btnSelectVariable_Click(object sender, EventArgs e)
         {
             if (_frmSelectVariable == null) _frmSelectVariable = new frmSelectVariable(_variables, _icon);
@@ -67,6 +96,11 @@ namespace TableLoader.Framework.Gui
             }
         }
 
+        /// <summary>
+        /// creates datasource for combobox and GUI (datagridview)
+        /// </summary>
+        /// <param name="variables"></param>
+        /// <returns>returns the dataource as a dataview </returns>
         private DataView CreateDataSource(Variables variables)
         {
             DataView result = new DataView();

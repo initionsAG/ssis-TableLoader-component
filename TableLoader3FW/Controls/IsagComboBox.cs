@@ -23,7 +23,14 @@ namespace ComponentFramework.Controls
     /// </summary>
     public partial class IsagComboBox : ComboBox
     {
+        /// <summary>
+        /// Usually updates happen after focus is lost
+        /// </summary>
         bool _updateSelectedItemBindingOnSelectedIndexChanged = false;
+
+        /// <summary>
+        /// Usually updates happen after focus is lost
+        /// </summary>
         public bool UpdateSelectedItemBindingOnSelectedIndexChanged
         {
             get

@@ -9,18 +9,60 @@ namespace TableLoader
 {
     class TxAll
     {
+        /// <summary>
+        /// Sql transaction
+        /// </summary>
         private SqlTransaction _dbTransaction = null;
+
+        /// <summary>
+        /// Isag events
+        /// </summary>
         private IsagEvents _events;
+
+        /// <summary>
+        /// Main sql connection
+        /// </summary>
         private SqlConnection _conn;
+
+        /// <summary>
+        /// Sql bulk connection
+        /// </summary>
         private SqlConnection _bulkConn;
+
+        /// <summary>
+        /// components custom properties
+        /// </summary>
         private IsagCustomProperties _IsagCustomProperties;
+
+        /// <summary>
+        /// TableLoader database command type
+        /// </summary>
         private TlDbCommand _dbCommand;
+
+        /// <summary>
+        /// SSIS component metadata
+        /// </summary>
         IDTSComponentMetaData100 _componentMetaData;
 
+        /// <summary>
+        /// Buffer for rows that will be written to he sel table
+        /// </summary>
         public DataTable DtBuffer { get; set; }
+
+        /// <summary>
+        /// Sql transaction
+        /// </summary>
         public SqlTransaction Transaction { get { return _dbTransaction; } }
 
-
+        /// <summary>
+        /// constructor
+        /// </summary>
+        /// <param name="events">Isag events</param>
+        /// <param name="conn">Main sql connection</param>
+        /// <param name="isagCustomProperties">components custom properties</param>
+        /// <param name="dbCommand">Database command type</param>
+        /// <param name="bulkConn">Bulk csql connection</param>
+        /// <param name="componentMetaData">SSIS component metadata</param>
         public TxAll(IsagEvents events, SqlConnection conn,
                      IsagCustomProperties isagCustomProperties, TlDbCommand dbCommand, SqlConnection bulkConn,
                      IDTSComponentMetaData100 componentMetaData)
@@ -34,9 +76,13 @@ namespace TableLoader
         }
 
 
+        /// <summary>
+        /// Executes the database command 
+        /// (data is written from temporary table to destination table)
+        /// </summary>
+        /// <param name="tempTableName">temporary table</param>
         public void ExecuteDbCommand(string tempTableName)
         {
-
             try
             {
                 int rowsAffected = 0;
@@ -86,6 +132,11 @@ namespace TableLoader
             }
         }
 
+        /// <summary>
+        /// Executes bulk copy
+        /// Data is written from the buffer (Datatable) to the temporary or destination table 
+        /// </summary>
+        /// <param name="tempTableName"></param>
         public void ExecuteBulkCopy(string tempTableName)
         {
             try
@@ -137,21 +188,29 @@ namespace TableLoader
             }
         }
 
+        /// <summary>
+        /// Creates temporary table
+        /// </summary>
+        /// <param name="tempTableName">temporary table name</param>
         public void CreateTempTable(string tempTableName)
         {
             IDTSInput100 input = _componentMetaData.InputCollection[Constants.INPUT_NAME];
-            string templateCreateTempTable = SqlCreator.GetCreateTempTable(input, _IsagCustomProperties, Constants.TEMP_TABLE_PLACEHOLDER_BRACKETS);
+            string templateCreateTempTable = SqlCreator.GetCreateTempTable(_IsagCustomProperties, Constants.TEMP_TABLE_PLACEHOLDER_BRACKETS);
             string sqlCreateTempTable = templateCreateTempTable.Replace(Constants.TEMP_TABLE_PLACEHOLDER_BRACKETS, tempTableName);
 
             if (!_IsagCustomProperties.UseBulkInsert)
-                Common.ExecSql(sqlCreateTempTable, _bulkConn, _IsagCustomProperties.TimeOutDb, _dbTransaction);
+                SqlExecutor.ExecSql(sqlCreateTempTable, _bulkConn, _IsagCustomProperties.TimeOutDb, _dbTransaction);
         }
 
+        /// <summary>
+        /// Truncates table
+        /// </summary>
+        /// <param name="tempTableName"></param>
         public void TruncateTempTable(string tempTableName)
         {
             try
             {
-                Common.TruncateTable(tempTableName, _bulkConn, _IsagCustomProperties.TimeOutDb, _dbTransaction);
+                SqlExecutor.TruncateTable(tempTableName, _bulkConn, _IsagCustomProperties.TimeOutDb, _dbTransaction);
 
                 _events.Fire(IsagEvents.IsagEventType.TempTableTruncate,
                              string.Format("Temporary Table [{0}] has been truncated [{1}].", tempTableName, DateTime.Now.ToString()));
@@ -164,11 +223,16 @@ namespace TableLoader
             }
         }
 
+        /// <summary>
+        /// Drops temporary table
+        /// </summary>
+        /// <param name="tempTableName">temporary table name</param>
+        /// <param name="eventType">Isag event type</param>
         public void DropTempTable(string tempTableName, IsagEvents.IsagEventType eventType)
         {
             try
             {
-                Common.DropTable(tempTableName, _bulkConn, _IsagCustomProperties.TimeOutDb, _dbTransaction);
+                SqlExecutor.DropTable(tempTableName, _bulkConn, _IsagCustomProperties.TimeOutDb, _dbTransaction);
 
                 _events.Fire(eventType, string.Format("[Exec DbCommand: {0}]: Temporary Table has been dropped. ({1})",
                                                       eventType.ToString(), DateTime.Now.ToString()));
@@ -182,7 +246,9 @@ namespace TableLoader
             }
         }
 
-
+        /// <summary>
+        /// Commits database transaction
+        /// </summary>
         public void Commit()
         {
             if (_dbTransaction != null)
@@ -201,6 +267,9 @@ namespace TableLoader
             }
         }
 
+        /// <summary>
+        /// Rollback database transaction
+        /// </summary>
         public void Rollback()
         {
             if (_dbTransaction != null)
@@ -218,7 +287,7 @@ namespace TableLoader
         }
 
         /// <summary>
-        /// Erstellt die TL-interne Transaktion, sofern der Benutzer diese nicht deaktiviert hat
+        /// Creates TableLoader internal connection if not disabled
         /// </summary>
         public void CreateTransaction()
         {
@@ -231,6 +300,11 @@ namespace TableLoader
             }
         }
 
+        /// <summary>
+        /// Gets temporary table name
+        /// (destination table name if database command BulkInsert is used)
+        /// </summary>
+        /// <returns>Table name for bulk insert</returns>
         public string GetTempTableName()
         {
 

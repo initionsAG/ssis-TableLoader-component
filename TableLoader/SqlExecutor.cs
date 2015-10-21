@@ -7,13 +7,20 @@ using System.Windows.Forms;
 
 namespace TableLoader
 {
-    public class Common
+    /// <summary>
+    /// Holds sql methods that execute database commands
+    /// </summary>
+    public class SqlExecutor
     {
-        public static int ExecSql(string sql, SqlConnection con, int timeOut)
-        {
-            return ExecSql(sql, con, timeOut, null);
-        }
-
+  
+        /// <summary>
+        /// Executes an sql statement
+        /// </summary>
+        /// <param name="sql">sql statement</param>
+        /// <param name="con">sql connection</param>
+        /// <param name="timeOut">tiemout</param>
+        /// <param name="transaction">sql transaction</param>
+        /// <returns>number of rows affected</returns>
         public static int ExecSql(string sql, SqlConnection con, int timeOut, SqlTransaction transaction)
         {            
             if (con.State != ConnectionState.Open)
@@ -27,29 +34,30 @@ namespace TableLoader
             return comm.ExecuteNonQuery();
         }
 
+        /// <summary>
+        /// Truncates an sql table
+        /// </summary>
+        /// <param name="tempTableName">temporary table name</param>
+        /// <param name="con">sql connection</param>
+        /// <param name="timeOut">timeout</param>
+        /// <param name="transaction">transaction</param>
         public static void TruncateTable(string tempTableName, SqlConnection con, int timeOut, SqlTransaction transaction)
         {          
                 ExecSql("truncate table " + tempTableName,  con, timeOut, transaction);
         }
 
+        /// <summary>
+        /// Drops an sql table
+        /// </summary>
+        /// <param name="tempTableName">temporary table name</param>
+        /// <param name="con">sql connection</param>
+        /// <param name="timeOut">timeout</param>
+        /// <param name="transaction">transaction</param>
         public static void DropTable(string tempTableName, SqlConnection con, int timeOut, SqlTransaction transaction)
         {
             ExecSql("drop table " + tempTableName, con, timeOut, transaction);
         }
 
-        /// <summary>
-        /// Fills the combobox itemlist from an enumeration
-        /// </summary>
-        /// <param name="cmb">the combobox</param>
-        /// <param name="srcEnum">the enumeration</param>
-        public static void SetItemList(ComboBox cmb, Type srcEnum)
-        {
-            cmb.Items.Clear();
-
-            foreach (Enum type in Enum.GetValues(srcEnum))
-            {
-                cmb.Items.Add(type);
-            }
-        }
+        
     }
 }

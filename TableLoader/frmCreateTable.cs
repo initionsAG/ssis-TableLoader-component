@@ -7,51 +7,77 @@ using System.Text;
 using System.Windows.Forms;
 using System.Data.SqlClient;
 
-namespace TableLoader
-{
-    public partial class frmCreateTable : Form
-    {
+namespace TableLoader {
+    /// <summary>
+    /// Windows Form for creating and altering sql tables
+    /// </summary>
+    public partial class frmCreateTable: Form {
+        /// <summary>
+        /// Sql connection
+        /// </summary>
         private SqlConnection _con;
 
+        /// <summary>
+        /// Constructor (creating a table)
+        /// </summary>
+        /// <param name="properties">SSIS components properites</param>
+        /// <param name="con">Sql connection</param>
         public frmCreateTable(IsagCustomProperties properties, SqlConnection con)
         {
             InitializeComponent();
 
-            this.Text = "Create Table";           
-            teSql.Text = SqlCreator.GetCreateDestinationTable(properties);
+            this.Text = "Create Table";
+            tbSql.Text = SqlCreator.GetCreateDestinationTable(properties);
             _con = con;
         }
 
+        /// <summary>
+        /// Constructor (altering a table)
+        /// </summary>
+        /// <param name="properties">SSIS components properites</param>
+        /// <param name="sqlColumns">Sql column list</param>
+        /// <param name="con">Sql connection</param>
         public frmCreateTable(IsagCustomProperties properties, SqlColumnList sqlColumns, SqlConnection con)
         {
             InitializeComponent();
 
             this.Text = "Alter Table";
-            teSql.Text = SqlCreator.GetAlterDestinationTable(properties, sqlColumns);
+            tbSql.Text = SqlCreator.GetAlterDestinationTable(properties, sqlColumns);
             _con = con;
         }
 
-         public frmCreateTable(IsagCustomProperties properties, BindingList<ColumnConfig> columnConfigList, SqlConnection con)
+        /// <summary>
+        /// Constructor (creating an SCD table)
+        /// </summary>
+        /// <param name="properties">SSIS components properites</param>
+        /// <param name="columnConfigList">Column config list</param>
+        /// <param name="con">Sql connection</param>
+        public frmCreateTable(IsagCustomProperties properties, BindingList<ColumnConfig> columnConfigList, SqlConnection con)
         {
             InitializeComponent();
             btnOk.Enabled = false;
 
             this.Text = "Create SCD Table";
-            SCDList scdList = new SCDList(columnConfigList, properties.DestinationTable);          
-            teSql.Text = scdList.GetCreateScdTables();
+            SCDList scdList = new SCDList(columnConfigList, properties.DestinationTable);
+            tbSql.Text = scdList.GetCreateScdTables();
             _con = con;
         }
-        
+
+        /// <summary>
+        /// React on button OK click: Execute sql statement for creating/altering table and close window
+        /// </summary>
+        /// <param name="sender">event sender</param>
+        /// <param name="e">event arguments</param>
         private void btnOk_Click(object sender, EventArgs e)
         {
-      
             try
             {
-                if (teSql.Text.Length > 0)
+                if (tbSql.Text.Length > 0)
                 {
-                    if (_con.State == ConnectionState.Closed) _con.Open();
+                    if (_con.State == ConnectionState.Closed)
+                        _con.Open();
                     SqlCommand comm = _con.CreateCommand();
-                    comm.CommandText = teSql.Text;                    
+                    comm.CommandText = tbSql.Text;
                     comm.ExecuteNonQuery();
                     _con.Close();
 
@@ -59,28 +85,38 @@ namespace TableLoader
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Fehler beim Erstellen der Tabelle" + Environment.NewLine + ex.ToString());     
+                MessageBox.Show("Cannot create/alter table!" + Environment.NewLine + ex.ToString());
             }
         }
 
+        /// <summary>
+        /// React on button Cancel click: close window
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btnCancel_Click(object sender, EventArgs e)
         {
             this.Close();
         }
 
-        public string getTableName() {
-            int posBracketOpen = teSql.Text.IndexOf("(");
-            int posStart = teSql.Text.IndexOf("CREATE TABLE [") + "CREATE TABLE [".Length;
+        /// <summary>
+        /// Gets table name from sql statement
+        /// </summary>
+        /// <returns>table name</returns>
+        public string GetTableName()
+        {
+            int posBracketOpen = tbSql.Text.IndexOf("(");
+            int posStart = tbSql.Text.IndexOf("CREATE TABLE [") + "CREATE TABLE [".Length;
 
-            string result = teSql.Text.Substring(posStart, posBracketOpen - posStart).Trim();
+            string result = tbSql.Text.Substring(posStart, posBracketOpen - posStart).Trim();
             result = result.Replace("[", "");
             result = result.Replace("]", "");
 
-            if (!result.Contains(".")) result = "dbo." + result;
-
+            if (!result.Contains("."))
+                result = "dbo." + result;
 
             return result;
         }
- 
+
     }
 }

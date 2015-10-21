@@ -9,10 +9,19 @@ namespace TableLoader
 {
     class ThreadBulkCopy : BackgroundWorker
     {
-
+        /// <summary>
+        /// Status types of thread
+        /// </summary>
         public enum StatusType { Waiting, Working, Finished, Error }
 
+        /// <summary>
+        /// Status type (default: Waiting)
+        /// </summary>
         private StatusType _status = StatusType.Waiting;
+
+        /// <summary>
+        /// Status type (default: Waiting)
+        /// </summary>
         public StatusType Status
         {
             get
@@ -27,23 +36,92 @@ namespace TableLoader
 
         #region members
 
+        /// <summary>
+        /// Database command thread
+        /// </summary>
         private ThreadDbCommand _dbCmdThread;
+
+        /// <summary>
+        /// Event message list
+        /// </summary>
         private EventMessageList _messageList = new EventMessageList();
+
+        /// <summary>
+        /// Status list
+        /// </summary>
         private StatusEventList _statusList = new StatusEventList();
+
+        /// <summary>
+        ///  Error message string (used for all threads)
+        /// </summary>
         private string _errorMessage = "No Error.";
+
+        /// <summary>
+        /// Temporary table name
+        /// </summary>
         private string _tempTableName;
+
+        /// <summary>
+        /// Sql statement for creating a new temporary table
+        /// </summary>
         private string _sqlCreateTempTable;
+
+        /// <summary>
+        /// Database timeout
+        /// </summary>
         private int _timeoutDb;
+
+        /// <summary>
+        /// Reattempts for failed bulk copys
+        /// </summary>
         private int _reattempts;
+
+        /// <summary>
+        /// Thread number of this thread
+        /// </summary>
         private string _threadNr;
+
+        /// <summary>
+        /// Datatable (buffer rows) to write to the temporary table
+        /// </summary>
         private DataTable _dt;
+
+        /// <summary>
+        /// connectionstring
+        /// </summary>
         private string _cstr;
-        private SqlConnection _conn; //für Create/Truncate TempTable
+
+        /// <summary>
+        /// Sql connection (used for create/truncate temporary table)
+        /// </summary>
+        private SqlConnection _conn; 
+
+        /// <summary>
+        /// Use tablock?
+        /// </summary>
         private bool _useTableLock;
+
+        /// <summary>
+        /// Use bulk insert?
+        /// </summary>
         private bool _useBulkInsert;
 
         #endregion
 
+        /// <summary>
+        /// constructor
+        /// </summary>
+        /// <param name="dbCmdThread">Database command thread</param>
+        /// <param name="tempTableName">temporary table name</param>
+        /// <param name="dt">Datatable (buffer rows) to write to the temporary table</param>
+        /// <param name="sqlTemplateCreateTempTable">Template for creating temprrary table</param>
+        /// <param name="timeOutDb">Database timout</param>
+        /// <param name="reattempts">Reattempts for failed bulk copys</param>
+        /// <param name="threadNr">Thread nummber</param>
+        /// <param name="cstr">Connectionstring</param>
+        /// <param name="conn">Sql connection</param>
+        /// <param name="useTableLock">Use tablock?</param>
+        /// <param name="useBulkInsert">Use bulk insert?</param>
         public ThreadBulkCopy(ThreadDbCommand dbCmdThread, string tempTableName, DataTable dt, string sqlTemplateCreateTempTable,
                               int timeOutDb, int reattempts, string threadNr, string cstr, SqlConnection conn, bool useTableLock, bool useBulkInsert)
         {
@@ -66,11 +144,19 @@ namespace TableLoader
 
         #region Interface
 
+        /// <summary>
+        /// Starts asynchronous worker job
+        /// </summary>
         public void Start()
         {
             this.RunWorkerAsync();
         }
 
+        /// <summary>
+        /// Fires event/statistic/error messages
+        /// </summary>
+        /// <param name="events">Isag events</param>
+        /// <param name="status">Status</param>
         public void FireMessages(IsagEvents events, Status status)
         {
             _messageList.FireEvents(events);
@@ -84,9 +170,17 @@ namespace TableLoader
 
         #region Execute
 
+        /// <summary>
+        /// React to worker job completed
+        /// 
+        /// - Adds job to database command thread
+        /// - Adds event and status messages
+        /// - Sets Status to finished (if status != error)
+        /// </summary>
+        /// <param name="sender">event sender</param>
+        /// <param name="e">event arguments</param>
         private void ThreadBulkCopy_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
-        {
-            
+        {            
             if (_dbCmdThread != null && Status != StatusType.Error)
             {
                 _dbCmdThread.AddThread(_tempTableName, _threadNr, _conn);
@@ -95,16 +189,17 @@ namespace TableLoader
                                                       IsagEvents.IsagEventType.BulkInsert);
 
                 _statusList.AddStatusEvent(Int32.Parse(_threadNr), -1, global::TableLoader.Status.StatusType.dbJobQueued, IsagEvents.IsagEventType.Status);
-
-                //_messageListNew.AddMessage(string.Format("Bulk Copy Thread {0} in DB Command Queue eingetragen [{1}]", _threadNr,
-                //     DateTime.Now.ToString() + ":" + DateTime.Now.Millisecond.ToString()), IsagEvents.IsagEventType.BulkInsert);
-
             }
 
             if (Status != StatusType.Error) Status = StatusType.Finished;
-
         }
 
+        /// <summary>
+        /// React on DoWork event:
+        /// Write data to temporary table
+        /// </summary>
+        /// <param name="sender">event sender</param>
+        /// <param name="e">event arguments</param>
         private void ThreadBulkCopy_DoWork(object sender, DoWorkEventArgs e)
         {
             try
@@ -136,18 +231,12 @@ namespace TableLoader
                     {
                         try
                         {
-
                             bulkCopy.WriteToServer(_dt);
                             executeBulkCopy = false;
                             string message = string.Format("{0} Rows written by the BulkCopy Thread {1} [{2}].", _dt.Rows.Count.ToString(), _threadNr.ToString(), DateTime.Now.ToString());                            
                             _messageList.AddMessage(message, new string[] {_dt.Rows.Count.ToString()}, IsagEvents.IsagEventType.BulkInsert);
 
-                            //message = string.Format("Bulk Copy Thread {0}: {1} rows written to tempTable {2} [{3}]", _threadNr.ToString(), _dt.Rows.Count.ToString(), _tempTableName,
-                            //    DateTime.Now.ToLongDateString() + " " + DateTime.Now.ToLongTimeString());
-                            //StatusEvent statusEvent = new StatusEvent(Int32.Parse(_threadNr), _dt.Rows.Count, global::TableLoader.Status.StatusType.bulkCopyFinished);
-                            //statusEvent.Param1 = _tempTableName;
                             _statusList.AddStatusEvent(Int32.Parse(_threadNr), _dt.Rows.Count, global::TableLoader.Status.StatusType.bulkCopyFinished, _tempTableName, IsagEvents.IsagEventType.Status);
-                            //_messageListNew.AddMessage(message, new string[] { _dt.Rows.Count.ToString() }, IsagEvents.IsagEventType.BulkInsert);
                         }
                         catch (Exception ex)
                         {
@@ -170,16 +259,12 @@ namespace TableLoader
                         }
                     }
 
-                    //_dt.Rows.Clear();
-                    
                     _dt.Dispose();
 
                     _messageList.AddMessage(string.Format("BulkCopy Thread {0} ended [{1}].", _threadNr, DateTime.Now.ToString()),
                                                       IsagEvents.IsagEventType.BulkInsert);
 
                     _statusList.AddStatusEvent(Int32.Parse(_threadNr), -1, global::TableLoader.Status.StatusType.bulkCopyThreadFinished, IsagEvents.IsagEventType.Status);
-                    //_messageListNew.AddMessage(string.Format("BulkCopy Thread {0} finished [{1}].", _threadNr, DateTime.Now.ToString() + ":" + DateTime.Now.Millisecond.ToString()),
-                    //                                  IsagEvents.IsagEventType.BulkInsert);
                 }
             }
             catch (Exception ex)
@@ -193,6 +278,10 @@ namespace TableLoader
             }
         }
 
+        /// <summary>
+        /// Executes a sql command
+        /// </summary>
+        /// <param name="sql">Sql statement</param>
         private void ExecSql(string sql)
         {
             SqlConnection con = _conn;
@@ -206,7 +295,9 @@ namespace TableLoader
             comm.ExecuteNonQuery();
         }
 
-
+        /// <summary>
+        /// Creates temporary table
+        /// </summary>
         private void CreateTempTable()
         {
             try
@@ -221,10 +312,11 @@ namespace TableLoader
                 _errorMessage = string.Format("Cannot create temporary table {0} [{1}]. ", _tempTableName, DateTime.Now.ToString()) + ex.ToString();
                 throw ex;
             }
-
-
         }
 
+        /// <summary>
+        /// Truncates temporary table
+        /// </summary>
         private void TruncateTempTable()
         {
             try
@@ -239,15 +331,9 @@ namespace TableLoader
                 Status = StatusType.Error;
                 _errorMessage = string.Format("Cannot truncate tempory table {0} [{1}]. ", _tempTableName, DateTime.Now.ToString()) + ex.ToString();
                 throw ex;
-                throw;
             }
-
-
         }
 
-
         #endregion
-
-
     }
 }

@@ -223,7 +223,7 @@
   <ItemGroup>
     <Compile Include="ColumnConfig.cs" />
     <Compile Include="ColumnMapping.cs" />
-    <Compile Include="Common.cs" />
+    <Compile Include="SqlExecutor.cs" />
     <Compile Include="ComponentFramework1\Gui\frmSelectVariable.cs">
       <SubType>Form</SubType>
     </Compile>

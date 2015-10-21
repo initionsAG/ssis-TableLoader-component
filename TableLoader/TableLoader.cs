@@ -6,8 +6,6 @@ using Microsoft.SqlServer.Dts.Pipeline.Wrapper;
 using System.Data.SqlClient;
 using Microsoft.SqlServer.Dts.Runtime.Wrapper;
 using System.Data;
-//using System.Transactions;
-//using System.EnterpriseServices;
 using System.Windows.Forms;
 using Microsoft.SqlServer.Dts.Runtime;
 using System.Collections;
@@ -17,207 +15,9 @@ using System.ComponentModel;
 using System.Threading;
 using TableLoader.Framework.Mapping;
 
-namespace TableLoader
-{
+namespace TableLoader {
 
 
-    /// <summary>
-    /// 08.04.2011, Dennis Weise
-    ///     - Branch von TableLoader Version 2.3.4
-    ///     - Neue Assembly erstellt
-    /// 08.04.2011, Dennis Weise
-    ///     - Die Konfiguration wird wieder in den Custom Properties statt in der DB gespeichert
-    /// 11.04.2011, Dennis Weise
-    ///     - Standardkonfiguration neu implementiert
-    /// 11.04.2011, Dennis Weise
-    ///     - Nicht mehr benötigten Code entfernt
-    ///     - Event Messages sind nun alle auf englisch
-    /// 11.04.2011, Dennis Weise
-    ///     - Farbe der Controls auf Transparent, bzw. Window gesetzt, so dass die weißen Hintergründe auf nicht Windows 7 Rechnern verschwinden
-    /// 11.04.2011, Dennis Weise
-    ///     - Ist eine Standardkonfiguration ausgewählt, so werden die Controls für die Standardwerte deaktiviert
-    /// 12.04.2011, Dennis Weise
-    ///     - Version 3.0.0
-    /// 12.04.2011, Dennis Weise
-    ///     - MessageBoxen in der GUI: Text wird wieder angezeigt, Ins englische übersetzt
-    /// 19.04.2011, Dennis Weise
-    ///     - Bei Prüfung auf doppelt zugeordnete Output Spalten werden Leerstrings (= nicht zugeordnet) ignoriert
-    /// 19.04.2011, Dennis Weise
-    ///     - Version 3.0.1
-    /// 20.05.2011, Dennis Weise
-    ///     - Es ist nun möglich die Zuweisungen zu OutputColumns aller selektierten Zeilen zu entfernen
-    /// 20.05.2011, Dennis Weise
-    ///     - Version 3.0.2
-    /// 21.06.2011, Dennis Weise
-    ///     - Es kann nun nach Spalten sortiert werden
-    ///     - Wenn die Standardkonfigurationen nicht geladen werden können, wird eine Fehlermeldung nur dann angezeigt, 
-    ///       wenn der TableLoader diesbezgl. auf AutoLoad steht
-    ///     - Version 3.0.3
-    /// 27.06.2011, Dennis Weise
-    ///     - Das Entfernen von Zuordnungen zwischen Input- und OuputColumns funktionierte aufgrund der Sortierfunktion nicht mehr korrekt
-    /// 27.06.2011, Dennis Weise
-    ///     - Version 3.0.4
-    /// 19.10.2011, Dennis Weise
-    ///     - Version 3.0.5 
-    ///     - DB Command Merge: DB Command wird nun auch in Threads abgearbeiten
-    /// 19.10.2011, Dennis Weise
-    ///     - Automap: Kann nun auf Selektion eingeschränkt werden
-    /// 19.10.2011, Dennis Weise
-    ///     - UpdateErrorStatus() wird nun in BulkCopyThread.WaitForAll aufgerufen
-    /// 04.11.2011, Dennis Weise
-    ///     - tablockx für Merge hinzugefügt
-    /// 04.11.2011, Dennis Weise
-    ///     - Version 3.0.6 
-    /// 18.11.2011, Dennis Weise
-    ///     - Threads: Bei einem Timeout wird der BulkCopy, bzw. das DbCommand erneut ausgeführt
-    /// 18.11.2011, Dennis Weise
-    ///     - Version 3.0.7
-    /// 09.01.2012, Dennis Weise
-    ///     - Beim Öffnen des TableLoaders wird geprüft ob der eingestellte Tabellenname sich bzgl. der Groß-/Kleinschreibung geändert hat und automatisch korrigiert
-    /// 09.01.2012, Dennis Weise
-    ///     - Version 3.0.8
-    /// 23.01.2012, Dennis Weise
-    ///     - Überarbeitung des Multithreading
-    ///     - SqlConnections werden nun für alle Operation ausser Pre-/Postsql anhand des Connectionstrings des ConnectionManagers erzeugt
-    ///     - Mutlithreading funktioniert nun wieder für alle DBCommands
-    ///     - Wählt man bei Merge/Merge2005 mehr als einen Key aus, so zeigt SSIS eine Warnung an
-    ///     - Die Möglichkeit die Anzahl der Zeilen zu beschränken wurde entfernt.
-    ///     - Die Einstellung "Transaktion" hat keine Wirkung
-    /// 09.01.2012, Dennis Weise
-    ///     - Version 3.0.9
-    /// 25.01.2012, Dennis Weise
-    ///     - Funktion ohne Threads hinzugefügt (wie in TL 1.x)
-    /// 25.01.2012, Dennis Weise
-    ///     - Standardkonfiguration bzgl. neuer Funktion angepaßt
-    /// 25.01.2012, Dennis Weise
-    ///     - Logging für LogCube angepaßt
-    ///     - Ist "FastLoad" ausgewählt, wird nicht mehr der DbCommand-Teil von "TxAll" aufgerufen
-    /// 27.01.2012, Dennis Weise
-    ///     - DBCommand Insert: Wurden Function&Insert gewählt funktioniert dieses sofern man @(<Spaltenname>) als Referenz auf eine Spalte eingibt
-    /// 27.01.2012, Dennis Weise
-    ///     - TxAll&BulkInsert&internal Transaction: Abfrage der DB zum Erzeugen der DataTable wird innerhalb der Transaktion durchgeführt.
-    /// 31.01.2012, Dennis Weise
-    ///     - @(Spaltenname) als Standard für Referenzierung einer Spalte in Function- und Defaultwert eingeführt
-    ///     - Update (table based) - Insert (Row based): Es wurde Merge statt Update ausgeführt
-    ///     - Version 3.0.14
-    /// 16.04.2012, Dennis Weise
-    ///     - Das DbCommadn "Merge" funktioniert nun auch wenn keine Spalte für "Insert" markiert sind
-    /// 16.04.2012, Dennis Weise
-    ///     - Version 3.0.15
-    /// 16.04.2012, Dennis Weise
-    ///     - createSetup.bat: Anapassung an WiX 3.5
-    /// 18.04.2012, Dennis Weise
-    ///     - Labels in der der GUI angepaßt
-    /// 29.06.2012, Dennis Weise
-    ///     - Fehler im BulkCopy-Thread führten nicht immer zum Abbruch
-    ///     - Ein DT_DATE wird nun als Date in die temporäre Tabelle geschrieben
-    /// 29.06.2012, Dennis Weise
-    ///     - Version 3.0.16
-    /// 20.07.2012, Dennis Weise
-    ///     - Ein DT_DATE wird nun als datetime2 in die temporäre Tabelle geschrieben
-    /// 20.07.2012, Dennis Weise
-    ///     - Version 3.0.17
-    /// 27.07.2012, Dennis Weise
-    ///     - Filter für die Auwahl der Zieltabelle eingebaut
-    /// 27.07.2012, Dennis Weise
-    ///     - Version 3.0.18
-    /// 10.08.2012, Dennis Weise 
-    ///     - DB Command Bulk Insert (rowlock) hinzugefügt
-    ///     - Bulk Copy Threads für DB Command Bulk Insert bekommen nun wieder den Status "Finished" wenn sie erfolgreich durchgelaufen sind
-    /// 10.08.2012, Dennis Weise
-    ///     - Version 3.0.19
-    /// 14.09.2012, Dennis Weise
-    ///     - Merge/Merge2005: auf der TempTable wird ein index erstellt
-    /// 14.09.2012, Dennis Weise
-    ///     - Version 3.0.20
-    /// 21.09.2012, Dennis Weise 
-    ///     - DT_Decimal: Beim Mapping zum SQL Server wird nun eine precision von 29 angenommen
-    ///     - Option Reattempts hinzugefügt: Gibts die Anzahl der Wiederholungsversuche bei Timeouts beim BulkCopy/DB Command an
-    /// 21.09.2012, Dennis Weise
-    ///     - Version 3.0.21
-    /// 28.09.2012, Dennis Weise
-    ///     - Direkt nach dem Hinzufügen einer Zeile im Mapping konnte man den Function Editor der Zeile nicht öffnen
-    /// 28.09.2012, Dennis Weise
-    ///     - Nach dem Entfernen eines Mappings (Zuordnung einer Output Column zu einer Input Column) funktioniert AutoMap für die Zeile wieder 
-    /// 12.10.2012, Dennis Weise
-    ///     - DB Command Merge: Das "ON"-Statement im Merge  berücksichtigt nun auch Function/Default 
-    /// 12.10.2012, Dennis Weise
-    ///     - Version 3.0.22
-    /// 07.12.2012, Dennis Weise
-    ///     - Umstellung auf das ComponentFramework
-    ///     - Einfügen von Variablen: Erweiterung der GUI, Einfügen mit Namespace
-    /// 07.12.2012, Dennis Weise
-    ///     - Version 3.0.23
-    /// 11.01.2013, Dennis Weise
-    ///     - Zusätzliche Abbruchbedingung beim Warten auf DB Commands hinzugefügt
-    /// 11.01.2013, Dennis Weise
-    ///     - Version 3.0.24
-    /// 18.01.2013, Dennis Weise
-    ///     - Zusätzliche Abbruchbedingung beim Warten auf DB Commands: Es werden wieder alle Fehlermeldungen ausgegeben
-    /// 18.01.2013, Dennis Weise
-    ///     - Version 3.0.25
-    /// 26.02.2013, Dennis Weise
-    ///     - Option zum Deaktivieren von TabLockx hinzugefügt
-    ///     - drop Table für die Kombination TxAll/BulkInsert entfernt
-    ///     - Korrektur Gui: FunctionEditor
-    /// 26.02.2013, Dennis Weise
-    ///     - PreSql kann nun außerhalb einer TxAll-Transaction ausgeführt werden
-    /// 26.02.2013, Dennis Weise
-    ///     - Mapping: Das drücken der Space-Taste ändert den Status der aktiven Checkbox
-    /// 28.02.2013, Dennis Weise
-    ///     - Der TableLoader verliert seine Mappings nicht mehr automatisch, wenn der InputPath entfernt wird
-    /// 28.02.2013, Dennis Weise
-    ///     - Version 3.0.26
-    /// 16.04.2013, Dennis Weise
-    ///     - setup an WiX 3.7 angepasst
-    /// 08.05.2013, Dennis Weise
-    ///     - BulkCopy für DB Command BulkInsert: ColumnMapping hinzugefügt  
-    ///     - Version 3.0.27
-    /// 08.05.2013, Dennis Weise
-    ///     - Korrektur ColumnMapping BulkInsert 
-    ///     - Version 3.0.27
-    /// 31.05.2013, Dennis Weise 
-    ///     - Unterstützung von SSIS 2012 vorbereitet
-    /// 31.05.2013, Dennis Weise 
-    ///     - Version 3.1.0
-    /// 25.06.2013, Dennis Weise 
-    ///     - Beim BulkInsert müssen nicht mehr alle Zielspalten bedient werden
-    ///     - Eckige Klammern für die Spalten im Create-Statement für den Index der Temporären Tabelle hinzugefügt 
-    /// 25.06.2013, Dennis Weise 
-    ///     - Version 3.1.1
-    /// 08.07.2013, Dennis Weise 
-    ///     - Korrektur BulkInsert: Abweichungen zwischen SSIS Column Name und SQL Column Name sind nun wieder erlaubt
-    /// 08.07.2013, Dennis Weise 
-    ///     - Version 3.1.2
-    /// 13.09.2013, Dennis Weise 
-    ///     - Korrektur bzgl. Multithreading im PostExecute
-    ///     - Logging erweitert (Cube Statistiken funktionieren nun evtl nicht mehr)
-    ///     - Version 3.1.6
-    /// 01.11.2013, Dennis Weise 
-    ///     - SCD Funktionalität hinzugefügt
-    /// 01.11.2013, Dennis Weise 
-    ///     - Version 3.1.7
-    /// 06.12.2013, Dennis Weise 
-    ///     - Index für SCD BKs und Attributpaare hinzugefügt
-    ///     - Layouts für das Mapping hinzugefügt (je nach Layout werden einige Spalten ausgeblendet)
-    ///     - Mapping: Spalten mit einer Checkbox wurden in ihrer Breite begrenzt
-    /// 06.12.2013, Dennis Weise 
-    ///     - Version 3.1.8
-    /// 14.02.2014, Dennis Weise 
-    ///     - Korrektur: Die SSIS BK-Spalten mussten bisher den gleichen Namen wie in der Zielspalte haben
-    ///     - In den SCD Tabellen werden ID und BK als FK_[Name Zieltabelle]_ID und FK_[Name Zieltabelle]_[Name BK Spalte] eingetragen
-    /// 14.02.2014, Dennis Weise 
-    ///     - Version 3.1.9
-    /// 11.04.2014, Dennis Weise 
-    ///     - Nach dem Hinzufügen zum DFT konnte der TL nur im Advanced Editor bearbeitet werden
-    /// 11.04.2014, Dennis Weise 
-    ///     - Version 3.1.10
-    /// 09.07.2014, Dennis Weise  
-    ///     - PerformUpgrade: Upgrade von 2008 auf 2012/2014 ist nun möglich 
-    /// 09.07.2014, Dennis Weise  
-    ///     - CurrentVersion auf 1 gesetzt
-    /// </summary> 
-   
 #if     (SQL2008)
    [DtsPipelineComponent(DisplayName = "TableLoader 3",
         ComponentType = ComponentType.DestinationAdapter,
@@ -231,11 +31,11 @@ namespace TableLoader
         IconResource = "TableLoader.Resources.TableLoader.ico",
         UITypeName = "TableLoader.TableLoaderUI, TableLoader4, Version=1.0.0.0, Culture=neutral, PublicKeyToken=bb59c1475df39544")]
 #elif   (SQL2014)
-      [DtsPipelineComponent(DisplayName = "TableLoader 3",
-        ComponentType = ComponentType.DestinationAdapter,
-        CurrentVersion = 1,
-        IconResource = "TableLoader.Resources.TableLoader.ico",
-        UITypeName = "TableLoader.TableLoaderUI, TableLoader5, Version=1.0.0.0, Culture=neutral, PublicKeyToken=d6e3dd235db59be7")]
+    [DtsPipelineComponent(DisplayName = "TableLoader 3",
+      ComponentType = ComponentType.DestinationAdapter,
+      CurrentVersion = 1,
+      IconResource = "TableLoader.Resources.TableLoader.ico",
+      UITypeName = "TableLoader.TableLoaderUI, TableLoader5, Version=1.0.0.0, Culture=neutral, PublicKeyToken=d6e3dd235db59be7")]
 #else
      [DtsPipelineComponent(DisplayName = "TableLoader 3",
         ComponentType = ComponentType.DestinationAdapter,
@@ -243,62 +43,129 @@ namespace TableLoader
         IconResource = "TableLoader.Resources.TableLoader.ico",
         UITypeName = "TableLoader.TableLoaderUI, TableLoader3, Version=1.0.0.0, Culture=neutral, PublicKeyToken=1bfbf132955f2db6")]
 #endif
-    public class TableLoader : PipelineComponent
-    {
+
+    /// <summary>
+    /// the pipeline component TableLoader
+    /// </summary>
+    public class TableLoader: PipelineComponent {
 
         #region Members & Properties
 
         //Runtime & Designtime
+
+        /// <summary>
+        /// Main sql connection
+        /// </summary>
         private SqlConnection _mainConn = null;
+
+        /// <summary>
+        /// Main sql connection
+        /// </summary>
         private SqlConnection Conn
         {
             get
             {
-                if (_mainConn != null && _mainConn.State == System.Data.ConnectionState.Closed) _mainConn.Open();
+                if (_mainConn != null && _mainConn.State == System.Data.ConnectionState.Closed)
+                    _mainConn.Open();
                 return _mainConn;
             }
         }
 
+        /// <summary>
+        /// Bulk sql connection
+        /// </summary>
         private SqlConnection _bulkConn = null;
+
+        /// <summary>
+        /// Bulk sql connection
+        /// </summary>
         private SqlConnection BulkConn
         {
             get
             {
                 InitProperties(true);
 
-                if (!_IsagCustomProperties.UseExternalTransaction) return Conn;
+                if (!_IsagCustomProperties.UseExternalTransaction)
+                    return Conn;
 
-                if (_bulkConn != null && _bulkConn.State == System.Data.ConnectionState.Closed) _bulkConn.Open();
+                if (_bulkConn != null && _bulkConn.State == System.Data.ConnectionState.Closed)
+                    _bulkConn.Open();
                 return _bulkConn;
             }
         }
 
+        /// <summary>
+        /// custom properties of this component
+        /// </summary>
         private IsagCustomProperties _IsagCustomProperties;
 
         //Runtime
+        /// <summary>
+        /// Database command type
+        /// </summary>
         private TlDbCommand _dbCommand;
+
+        /// <summary>
+        /// TableLoader type
+        /// </summary>
         private TxAll _txAll;
+
+        /// <summary>
+        /// Thread handler
+        /// </summary>
         private ThreadHandler _threadHandler;
-        //SqlTransaction _dbTransaction = null;
+
+        /// <summary>
+        /// Isag events
+        /// </summary>
         private IsagEvents _events;
-        private List<ColumnInfo> _columnInfos = null; //Wird im PreSql gefüllt, damit Daten in ProcessInput schnell zur Verfügung stehen
-        private Dictionary<string, string> _columnMapping; //Für das BulkCopy Mapping
-        private DataTable _dtBuffer = null; //Speicher für die einkommenden Zeile. Wird für das BulkCopy in die TempTable benötigt.
-        private long _chunkCounterBulk; //Gibt an wieviele Zeilen in die DataTable _rowsToWrite geschrieben werden, bevor
-        //ein BulkCopy in die TempTable durchgeführt wird
+
+        /// <summary>
+        /// Column infos 
+        /// (filled in pre sql to increase performance in process input phase
+        /// </summary>
+        private List<ColumnInfo> _columnInfos = null;
+
+        /// <summary>
+        /// Column name (input and output) mapping used for bulk coppy 
+        /// </summary>
+        private Dictionary<string, string> _columnMapping;
+
+        /// <summary>
+        /// Buffer of rows that is written to the temporary table
+        /// </summary>
+        private DataTable _dtBuffer = null;
+
+        /// <summary>
+        /// Number of rows written to the buffer (_dtBuffer)
+        /// </summary>
+        private long _chunkCounterBulk;
+
+        /// <summary>
+        /// Maximum number of rows that are used for a single database command (i.e. merge)
+        /// </summary>
         private long _chunkCounterDbCommand;
+
+        /// <summary>
+        /// Temporary table name
+        /// </summary>
         string _tempTableName = "";
-        private Status _status; 
 
+        /// <summary>
+        /// Status
+        /// </summary>
+        private Status _status;
+
+        /// <summary>
+        /// Is pre execute database command executed and finished?
+        /// </summary>
         private bool _PreSqlFinished = false;
-
-
         #endregion
 
         #region DesignTime
 
         /// <summary>
-        /// Einmaliges Initialisieren der Komponente
+        /// Provides the component properties
         /// </summary>
         public override void ProvideComponentProperties()
         {
@@ -308,9 +175,9 @@ namespace TableLoader
             _IsagCustomProperties.SetDefaultValues();
             ComponentMetaDataTools.UpdateVersion(this, ComponentMetaData);
 
-            //Metadaten Version auf DLL-Version setzen 
+            //Set metadata version to DLL-Version
             DtsPipelineComponentAttribute componentAttr =
-                 (DtsPipelineComponentAttribute)Attribute.GetCustomAttribute(this.GetType(), typeof(DtsPipelineComponentAttribute), false);
+                 (DtsPipelineComponentAttribute) Attribute.GetCustomAttribute(this.GetType(), typeof(DtsPipelineComponentAttribute), false);
             int binaryVersion = componentAttr.CurrentVersion;
             ComponentMetaData.Version = binaryVersion;
 
@@ -335,12 +202,12 @@ namespace TableLoader
             prop.Name = Constants.PROP_CONFIG;
 
             _IsagCustomProperties.Save(ComponentMetaData);
-            //Configuration.SaveConfiguration(VariableDispenser, ComponentMetaData, _IsagCustomProperties);
         }
 
 
+
         /// <summary>
-        /// Findet Validate() einen Fehler in den Metadaten, so können die Fehler hier behoben werden.
+        /// Reiniitalized the components metadata
         /// </summary>
         public override void ReinitializeMetaData()
         {
@@ -352,12 +219,16 @@ namespace TableLoader
             _IsagCustomProperties.RebuildMappings(ComponentMetaData, _events);
         }
 
+        /// <summary>
+        /// React if input path has been attached
+        /// </summary>
+        /// <param name="inputID">SSIS input ID</param>
         public override void OnInputPathAttached(int inputID)
         {
             base.OnInputPathAttached(inputID);
             InitProperties(false);
 
-            //Initialisierung falls zuvor noch keine Inputcolumns angebunden waren
+            //Initialize IsagCustomProperties if column config list is empty
             if (_IsagCustomProperties.ColumnConfigList.Count == 0)
             {
                 IDTSInput100 input = ComponentMetaData.InputCollection.GetObjectByID(inputID);
@@ -367,26 +238,26 @@ namespace TableLoader
             }
         }
 
-     
-
-
         #endregion
 
         /// <summary>
-        /// Prüfung ob die Konfiguration korrekt ist
+        /// Validates the component metadata
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Is component configuration valid?</returns>
         public override DTSValidationStatus Validate()
         {
             InitProperties(false);
             Mapping.UpdateInputIdProperties(ComponentMetaData, _IsagCustomProperties);
 
             DTSValidationStatus status = base.Validate();
-            if (status != DTSValidationStatus.VS_ISVALID) return status;
+            if (status != DTSValidationStatus.VS_ISVALID)
+                return status;
 
-            if (!_IsagCustomProperties.IsValid(ComponentMetaData, _events)) return DTSValidationStatus.VS_NEEDSNEWMETADATA;
+            if (!_IsagCustomProperties.IsValid(ComponentMetaData, _events))
+                return DTSValidationStatus.VS_NEEDSNEWMETADATA;
 
-            if (!this.ComponentMetaData.AreInputColumnsValid) return DTSValidationStatus.VS_NEEDSNEWMETADATA;
+            if (!this.ComponentMetaData.AreInputColumnsValid)
+                return DTSValidationStatus.VS_NEEDSNEWMETADATA;
 
             return DTSValidationStatus.VS_ISVALID;
 
@@ -396,10 +267,10 @@ namespace TableLoader
 
         #region Connection & Transaction
         /// <summary>
-        /// Initialsiert die DB Connection Main und falls vom Benutzer aktiviert auch die Bulk-Connection.
-        /// 
+        /// Acquire connection from SSIS
+        /// (initializes main sql connection and if neccesarry bulk connection
         /// </summary>
-        /// <param name="transaction">The transaction.</param>
+        /// <param name="transaction">transaction</param>
         public override void AcquireConnections(object transaction)
         {
             InitProperties(true);
@@ -424,16 +295,19 @@ namespace TableLoader
             {
                 object tempConn = this.ComponentMetaData.RuntimeConnectionCollection[Constants.CONNECTION_MANAGER_NAME_MAIN].ConnectionManager.AcquireConnection(transaction);
 
-                if (tempConn is SqlConnection) _mainConn = (SqlConnection)tempConn;
-                else _events.Fire(IsagEvents.IsagEventType.ErrorWrongConnection,
-                     "Only ADO.NET SQL Server connections are supported for the ADO.NET [{0}] Connection.",
-                     Constants.CONNECTION_MANAGER_NAME_MAIN);
+                if (tempConn is SqlConnection)
+                    _mainConn = (SqlConnection) tempConn;
+                else
+                    _events.Fire(IsagEvents.IsagEventType.ErrorWrongConnection,
+                    "Only ADO.NET SQL Server connections are supported for the ADO.NET [{0}] Connection.",
+                    Constants.CONNECTION_MANAGER_NAME_MAIN);
             }
 
             runtimeConn = null;
 
             //Bulk
-            if (!_IsagCustomProperties.UseExternalTransaction && _mainConn != null) _bulkConn = _mainConn;
+            if (!_IsagCustomProperties.UseExternalTransaction && _mainConn != null)
+                _bulkConn = _mainConn;
             else
             {
                 try
@@ -453,22 +327,28 @@ namespace TableLoader
                 {
                     object tempConn = this.ComponentMetaData.RuntimeConnectionCollection[Constants.CONNECTION_MANAGER_NAME_BULK].ConnectionManager.AcquireConnection(transaction);
 
-                    if (tempConn is SqlConnection) _bulkConn = (SqlConnection)tempConn;
+                    if (tempConn is SqlConnection)
+                        _bulkConn = (SqlConnection) tempConn;
                     else
                         _events.Fire(IsagEvents.IsagEventType.ErrorWrongConnection,
                         "Only ADO.NET SQL Server connections are supported for the ADO.NET [{0}] Connection.",
                         Constants.CONNECTION_MANAGER_NAME_BULK);
-                    //Events.Fire(ComponentMetaData, Events.Type.Error, "Only ADO.NET SQL Server connections are supported for the ADO.NET [Bulk] Connection.");
                 }
             }
 
         }
 
+        /// <summary>
+        /// Release connections
+        /// </summary>
         public override void ReleaseConnections()
         {
             base.ReleaseConnections();
         }
 
+        /// <summary>
+        /// Close connections
+        /// </summary>
         private void CloseConnections()
         {
             if (BulkConn != null && BulkConn.State != System.Data.ConnectionState.Closed)
@@ -481,35 +361,41 @@ namespace TableLoader
 
         #region Destination & Temporary Table
 
+        /// <summary>
+        /// Creates dataTable (buffer) for destination table
+        /// </summary>
+        /// <returns>DataTable (buffer) for destination table</returns>
         private DataTable CreateDataTableForDestinationTable()
         {
             return CreateDataTableForDestinationTable(null);
         }
 
         /// <summary>
-        /// Erstellen der DataTable anhand der Spalten der Zieltabelle
+        /// Creates dataTable (buffer) for destination table
         /// </summary>
-        /// <returns></returns>
+        /// <returns>DataTable (buffer) for destination table</returns>
         private DataTable CreateDataTableForDestinationTable(SqlTransaction transaction)
         {
             DataTable dt = new DataTable();
 
             SqlCommand cmd = Conn.CreateCommand();
             cmd.CommandText = "select TOP 0 * from " + _IsagCustomProperties.DestinationTable;
-            if (transaction != null) cmd.Transaction = transaction;
+            if (transaction != null)
+                cmd.Transaction = transaction;
             SqlDataAdapter da = new SqlDataAdapter(cmd);
             da.Fill(dt);
 
 
             Dictionary<string, ColumnInfo> relevantColumnInfos = new Dictionary<string, ColumnInfo>();
 
-            //Nur die Spalten, die in die Zieltabelle eingefügt werden sollen, sind relevant
+            //Gather relevant columns (those that shall be inserted)
             foreach (ColumnInfo info in _columnInfos)
             {
-                if (info.Insert) relevantColumnInfos.Add(info.DestColumnName, info);
+                if (info.Insert)
+                    relevantColumnInfos.Add(info.DestColumnName, info);
             }
-         
-            //Nicht verwendete Spalten der Zieltabelle aus DataTable entfernen
+
+            //Remove columns that will not be used
             for (int i = dt.Columns.Count - 1; i >= 0; i--)
             {
                 if (!relevantColumnInfos.ContainsKey(dt.Columns[i].ColumnName) &&
@@ -519,14 +405,14 @@ namespace TableLoader
                 }
             }
 
-            //ColumnInfos anhand der DataTable neu sortieren
+            //Sort ColumnInfos according to DataTable
             _columnInfos = new List<ColumnInfo>();
             for (int i = 0; i < dt.Columns.Count; i++)
             {
-                if (relevantColumnInfos.ContainsKey(dt.Columns[i].ColumnName)) 
+                if (relevantColumnInfos.ContainsKey(dt.Columns[i].ColumnName))
                     _columnInfos.Add(relevantColumnInfos[dt.Columns[i].ColumnName]);
                 else if (relevantColumnInfos.ContainsKey(dt.Columns[i].ColumnName.ToUpper()))
-                    _columnInfos.Add(relevantColumnInfos[dt.Columns[i].ColumnName.ToUpper()]);                
+                    _columnInfos.Add(relevantColumnInfos[dt.Columns[i].ColumnName.ToUpper()]);
             }
 
             if (_columnInfos.Count != relevantColumnInfos.Count)
@@ -542,62 +428,17 @@ namespace TableLoader
 
                 if (inputColumnName != outputColumnName && inputColumnName.ToUpper() != outputColumnName.ToUpper())
                     _events.Fire(IsagEvents.IsagEventType.Error, "Mapping Error: Cannot map input column " + inputColumnName + " to output column " + outputColumnName);
-            }
-           
-           
-
-            //foreach (ColumnConfig config in _IsagCustomProperties.ColumnConfigList)
-            //{
-            //    if (config.Insert) colConfigByOutputColumnName.Add(config.OutputColumnName, config);
-             
-            //    if (!config.Insert && dt.Columns.Contains(config.OutputColumnName))
-            //    {
-            //        dt.Columns.Remove(config.OutputColumnName);
-            //        _events.Fire(IsagEvents.IsagEventType.Warning, "Removing: " + config.OutputColumnName);
-            //    }
-            //    else if (!config.Insert && dt.Columns.Contains(config.OutputColumnName.ToUpper()))
-            //    {
-            //        dt.Columns.Remove(config.OutputColumnName.ToUpper());
-            //        _events.Fire(IsagEvents.IsagEventType.Warning, "Removing: " + config.OutputColumnName.ToUpper());
-            //    }
-            //    else if (config.Insert && (!dt.Columns.Contains(config.OutputColumnName) || !dt.Columns.Contains(config.OutputColumnName.ToUpper())))
-            //    {
-            //        _events.Fire(IsagEvents.IsagEventType.Error, "Destination Table does not contain column : " + config.OutputColumnName);
-            //    }
-            //}
-
-            //foreach (ColumnConfig config in _IsagCustomProperties.ColumnConfigList)
-            //{
-            //    if (!config.Insert && dt.Columns.Contains(config.OutputColumnName))
-            //    {
-            //        dt.Columns.Remove(config.OutputColumnName);
-            //        _events.Fire(IsagEvents.IsagEventType.Warning, "Removing: " + config.OutputColumnName);
-            //    }
-            //}
-
-            //List<ColumnInfo> colInfoList = new List<ColumnInfo>();
-
-            //for (int i = 0; i < dt.Columns.Count; i++)
-            //{
-            //    foreach (ColumnInfo info in _columnInfos)
-            //    {
-            //        if (info.DestColumnName.ToUpper() == dt.Columns[i].ColumnName.ToUpper()) colInfoList.Add(info);
-            //    }
-            //}
-
-            //_columnInfos = colInfoList;
-
-            //TODO: columnInfo umsortieren
+            }           
 
             return dt;
         }
 
         /// <summary>
-        /// Erzeugt die DataTable anhand der Properties.
-        /// (für alle DB Commands außer BulkInsert)
+        /// Creates ataTable according to properties
+        /// (for all database commands except BulkInsert)
         /// </summary>
         /// <param name="input">SSIS input</param>
-        /// <returns>DataTable für das BulkCopy</returns>
+        /// <returns>DataTable for bulk copy into temporary table</returns>
         private DataTable CreateDataTableForTempTable(IDTSInput100 input)
         {
             DataTable dt = new DataTable();
@@ -605,16 +446,22 @@ namespace TableLoader
             foreach (ColumnConfig config in _IsagCustomProperties.ColumnConfigList)
             {
                 Type typeNet;
-                if (config.HasInput) typeNet = SqlCreator.GetNetDataType(input.InputColumnCollection.GetObjectByID(config.InputColumnId).DataType);
-                else typeNet = Type.GetType(config.DataTypeOutputNet);
+                if (config.HasInput)
+                    typeNet = SqlCreator.GetNetDataType(input.InputColumnCollection.GetObjectByID(config.InputColumnId).DataType);
+                else
+                    typeNet = Type.GetType(config.DataTypeOutputNet);
 
-                if (config.IsInputColumnUsed) dt.Columns.Add(config.InputColumnName, typeNet);
+                if (config.IsInputColumnUsed)
+                    dt.Columns.Add(config.InputColumnName, typeNet);
             }
 
             return dt;
         }
 
-
+        /// <summary>
+        /// Add row from pipeline buffer to buffer (Datatable) for temporary table
+        /// </summary>
+        /// <param name="buffer">SSIS pipeline buffer</param>
         private void AddDataRowToTempDataTable(PipelineBuffer buffer)
         {
             DataRow row = _dtBuffer.NewRow();
@@ -627,7 +474,8 @@ namespace TableLoader
                 if (col.IsUsed)
                 {
                     object value = buffer[col.BufferIndex];
-                    if (value != null) row[destIndex] = value;
+                    if (value != null)
+                        row[destIndex] = value;
                     destIndex++;
                 }
             }
@@ -639,16 +487,17 @@ namespace TableLoader
 
         #region PreExecute
 
+        /// <summary>
+        /// PreExecute phase: Gather all needed informations
+        /// </summary>
         public override void PreExecute()
         {
             _status = new Status(_events);
             _status.AddTableLoaderStatus(Status.TableLoaderStatusType.started);
             _status.AddTableLoaderStatus(Status.TableLoaderStatusType.preExecStarted);
 
-
-            //System.Windows.Forms.Application.SetUnhandledExceptionMode(UnhandledExceptionMode.ThrowException,false);
-            //AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
-            if (_IsagCustomProperties == null || _events == null) InitProperties(true);
+            if (_IsagCustomProperties == null || _events == null)
+                InitProperties(true);
 
             _chunkCounterBulk = 1;
             _dbCommand = new TlDbCommand(_IsagCustomProperties, _events, ComponentMetaData, VariableDispenser);
@@ -660,30 +509,33 @@ namespace TableLoader
             else
             {
                 _txAll = new TxAll(_events, Conn, _IsagCustomProperties, _dbCommand, BulkConn, ComponentMetaData);
-                if (!_IsagCustomProperties.ExcludePreSqlFromTransaction)  _txAll.CreateTransaction();
+                if (!_IsagCustomProperties.ExcludePreSqlFromTransaction)
+                    _txAll.CreateTransaction();
                 _chunkCounterDbCommand = 1;
                 _tempTableName = _txAll.GetTempTableName();
-                _txAll.CreateTempTable(_tempTableName);               
+                _txAll.CreateTempTable(_tempTableName);
             }
 
             CreateMapping();
 
             IDTSInput100 input = this.ComponentMetaData.InputCollection[Constants.INPUT_NAME];
 
-            if (_IsagCustomProperties.UseTempTable) _dtBuffer = CreateDataTableForTempTable(input);
-            else if (_IsagCustomProperties.UseMultiThreading) _dtBuffer = CreateDataTableForDestinationTable();
-            else _dtBuffer = CreateDataTableForDestinationTable(_txAll.Transaction);
+            if (_IsagCustomProperties.UseTempTable)
+                _dtBuffer = CreateDataTableForTempTable(input);
+            else if (_IsagCustomProperties.UseMultiThreading)
+                _dtBuffer = CreateDataTableForDestinationTable();
+            else
+                _dtBuffer = CreateDataTableForDestinationTable(_txAll.Transaction);
 
-            if (!_IsagCustomProperties.UseMultiThreading) _txAll.DtBuffer = _dtBuffer;
+            if (!_IsagCustomProperties.UseMultiThreading)
+                _txAll.DtBuffer = _dtBuffer;
 
             _status.AddTableLoaderStatus(Status.TableLoaderStatusType.preExecFinished);
         }
 
- 
-
-
-
-
+        /// <summary>
+        /// Gather mapping informations in Pre execute phase
+        /// </summary>
         private void CreateMapping()
         {
             _columnInfos = new List<ColumnInfo>(this.ComponentMetaData.InputCollection[0].InputColumnCollection.Count);
@@ -702,7 +554,8 @@ namespace TableLoader
                 _columnMapping = new Dictionary<string, string>();
                 foreach (ColumnConfig config in _IsagCustomProperties.ColumnConfigList)
                 {
-                    if (config.Insert ) _columnMapping.Add(config.OutputColumnName, config.InputColumnName);
+                    if (config.Insert)
+                        _columnMapping.Add(config.OutputColumnName, config.InputColumnName);
                 }
             }
         }
@@ -712,13 +565,13 @@ namespace TableLoader
 
         /// <summary>
         /// Processes Input Phase
-        /// 
         /// </summary>
         /// <param name="inputID">Input ID</param>
         /// <param name="buffer">Input buffer.</param>
         public override void ProcessInput(int inputID, PipelineBuffer buffer)
         {
-            if (_IsagCustomProperties == null || _events == null) InitProperties(true);
+            if (_IsagCustomProperties == null || _events == null)
+                InitProperties(true);
 
             _status.AddTableLoaderStatus(Status.TableLoaderStatusType.processInputStarted);
 
@@ -728,9 +581,10 @@ namespace TableLoader
 
                 if (!_PreSqlFinished)
                 {
-                   
+
                     ExecPreOrPostExecuteStatement(IsagEvents.IsagEventType.PreSql);
-                    if (!_IsagCustomProperties.UseMultiThreading && _IsagCustomProperties.ExcludePreSqlFromTransaction) _txAll.CreateTransaction();
+                    if (!_IsagCustomProperties.UseMultiThreading && _IsagCustomProperties.ExcludePreSqlFromTransaction)
+                        _txAll.CreateTransaction();
                     _PreSqlFinished = true;
                 }
 
@@ -740,10 +594,9 @@ namespace TableLoader
                 {
                     AddDataRowToTempDataTable(buffer);
 
-
-                    //ChunkSizeDbCommand wird nur bei TxAll und DbCommand != BulkInsert verwendet
+                    //ChunkSizeDbCommand is only used if TableLoader type is TxAll and db command != BulkInsert 
                     if (_IsagCustomProperties.IsTransactionAvailable && !_IsagCustomProperties.UseBulkInsert &&
-                        _chunkCounterDbCommand == _IsagCustomProperties.ChunkSizeDbCommand )
+                        _chunkCounterDbCommand == _IsagCustomProperties.ChunkSizeDbCommand)
                     {
                         _chunkCounterBulk = 0;
                         _chunkCounterDbCommand = 1;
@@ -753,7 +606,8 @@ namespace TableLoader
                         _txAll.TruncateTempTable(_tempTableName);
                         _dtBuffer.Clear();
                     }
-                    else _chunkCounterDbCommand++;
+                    else
+                        _chunkCounterDbCommand++;
 
                     if (_chunkCounterBulk == chunkSize)
                     {
@@ -771,7 +625,8 @@ namespace TableLoader
                             _dtBuffer.Clear();
                         }
                     }
-                    else _chunkCounterBulk++;
+                    else
+                        _chunkCounterBulk++;
                 }
             }
             catch (Exception ex)
@@ -780,22 +635,18 @@ namespace TableLoader
                 throw ex;
             }
 
-
             _status.AddTableLoaderStatus(Status.TableLoaderStatusType.processInpitFinished);
         }
-
-
-
 
         #region PostExecute
 
         /// <summary>
         /// Post Execute Phase
-        /// 
         /// </summary>
         public override void PostExecute()
         {
-            if (_IsagCustomProperties == null || _events == null) InitProperties(true);
+            if (_IsagCustomProperties == null || _events == null)
+                InitProperties(true);
 
             _status.AddTableLoaderStatus(Status.TableLoaderStatusType.postExecStarted);
 
@@ -807,6 +658,8 @@ namespace TableLoader
 
                     _PreSqlFinished = false;
 
+                    // Finish process input phase
+                    //(last data might not have been written because chunk size has not been reached)
                     if (_IsagCustomProperties.UseMultiThreading)
                     {
                         if (_dtBuffer.Rows.Count > 0)
@@ -824,7 +677,7 @@ namespace TableLoader
                     {
                         if (_dtBuffer.Rows.Count > 0)
                         {
-                            _txAll.ExecuteBulkCopy(_tempTableName);                            
+                            _txAll.ExecuteBulkCopy(_tempTableName);
                             _dtBuffer.Clear();
                         }
 
@@ -833,12 +686,14 @@ namespace TableLoader
                             _txAll.ExecuteDbCommand(_tempTableName);
                             _txAll.DropTempTable(_tempTableName, IsagEvents.IsagEventType.TempTableDrop);
                         }
-
                     }
 
+                    //execute post execute sql command
                     ExecPreOrPostExecuteStatement(IsagEvents.IsagEventType.PostSql);
 
-                    if (!_IsagCustomProperties.UseMultiThreading) _txAll.Commit();
+                    //commit changes to database if multithreading is not used
+                    if (!_IsagCustomProperties.UseMultiThreading)
+                        _txAll.Commit();
                 }
                 catch (Exception ex)
                 {
@@ -851,7 +706,8 @@ namespace TableLoader
             }
             catch (Exception ex)
             {
-                if (!_IsagCustomProperties.UseMultiThreading)  _txAll.Rollback();
+                if (!_IsagCustomProperties.UseMultiThreading)
+                    _txAll.Rollback();
 
                 _events.FireError(new string[] { "PostExecute", ex.Message });
                 throw ex;
@@ -865,13 +721,8 @@ namespace TableLoader
             _status.AddTableLoaderStatus(Status.TableLoaderStatusType.postExecFinished);
             _status.AddTableLoaderStatus(Status.TableLoaderStatusType.finished);
 
-            
+
         }
-
-      
-
-
-
 
         #endregion
 
@@ -879,6 +730,9 @@ namespace TableLoader
 
         #region Threads
 
+        /// <summary>
+        /// Creates Thread handler
+        /// </summary>
         private void CreateThreadHandler()
         {
             IsagEvents.IsagEventType eventType = IsagEvents.IsagEventType.MergeBegin;
@@ -889,6 +743,9 @@ namespace TableLoader
                                                GetConnectionStringForThread(), Conn, _events, eventType, sqlTemplate, _status);
         }
 
+        /// <summary>
+        /// Starts a bulk copy thread
+        /// </summary>
         private void StartBulkCopyThread()
         {
             DataTable dt = _dtBuffer;
@@ -898,14 +755,20 @@ namespace TableLoader
                 _threadHandler.AddBulkCopyThread(_IsagCustomProperties.DestinationTable, dt, !_IsagCustomProperties.DisableTablock);
             else if (_IsagCustomProperties.DbCommand == IsagCustomProperties.DbCommandType.BulkInsertRowLock)
                 _threadHandler.AddBulkCopyThread(_IsagCustomProperties.DestinationTable, dt, false);
-            else _threadHandler.AddBulkCopyThread(_IsagCustomProperties.CreateTempTableName(), dt, !_IsagCustomProperties.DisableTablock);
+            else
+                _threadHandler.AddBulkCopyThread(_IsagCustomProperties.CreateTempTableName(), dt, !_IsagCustomProperties.DisableTablock);
         }
 
+        /// <summary>
+        /// Gets connection string for thread (integrated authentication is always used)
+        /// </summary>
+        /// <returns>connection string for thread</returns>
         private string GetConnectionStringForThread()
         {
             string cstr = Conn.ConnectionString;
 
-            if (cstr.Contains("Integrated Security=True")) return cstr;
+            if (cstr.Contains("Integrated Security=True"))
+                return cstr;
             else
             {
                 int start = cstr.IndexOf("User ID=");
@@ -922,7 +785,7 @@ namespace TableLoader
         #region Pre/Post Sql Statement
 
         /// <summary>
-        /// Führt das Pre- oder PostExecute Statement aus
+        /// Executes pre- oder post execute command
         /// </summary>
         /// <param name="cmdType"> Events.IsagEventType.PreSql oder Events.IsagEventType.PostSql </param>
         private void ExecPreOrPostExecuteStatement(IsagEvents.IsagEventType cmdType)
@@ -942,17 +805,18 @@ namespace TableLoader
                     sql = _dbCommand.GetExecuteStatementFromTemplate(_IsagCustomProperties.PostSql);
                     cmdTypeName = "PostSql";
                 }
-                else if (cmdType != IsagEvents.IsagEventType.PreSql && cmdType != IsagEvents.IsagEventType.PostSql) throw new Exception("Unknown CommandType in ExecPrePostExecuteStatement: " + cmdType);
+                else if (cmdType != IsagEvents.IsagEventType.PreSql && cmdType != IsagEvents.IsagEventType.PostSql)
+                    throw new Exception("Unknown CommandType in ExecPrePostExecuteStatement: " + cmdType);
 
-                // Pre-, bzw. Post-SQL ausführen
+                // execute pre- oder post execute command
 
                 if (sql.Length > 0)
                 {
                     SqlTransaction transaction = _IsagCustomProperties.UseMultiThreading ? null : _txAll.Transaction;
-                    int rowsAffected = Common.ExecSql(sql, Conn, _IsagCustomProperties.TimeOutDb, transaction);
+                    int rowsAffected = SqlExecutor.ExecSql(sql, Conn, _IsagCustomProperties.TimeOutDb, transaction);
                     _events.Fire(IsagEvents.IsagEventType.Sql,
                                               "[ExecSql:" + cmdType.ToString() + "]: {0} rows were affected by the Sql Command.",
-                                              new string[] { rowsAffected.ToString(), ((int)cmdType).ToString() });
+                                              new string[] { rowsAffected.ToString(), ((int) cmdType).ToString() });
                     _events.Fire(cmdType, cmdTypeName + " Statement has been executed.");
                 }
             }
@@ -961,19 +825,14 @@ namespace TableLoader
                 _events.FireError(new string[] { cmdTypeName, ex.Message });
                 throw;
             }
-
-
-
         }
-  
-
-
 
         #endregion
 
-       
-
-
+        /// <summary>
+        /// Initializes custom properties
+        /// </summary>
+        /// <param name="needsStandardConfiguration">Is standard configuration needed?</param>
         private void InitProperties(bool needsStandardConfiguration)
         {
             try
@@ -993,9 +852,9 @@ namespace TableLoader
         #region PerformUpgrade
 
         /// <summary>
-        /// Upgrade von SSIS 2008 auf 2012/2014
+        /// Upgrade from SSIS 2008 to 2012/2014
         /// </summary>
-        /// <param name="pipelineVersion"></param>
+        /// <param name="pipelineVersion">components pipeline verion</param>
         public override void PerformUpgrade(int pipelineVersion)
         {
             try
@@ -1006,7 +865,8 @@ namespace TableLoader
 
                     foreach (ColumnConfig config in _IsagCustomProperties.ColumnConfigList)
                     {
-                        if (string.IsNullOrEmpty(config.CustomId)) config.CustomId = Guid.NewGuid().ToString();
+                        if (string.IsNullOrEmpty(config.CustomId))
+                            config.CustomId = Guid.NewGuid().ToString();
                         AddInputColumnCustomProperty(config.InputColumnName, config.CustomId, Mapping.IdPropertyName);
                     }
 
@@ -1015,7 +875,7 @@ namespace TableLoader
                 }
 
                 DtsPipelineComponentAttribute attr =
-                    (DtsPipelineComponentAttribute)Attribute.GetCustomAttribute(this.GetType(), typeof(DtsPipelineComponentAttribute), false);
+                    (DtsPipelineComponentAttribute) Attribute.GetCustomAttribute(this.GetType(), typeof(DtsPipelineComponentAttribute), false);
                 ComponentMetaData.Version = attr.CurrentVersion;
             }
             catch (Exception ex)
@@ -1066,20 +926,67 @@ namespace TableLoader
 
 
         /// <summary>
-        /// Daten, die in PreExecute für ProcessInput gesammelt werden
+        /// Data that is gathering in pre execute phase and used in process input phase
+        /// (SSIS buffer mapping, column properties,...)
         /// </summary>
-        class ColumnInfo
-        {
+        class ColumnInfo {
+            /// <summary>
+            /// Input column name
+            /// </summary>
             private string _columnName = string.Empty;
+
+            /// <summary>
+            /// Datatype
+            /// </summary>
             private DataType _dataType = DataType.DT_STR;
+
+            /// <summary>
+            /// SSIS column buffer index
+            /// </summary>
             private int _bufferIndex = 0;
+
+            /// <summary>
+            /// Datatype precision
+            /// </summary>
             private int _precision = 0;
+
+            /// <summary>
+            /// Datatype scale
+            /// </summary>
             private int _scale = 0;
+
+            /// <summary>
+            /// Datatype length
+            /// </summary>
             private int _length;
+
+            /// <summary>
+            /// Is column used?
+            /// </summary>
             private bool _isUsed = false;
+
+            /// <summary>
+            /// Destination column name
+            /// </summary>
             private string _destColumnName = string.Empty;
+
+            /// <summary>
+            /// Is column inserted?
+            /// </summary>
             private bool _insert = false;
 
+            /// <summary>
+            /// constructor
+            /// </summary>
+            /// <param name="columnName">Input column name</param>
+            /// <param name="dataType">Datatype</param>
+            /// <param name="bufferIndex">SSIS column buffer index</param>
+            /// <param name="length">Datatype length</param>
+            /// <param name="precision">Datatype precision</param>
+            /// <param name="scale">Datatype scale</param>
+            /// <param name="isUsed">Is column used?</param>
+            /// <param name="destColumnName">Destination column name</param>
+            /// <param name="insert">Is column inserted?</param>
             public ColumnInfo(string columnName, DataType dataType, int bufferIndex,
                               int length, int precision, int scale, bool isUsed, string destColumnName, bool insert)
             {
@@ -1094,35 +1001,60 @@ namespace TableLoader
                 _insert = insert;
             }
 
+
+            /// <summary>
+            /// SSIS column buffer index
+            /// </summary>
             public int BufferIndex
             { get { return _bufferIndex; } }
 
+            /// <summary>
+            /// Datatype
+            /// </summary>
             public DataType ColumnDataType
             { get { return _dataType; } }
 
+            /// <summary>
+            /// Input column name
+            /// </summary>
             public string ColumnName
             { get { return _columnName; } }
 
+            /// <summary>
+            /// Datatype precision
+            /// </summary>
             public int Precision
             { get { return _precision; } }
 
+            /// <summary>
+            /// Datatype length
+            /// </summary>
             public int Length
             { get { return _length; } }
 
+            /// <summary>
+            /// Datatype scale
+            /// </summary>
             public int Scale
             { get { return _scale; } }
 
+            /// <summary>
+            /// Is column used?
+            /// </summary>
             public bool IsUsed
             { get { return _isUsed; } }
 
+            /// <summary>
+            /// Destination column name
+            /// </summary>
             public string DestColumnName
             { get { return _destColumnName; } }
 
+            /// <summary>
+            /// Is column inserted?
+            /// </summary>
             public bool Insert
             { get { return _insert; } }
         }
-
     }
-
-
 }

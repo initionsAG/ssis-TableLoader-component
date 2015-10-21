@@ -12,13 +12,31 @@ using Microsoft.SqlServer.Dts.Runtime.Wrapper;
 
 namespace TableLoader
 {
+    /// <summary>
+    /// Standard configurations 
+    /// used for TableLoader properties:
+    /// ChunkSizeBulk, ChunkSizeDbCommand, DbTimeout, MaxThreadCount, PreFixInput, PreFixOutput, TableLoaderType, DbCommand, TransactionType
+    /// </summary>
     public class StandardConfiguration
     {
+        /// <summary>
+        /// Connection Manager id
+        /// </summary>
         public string ConnectionManagerId { get; set; }
 
+        /// <summary>
+        /// SSIS connections
+        /// </summary>
         private Connections _connections;
 
+        /// <summary>
+        /// configuration connection
+        /// </summary>
         private DbConnection _configConnection;
+
+        /// <summary>
+        /// configuration connection
+        /// </summary>
         public DbConnection ConfigConnection
         {
             get
@@ -34,16 +52,31 @@ namespace TableLoader
 
         }
 
+        /// <summary>
+        /// Is connection set?
+        /// </summary>
         public bool HasConnection { get { return _configConnection != null; } }
 
+        /// <summary>
+        /// Is standard configuration needed?
+        /// </summary>
         private bool _needsStandardConfiguration;
 
+        /// <summary>
+        /// constructor
+        /// </summary>
+        /// <param name="connections">SSIS connections</param>
         public StandardConfiguration(Connections connections)
         {
             _connections = connections;
             InitDesignTimeConnection();
         }
 
+        /// <summary>
+        /// constructor
+        /// </summary>
+        /// <param name="connections">SSIS connections</param>
+        /// <param name="needsStandardConfiguration">Is standard configuration needed?</param>
         public StandardConfiguration(IDTSRuntimeConnectionCollection100 connections, bool needsStandardConfiguration)
         {
             _needsStandardConfiguration = needsStandardConfiguration;
@@ -51,6 +84,9 @@ namespace TableLoader
             InitRunTimeConnection(connections);
         }
 
+        /// <summary>
+        /// Initializes connection used at design time
+        /// </summary>
         private void InitDesignTimeConnection()
         {
             try
@@ -71,6 +107,9 @@ namespace TableLoader
             }
         }
 
+        /// <summary>
+        /// Initializes connection used at runtime
+        /// </summary>
         private void InitRunTimeConnection(IDTSRuntimeConnectionCollection100 connections)
         {
             try
@@ -93,11 +132,18 @@ namespace TableLoader
             }
         }
 
+        /// <summary>
+        /// Closes connection if open
+        /// </summary>
         public void CloseConnection()
         {
             if (HasConnection && _configConnection.State == ConnectionState.Open) _configConnection.Close();
         }
 
+        /// <summary>
+        /// Get standard configuration from database
+        /// </summary>
+        /// <returns>datatable with standard configuration</returns>
         public DataTable GetStandardConfigurationAsDataTable()
         {
             if (HasConnection)
@@ -128,6 +174,10 @@ namespace TableLoader
 
         }
 
+        /// <summary>
+        /// Get standard configuration list (i.e. used as itemlist for combobox)
+        /// </summary>
+        /// <returns>standard configuration list</returns>
         public List<string> GetStandardConfigurationList()
         {
             if (HasConnection)
@@ -148,6 +198,12 @@ namespace TableLoader
             return new List<string>();
         }
 
+        /// <summary>
+        /// Get standard configuration as dictionary
+        /// Key: configuration name
+        /// Value: data row from datatable
+        /// </summary>
+        /// <returns>dictionary with standard configurations</returns>
         public Dictionary<string, DataRow> GetStandardConfigurationAsDictionary()
         {
             if (HasConnection)
@@ -166,6 +222,10 @@ namespace TableLoader
             return new Dictionary<string, DataRow>(); ;
         }
 
+        /// <summary>
+        /// Apply standard configuration to custom properties
+        /// </summary>
+        /// <param name="isagCustomProperties">component custom porperties</param>
         public void SetStandardConfiguration(ref IsagCustomProperties isagCustomProperties)
         {
             if (!isagCustomProperties.AutoUpdateStandardConfiguration) return;
@@ -188,6 +248,11 @@ namespace TableLoader
             }
         }
 
+        /// <summary>
+        /// Apply standard configuration to custom properties
+        /// </summary>
+        /// <param name="isagCustomProperties">component custom porperties</param>
+        /// <param name="row">data row</param>
         public void SetStandardConfiguration(ref IsagCustomProperties isagCustomProperties, DataRow row)
         {
             try

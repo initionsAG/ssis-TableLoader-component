@@ -21,13 +21,38 @@ namespace TableLoader.Framework.Gui
     /// </summary>
     public partial class IsagConnectionManager : UserControl
     {
+        /// <summary>
+        /// event Hander 
+        /// </summary>
         public event EventHandler ConnectionManagerChanged;
+        /// <summary>
+        /// Defines a mechanism for retrieving a service object; that is, an object that provides custom support to other objects.
+        /// </summary>
         public IServiceProvider ServiceProvider { get; set; }
+        /// <summary>
+        /// available connections
+        /// </summary>
         public Connections ComponentConnections { get; set; }
+        /// <summary>
+        /// SSIS metadata for the component
+        /// </summary>
         public IDTSComponentMetaData100 ComponentMetaData { get; set; }
+        /// <summary>
+        /// connectionmanager name
+        /// </summary>
         public string ConnectionManagerName { get; set; }
+        /// <summary>
+        /// list of ADO.NET connectionmanagers
+        /// </summary>
         private BindingList<ConnectionManager> _connectionManagerList = new BindingList<ConnectionManager>();
+        /// <summary>
+        /// name of selected connectionmanager
+        /// </summary>
         public string ConnectionManager { get { return ((ConnectionManager) cmbConMgr.SelectedItem).Name; } }
+
+        /// <summary>
+        /// sql connection of the selected connectionmanager
+        /// </summary>
         public SqlConnection SelectedConnection
         {
             get
@@ -37,8 +62,17 @@ namespace TableLoader.Framework.Gui
                 else return null;
             }
         }
+
         /// <summary>
         /// the constructor
+        /// </summary>
+        public IsagConnectionManager()
+        {
+            InitializeComponent();
+        }
+
+        /// <summary>
+        /// Initialize the GUI
         /// </summary>
         /// <param name="componentMetaData">the components metadata</param>
         /// <param name="serviceProvider">"service provider of the component</param>
@@ -56,6 +90,9 @@ namespace TableLoader.Framework.Gui
             InitializeConnectionManager();
         }
 
+        /// <summary>
+        /// Initiatlize GUI and datassources
+        /// </summary>
         private void InitializeConnectionManager()
         {
             foreach (ConnectionManager connMgr in ComponentConnections)
@@ -80,20 +117,22 @@ namespace TableLoader.Framework.Gui
                 //Es wurde noch kein ConnectionManager ausgewählt
             }
 
-        }      
+        }
 
+        /// <summary>
+        /// Is a connection selected?
+        /// </summary>
+        /// <returns>Is a connection selected?</returns>
         public bool HasConnection()
         {
             return cmbConMgr.SelectedItem != null;
         }
 
-
-        public IsagConnectionManager()
-        {
-            InitializeComponent();
-        }
-
-
+        /// <summary>
+        /// Creates a new connectiionManager
+        /// </summary>
+        /// <param name="sender">event sender</param>
+        /// <param name="e">event arguments</param>
         private void btnNewConMgr_Click(object sender, EventArgs e)
         {
             IDtsConnectionService connectionService =
@@ -111,6 +150,11 @@ namespace TableLoader.Framework.Gui
             }
         }
 
+        /// <summary>
+        /// fires connectionmanager changed event if selected connectionmanager changed
+        /// </summary>
+        /// <param name="sender">event sender</param>
+        /// <param name="e">event arguments</param>
         private void cmbConMgr_SelectedValueChanged(object sender, EventArgs e)
         {
             if (this.ConnectionManagerChanged != null) this.ConnectionManagerChanged(this, e);
