@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Text;
 using System.ComponentModel;
 using System.Xml.Serialization;
-using TableLoader.ComponentFramework.Mapping;
 using Microsoft.SqlServer.Dts.Pipeline.Wrapper;
 using System.Runtime.CompilerServices;
+using TableLoader.Framework.Mapping;
 
 namespace TableLoader
 {

@@ -1,4 +1,4 @@
-﻿namespace ComponentFramework.Gui
+﻿namespace TableLoader.Framework.Gui
 {
     partial class IsagConnectionManager
     {

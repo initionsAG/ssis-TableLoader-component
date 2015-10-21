@@ -15,7 +15,7 @@ using System.Data.Common;
 using System.Data.OleDb;
 using System.ComponentModel;
 using System.Threading;
-using TableLoader.ComponentFramework.Mapping;
+using TableLoader.Framework.Mapping;
 
 namespace TableLoader
 {

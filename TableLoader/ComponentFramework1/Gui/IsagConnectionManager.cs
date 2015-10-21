@@ -12,7 +12,7 @@ using System.Data.SqlClient;
 using Microsoft.SqlServer.Dts.Runtime.Design;
 using System.Collections;
 
-namespace ComponentFramework.Gui
+namespace TableLoader.Framework.Gui
 {
     /// <summary>
     /// A user control for choosing an ADO:NET connection manager. 

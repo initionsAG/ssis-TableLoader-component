@@ -224,45 +224,26 @@
     <Compile Include="ColumnConfig.cs" />
     <Compile Include="ColumnMapping.cs" />
     <Compile Include="Common.cs" />
-    <Compile Include="ComponentFramework\Controls\IsagComboBox.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="ComponentFramework\Controls\IsagComboBox.designer.cs">
-      <DependentUpon>IsagComboBox.cs</DependentUpon>
-    </Compile>
-    <Compile Include="ComponentFramework\Controls\IsagDataGridView.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="ComponentFramework\Controls\IsagDataGridView.designer.cs">
-      <DependentUpon>IsagDataGridView.cs</DependentUpon>
-    </Compile>
-    <Compile Include="ComponentFramework\Gui\frmSelectVariable.cs">
+    <Compile Include="ComponentFramework1\Gui\frmSelectVariable.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ComponentFramework\Gui\frmSelectVariable.designer.cs">
+    <Compile Include="ComponentFramework1\Gui\frmSelectVariable.designer.cs">
       <DependentUpon>frmSelectVariable.cs</DependentUpon>
     </Compile>
-    <Compile Include="ComponentFramework\Gui\IsagConnectionManager.cs">
+    <Compile Include="ComponentFramework1\Gui\IsagConnectionManager.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="ComponentFramework\Gui\IsagConnectionManager.designer.cs">
+    <Compile Include="ComponentFramework1\Gui\IsagConnectionManager.designer.cs">
       <DependentUpon>IsagConnectionManager.cs</DependentUpon>
     </Compile>
-    <Compile Include="ComponentFramework\Gui\IsagMessageBox.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ComponentFramework\Gui\IsagMessageBox.Designer.cs">
-      <DependentUpon>IsagMessageBox.cs</DependentUpon>
-    </Compile>
-    <Compile Include="ComponentFramework\Gui\IsagVariableChooser.cs">
+    <Compile Include="ComponentFramework1\Gui\IsagVariableChooser.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="ComponentFramework\Gui\IsagVariableChooser.designer.cs">
+    <Compile Include="ComponentFramework1\Gui\IsagVariableChooser.designer.cs">
       <DependentUpon>IsagVariableChooser.cs</DependentUpon>
     </Compile>
-    <Compile Include="ComponentFramework\ItemDataSource.cs" />
-    <Compile Include="ComponentFramework\Mapping\Mapping.cs" />
-    <Compile Include="ComponentFramework\SortableBindingList.cs" />
+    <Compile Include="ComponentFramework1\Mapping\Mapping.cs" />
+    <Compile Include="ComponentFramework1\SortableBindingList.cs" />
     <Compile Include="ComponentMetaDataTools.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="Logging.cs" />
@@ -325,16 +306,13 @@
     <None Include="TableLoader3_2014.snk" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="ComponentFramework\Gui\frmSelectVariable.resx">
+    <EmbeddedResource Include="ComponentFramework1\Gui\frmSelectVariable.resx">
       <DependentUpon>frmSelectVariable.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="ComponentFramework\Gui\IsagConnectionManager.resx">
+    <EmbeddedResource Include="ComponentFramework1\Gui\IsagConnectionManager.resx">
       <DependentUpon>IsagConnectionManager.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="ComponentFramework\Gui\IsagMessageBox.resx">
-      <DependentUpon>IsagMessageBox.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ComponentFramework\Gui\IsagVariableChooser.resx">
+    <EmbeddedResource Include="ComponentFramework1\Gui\IsagVariableChooser.resx">
       <DependentUpon>IsagVariableChooser.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmCreateTable.resx">
@@ -396,6 +374,12 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\DataSources\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\TableLoader3FW\TableLoader3FW.csproj">
+      <Project>{02dc51c7-533b-454d-b98f-9a89363f7bd3}</Project>
+      <Name>TableLoader3FW</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -14,7 +14,8 @@ using Microsoft.SqlServer.Dts.Runtime;
 using Microsoft.SqlServer.Dts.Runtime.Wrapper;
 using System.Windows.Forms;
 using System.Data;
-using TableLoader.ComponentFramework;
+using TableLoader.Framework;
+
 
 
 namespace TableLoader

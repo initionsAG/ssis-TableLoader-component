@@ -4,16 +4,24 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TableLoader3", "TableLoader\TableLoader3.csproj", "{35CC5DAB-C753-48DD-85DE-66015091BED1}"
+	ProjectSection(ProjectDependencies) = postProject
+		{02DC51C7-533B-454D-B98F-9A89363F7BD3} = {02DC51C7-533B-454D-B98F-9A89363F7BD3}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TableLoader3FW", "TableLoader3FW\TableLoader3FW.csproj", "{02DC51C7-533B-454D-B98F-9A89363F7BD3}"
 EndProject
 Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 2
+		SccNumberOfProjects = 3
 		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
 		SccTeamFoundationServer = http://svc-tfsbi:8080/tfs/bicollection
 		SccLocalPath0 = .
 		SccProjectUniqueName1 = TableLoader\\TableLoader3.csproj
 		SccProjectName1 = TableLoader
 		SccLocalPath1 = TableLoader
+		SccProjectUniqueName2 = TableLoader3FW\\TableLoader3FW.csproj
+		SccProjectName2 = TableLoader3FW
+		SccLocalPath2 = TableLoader3FW
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +41,16 @@ Global
 		{35CC5DAB-C753-48DD-85DE-66015091BED1}.Sql2012|Any CPU.Build.0 = Sql2012|Any CPU
 		{35CC5DAB-C753-48DD-85DE-66015091BED1}.Sql2014|Any CPU.ActiveCfg = Sql2014|Any CPU
 		{35CC5DAB-C753-48DD-85DE-66015091BED1}.Sql2014|Any CPU.Build.0 = Sql2014|Any CPU
+		{02DC51C7-533B-454D-B98F-9A89363F7BD3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{02DC51C7-533B-454D-B98F-9A89363F7BD3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{02DC51C7-533B-454D-B98F-9A89363F7BD3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{02DC51C7-533B-454D-B98F-9A89363F7BD3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{02DC51C7-533B-454D-B98F-9A89363F7BD3}.Sql2008|Any CPU.ActiveCfg = Release|Any CPU
+		{02DC51C7-533B-454D-B98F-9A89363F7BD3}.Sql2008|Any CPU.Build.0 = Release|Any CPU
+		{02DC51C7-533B-454D-B98F-9A89363F7BD3}.Sql2012|Any CPU.ActiveCfg = Release|Any CPU
+		{02DC51C7-533B-454D-B98F-9A89363F7BD3}.Sql2012|Any CPU.Build.0 = Release|Any CPU
+		{02DC51C7-533B-454D-B98F-9A89363F7BD3}.Sql2014|Any CPU.ActiveCfg = Release|Any CPU
+		{02DC51C7-533B-454D-B98F-9A89363F7BD3}.Sql2014|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

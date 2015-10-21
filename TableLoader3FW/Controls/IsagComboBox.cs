@@ -6,9 +6,10 @@ using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
 using System.Linq;
-using TableLoader.ComponentFramework;
+using ComponentFramework;
 
-namespace Lookup2.ComponentFramework.Controls
+
+namespace ComponentFramework.Controls
 {
     /// <summary>
     /// Enhanced ComboBox that accepts bindings to the combobox properties and a datasource of type BindingList<string> for the ItemList.

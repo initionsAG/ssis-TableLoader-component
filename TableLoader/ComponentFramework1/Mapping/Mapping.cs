@@ -5,7 +5,7 @@ using Microsoft.SqlServer.Dts.Pipeline.Wrapper;
 using System.Reflection;
 using System.Diagnostics;
 
-namespace TableLoader.ComponentFramework.Mapping
+namespace TableLoader.Framework.Mapping
 {
     /// <summary>
     /// Since SSIS 2012 lineageIDs are not stored in the DTSX file, but still used at design- and runtime.

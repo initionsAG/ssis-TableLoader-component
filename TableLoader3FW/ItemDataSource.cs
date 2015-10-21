@@ -4,7 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 
-namespace TableLoader.ComponentFramework
+namespace ComponentFramework
 {
     public class ItemDataSourceElement
     {
