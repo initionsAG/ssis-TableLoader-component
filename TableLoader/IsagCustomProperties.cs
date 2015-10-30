@@ -15,6 +15,7 @@ using Microsoft.SqlServer.Dts.Runtime.Wrapper;
 using System.Windows.Forms;
 using System.Data;
 using TableLoader.Framework;
+using TableLoader.SCD;
 
 
 

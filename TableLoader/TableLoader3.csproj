@@ -223,6 +223,9 @@
   <ItemGroup>
     <Compile Include="ColumnConfig.cs" />
     <Compile Include="ColumnMapping.cs" />
+    <Compile Include="SCD\SCDColumn.cs" />
+    <Compile Include="SCD\SCDColumnList.cs" />
+    <Compile Include="SCD\SCDList.cs" />
     <Compile Include="SqlExecutor.cs" />
     <Compile Include="ComponentFramework1\Gui\frmSelectVariable.cs">
       <SubType>Form</SubType>

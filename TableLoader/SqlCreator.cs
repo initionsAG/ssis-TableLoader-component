@@ -5,6 +5,7 @@ using Microsoft.SqlServer.Dts.Pipeline.Wrapper;
 using Microsoft.SqlServer.Dts.Runtime.Wrapper;
 using System.Windows.Forms;
 using System.ComponentModel;
+using TableLoader.SCD;
 
 namespace TableLoader {
     /// <summary>
