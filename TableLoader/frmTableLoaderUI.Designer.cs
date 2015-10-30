@@ -894,7 +894,7 @@
             // cmbTableLoaderType
             // 
             this.cmbTableLoaderType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmbTableLoaderType.EnableDoubleBinding = false;
+        //    this.cmbTableLoaderType.EnableDoubleBinding = false;
             this.cmbTableLoaderType.FormattingEnabled = true;
             this.cmbTableLoaderType.Location = new System.Drawing.Point(653, 21);
             this.cmbTableLoaderType.Name = "cmbTableLoaderType";
@@ -915,7 +915,7 @@
             // cmbDbCommand
             // 
             this.cmbDbCommand.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmbDbCommand.EnableDoubleBinding = false;
+       //     this.cmbDbCommand.EnableDoubleBinding = false;
             this.cmbDbCommand.FormattingEnabled = true;
             this.cmbDbCommand.Location = new System.Drawing.Point(171, 236);
             this.cmbDbCommand.Name = "cmbDbCommand";
@@ -927,7 +927,7 @@
             // 
             this.cmbDestinationTable.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
             this.cmbDestinationTable.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
-            this.cmbDestinationTable.EnableDoubleBinding = false;
+           // this.cmbDestinationTable.EnableDoubleBinding = false;
             this.cmbDestinationTable.FormattingEnabled = true;
             this.cmbDestinationTable.Location = new System.Drawing.Point(171, 79);
             this.cmbDestinationTable.Name = "cmbDestinationTable";
