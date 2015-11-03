@@ -5,7 +5,7 @@ using Microsoft.SqlServer.Dts.Pipeline.Wrapper;
 using Microsoft.SqlServer.Dts.Runtime;
 using Microsoft.SqlServer.Dts.Runtime.Wrapper;
 
-namespace TableLoader
+namespace TableLoader.Log
 {
     /// <summary>
     /// Handles SSIS Events

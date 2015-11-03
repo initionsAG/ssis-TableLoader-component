@@ -484,7 +484,7 @@ namespace TableLoader
 
             //ID Mapping
             _customId = Guid.NewGuid().ToString();
-            Mapping.SetIdProperty(_customId, inputColumn.CustomPropertyCollection);
+            LineageMapping.SetIdProperty(_customId, inputColumn.CustomPropertyCollection);
         }
         #endregion
 

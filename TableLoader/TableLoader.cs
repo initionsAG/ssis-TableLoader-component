@@ -14,6 +14,7 @@ using System.Data.OleDb;
 using System.ComponentModel;
 using System.Threading;
 using TableLoader.Framework.Mapping;
+using TableLoader.Log;
 
 namespace TableLoader {
 
@@ -214,7 +215,7 @@ namespace TableLoader {
             base.ReinitializeMetaData();
             this.ComponentMetaData.RemoveInvalidInputColumns();
             InitProperties(false);
-            Mapping.UpdateInputIdProperties(ComponentMetaData, _IsagCustomProperties);
+            LineageMapping.UpdateInputIdProperties(ComponentMetaData, _IsagCustomProperties);
 
             _IsagCustomProperties.RebuildMappings(ComponentMetaData, _events);
         }
@@ -247,7 +248,7 @@ namespace TableLoader {
         public override DTSValidationStatus Validate()
         {
             InitProperties(false);
-            Mapping.UpdateInputIdProperties(ComponentMetaData, _IsagCustomProperties);
+            LineageMapping.UpdateInputIdProperties(ComponentMetaData, _IsagCustomProperties);
 
             DTSValidationStatus status = base.Validate();
             if (status != DTSValidationStatus.VS_ISVALID)
@@ -859,7 +860,7 @@ namespace TableLoader {
         {
             try
             {
-                if (Mapping.NeedsMapping())
+                if (LineageMapping.NeedsMapping())
                 {
                     InitProperties(false);
 
@@ -867,10 +868,10 @@ namespace TableLoader {
                     {
                         if (string.IsNullOrEmpty(config.CustomId))
                             config.CustomId = Guid.NewGuid().ToString();
-                        AddInputColumnCustomProperty(config.InputColumnName, config.CustomId, Mapping.IdPropertyName);
+                        AddInputColumnCustomProperty(config.InputColumnName, config.CustomId, LineageMapping.IdPropertyName);
                     }
 
-                    Mapping.UpdateInputIdProperties(this.ComponentMetaData, _IsagCustomProperties);
+                    LineageMapping.UpdateInputIdProperties(this.ComponentMetaData, _IsagCustomProperties);
                     _IsagCustomProperties.Save(this.ComponentMetaData);
                 }
 

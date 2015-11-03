@@ -4,6 +4,7 @@ using System.Text;
 using System.ComponentModel;
 using System.Data.SqlClient;
 using System.Threading;
+using TableLoader.Log;
 
 namespace TableLoader
 {

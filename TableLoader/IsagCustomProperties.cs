@@ -16,6 +16,7 @@ using System.Windows.Forms;
 using System.Data;
 using TableLoader.Framework;
 using TableLoader.SCD;
+using TableLoader.Log;
 
 
 

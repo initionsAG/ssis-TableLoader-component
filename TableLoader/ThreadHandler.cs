@@ -5,6 +5,7 @@ using System.Data;
 using Microsoft.SqlServer.Dts.Pipeline.Wrapper;
 using System.Threading;
 using System.Data.SqlClient;
+using TableLoader.Log;
 
 namespace TableLoader
 {

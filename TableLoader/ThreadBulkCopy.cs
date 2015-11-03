@@ -4,6 +4,7 @@ using System.Text;
 using System.ComponentModel;
 using System.Data;
 using System.Data.SqlClient;
+using TableLoader.Log;
 
 namespace TableLoader
 {
@@ -188,7 +189,7 @@ namespace TableLoader
                 _messageList.AddMessage(string.Format("DB Command Thread {0} created [{1}].", _threadNr, DateTime.Now.ToString()),
                                                       IsagEvents.IsagEventType.BulkInsert);
 
-                _statusList.AddStatusEvent(Int32.Parse(_threadNr), -1, global::TableLoader.Status.StatusType.dbJobQueued, IsagEvents.IsagEventType.Status);
+                _statusList.AddStatusEvent(Int32.Parse(_threadNr), -1, global::TableLoader.Log.Status.StatusType.dbJobQueued, IsagEvents.IsagEventType.Status);
             }
 
             if (Status != StatusType.Error) Status = StatusType.Finished;
@@ -236,7 +237,7 @@ namespace TableLoader
                             string message = string.Format("{0} Rows written by the BulkCopy Thread {1} [{2}].", _dt.Rows.Count.ToString(), _threadNr.ToString(), DateTime.Now.ToString());                            
                             _messageList.AddMessage(message, new string[] {_dt.Rows.Count.ToString()}, IsagEvents.IsagEventType.BulkInsert);
 
-                            _statusList.AddStatusEvent(Int32.Parse(_threadNr), _dt.Rows.Count, global::TableLoader.Status.StatusType.bulkCopyFinished, _tempTableName, IsagEvents.IsagEventType.Status);
+                            _statusList.AddStatusEvent(Int32.Parse(_threadNr), _dt.Rows.Count, global::TableLoader.Log.Status.StatusType.bulkCopyFinished, _tempTableName, IsagEvents.IsagEventType.Status);
                         }
                         catch (Exception ex)
                         {
@@ -264,7 +265,7 @@ namespace TableLoader
                     _messageList.AddMessage(string.Format("BulkCopy Thread {0} ended [{1}].", _threadNr, DateTime.Now.ToString()),
                                                       IsagEvents.IsagEventType.BulkInsert);
 
-                    _statusList.AddStatusEvent(Int32.Parse(_threadNr), -1, global::TableLoader.Status.StatusType.bulkCopyThreadFinished, IsagEvents.IsagEventType.Status);
+                    _statusList.AddStatusEvent(Int32.Parse(_threadNr), -1, global::TableLoader.Log.Status.StatusType.bulkCopyThreadFinished, IsagEvents.IsagEventType.Status);
                 }
             }
             catch (Exception ex)

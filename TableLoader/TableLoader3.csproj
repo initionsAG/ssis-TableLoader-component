@@ -13,7 +13,8 @@
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>TableLoader3.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>
+    </AssemblyOriginatorKeyFile>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
     <OldToolsVersion>3.5</OldToolsVersion>
@@ -42,29 +43,29 @@
   <Choose>
     <When Condition="'$(Configuration)' == 'Sql2008'">
       <PropertyGroup>
-        <AssemblyOriginatorKeyFile>TableLoader3.snk</AssemblyOriginatorKeyFile>
+        <AssemblyOriginatorKeyFile>Resources\TableLoader3.snk</AssemblyOriginatorKeyFile>
         <AssemblyName>TableLoader3</AssemblyName>
         <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
       </PropertyGroup>
     </When>
     <When Condition="'$(Configuration)' == 'Sql2012'">
       <PropertyGroup>
-        <AssemblyOriginatorKeyFile>TableLoader3_2012.snk</AssemblyOriginatorKeyFile>
+        <AssemblyOriginatorKeyFile>Resources\TableLoader3_2012.snk</AssemblyOriginatorKeyFile>
         <AssemblyName>TableLoader4</AssemblyName>
         <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
       </PropertyGroup>
     </When>
     <When Condition="'$(Configuration)' == 'Sql2014'">
       <PropertyGroup>
-        <AssemblyOriginatorKeyFile>TableLoader3_2014.snk</AssemblyOriginatorKeyFile>
+        <AssemblyOriginatorKeyFile>Resources\TableLoader3_2014.snk</AssemblyOriginatorKeyFile>
         <AssemblyName>TableLoader5</AssemblyName>
         <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
       </PropertyGroup>
     </When>
     <Otherwise>
       <PropertyGroup>
-        <AssemblyOriginatorKeyFile>TableLoader.snk</AssemblyOriginatorKeyFile>
-        <AssemblyName>TableLoader</AssemblyName>
+        <AssemblyOriginatorKeyFile>Resources\TableLoader3.snk</AssemblyOriginatorKeyFile>
+        <AssemblyName>TableLoader3</AssemblyName>
         <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
       </PropertyGroup>
     </Otherwise>
@@ -247,16 +248,16 @@
     <Compile Include="ComponentFramework1\Gui\IsagVariableChooser.designer.cs">
       <DependentUpon>IsagVariableChooser.cs</DependentUpon>
     </Compile>
-    <Compile Include="ComponentFramework1\Mapping\Mapping.cs" />
+    <Compile Include="ComponentFramework1\Mapping\LineageMapping.cs" />
     <Compile Include="ComponentFramework1\SortableBindingList.cs" />
     <Compile Include="ComponentMetaDataTools.cs" />
     <Compile Include="Constants.cs" />
-    <Compile Include="Logging.cs" />
-    <Compile Include="Status.cs" />
-    <Compile Include="StatusEvent.cs" />
+    <Compile Include="Log\Logging.cs" />
+    <Compile Include="Log\Status.cs" />
+    <Compile Include="Log\StatusEvent.cs" />
     <Compile Include="TlDbCommand.cs" />
-    <Compile Include="EventMessage.cs" />
-    <Compile Include="Events.cs" />
+    <Compile Include="Log\EventMessage.cs" />
+    <Compile Include="Log\Events.cs" />
     <Compile Include="frmCreateTable.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -297,16 +298,15 @@
     <Compile Include="TxAll.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\TableLoader3.snk" />
+    <None Include="Resources\TableLoader3_2012.snk" />
+    <None Include="Resources\TableLoader3_2014.snk" />
     <None Include="Setup\2008\createSetup.bat" />
     <None Include="Resources\Help_ChunkSize.rtf" />
     <None Include="Resources\Help_StdConfig.rtf" />
     <None Include="Resources\Help_Transaction.rtf" />
     <None Include="Setup\2012\createSetup.bat" />
     <None Include="Setup\2014\createSetup.bat" />
-    <None Include="TableLoader.snk" />
-    <None Include="TableLoader3.snk" />
-    <None Include="TableLoader3_2012.snk" />
-    <None Include="TableLoader3_2014.snk" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="ComponentFramework1\Gui\frmSelectVariable.resx">
@@ -373,7 +373,6 @@
     </Content>
     <Content Include="Setup\2012\setup.wxs" />
     <Content Include="Setup\2014\setup.wxs" />
-    <Content Include="TableLoader.ico" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\DataSources\" />
