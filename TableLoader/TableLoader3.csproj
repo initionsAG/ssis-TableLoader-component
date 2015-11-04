@@ -301,12 +301,9 @@
     <None Include="Resources\TableLoader3.snk" />
     <None Include="Resources\TableLoader3_2012.snk" />
     <None Include="Resources\TableLoader3_2014.snk" />
-    <None Include="Setup\2008\createSetup.bat" />
     <None Include="Resources\Help_ChunkSize.rtf" />
     <None Include="Resources\Help_StdConfig.rtf" />
     <None Include="Resources\Help_Transaction.rtf" />
-    <None Include="Setup\2012\createSetup.bat" />
-    <None Include="Setup\2014\createSetup.bat" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="ComponentFramework1\Gui\frmSelectVariable.resx">
@@ -368,11 +365,6 @@
     <Content Include="Lib\2014\Microsoft.SqlServer.Dts.Design.dll" />
     <Content Include="Lib\2014\Microsoft.SqlServer.ManagedDTS.dll" />
     <Content Include="Lib\2014\x64\Microsoft.SqlServer.DTSRuntimeWrap.dll" />
-    <Content Include="Setup\2008\setup.wxs">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Setup\2012\setup.wxs" />
-    <Content Include="Setup\2014\setup.wxs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\DataSources\" />

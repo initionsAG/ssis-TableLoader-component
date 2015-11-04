@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+    <!-- Generate Installer Title Based on Build Configuration -->
+    <?if $(var.TableLoader3.Configuration) = Sql2012 ?>
+    <?define ProductName   = TableLoader3 !(bind.FileVersion.fil_TableLoader3_dll) for Integration Services 2012 ?>
+    <?define SsisVersion   = 2012 ?>
+    <?define SsisVersionNo = 110 ?>
+    <?define UpgradeCode   = EFB559B2-B495-4582-AAFB-20499D372520 ?>
+    <?elseif $(var.TableLoader3.Configuration) = Sql2014 ?>
+    <?define ProductName   = TableLoader3 !(bind.FileVersion.fil_TableLoader3_dll) for Integration Services 2014 ?>
+    <?define SsisVersion   = 2014 ?>
+    <?define SsisVersionNo = 120 ?>
+    <?define UpgradeCode   = F3BFD12F-E169-4B07-88C2-C648DD5B3F22 ?>
+    <?elseif $(var.TableLoader3.Configuration) = Sql2016 ?>
+    <?define ProductName   = TableLoader3 !(bind.FileVersion.fil_TableLoader3_dll) for Integration Services 2016 ?>
+    <?define SsisVersion   = 2016 ?>
+    <?define SsisVersionNo = 130 ?>
+    <?define UpgradeCode   = 16D587F4-D952-4DD4-B2C1-8B6CC7C1EE92 ?>
+    <?else ?>
+    <?define ProductName   = TableLoader3 !(bind.FileVersion.fil_TableLoader3_dll) for Integration Services 2008 ?>
+    <?define SsisVersion   = 2008 ?>
+    <?define SsisVersionNo = 100 ?>
+    <?define UpgradeCode   = 88F4A44E-5A15-4E3F-BD7F-E8A331F4ACE4 ?>
+    <?endif ?>
+    <Product Id="*"
+             Name="$(var.ProductName)"
+             Language="1033"
+             Version="!(bind.FileVersion.fil_TableLoader3_dll)"
+             Manufacturer="innovative IT solutions AG"
+             UpgradeCode="$(var.UpgradeCode)">
+
+        <Package InstallerVersion="200"
+                 Compressed="yes"
+                 InstallScope="perMachine"
+                 Description="Custom Log Component for Microsoft Sql Server Integration Services $(var.SsisVersion)"
+                 Manufacturer="innovative IT solutions AG"
+             />
+
+        <Feature Id="ProductFeature" Title="SSIS Log Component" Level="1">
+            <ComponentGroupRef Id="ProductComponents" />
+            <ComponentGroupRef Id="GacComponents" />
+        </Feature>
+
+        <!-- Set the default install path -->
+        <Property Id="WIXUI_INSTALLDIR" Value="PIPELINECOMPONENTS" />
+
+        <!-- Ui Speficication -->
+        <WixVariable Id="WixUIBannerBmp" Value="Resources\TableLoader3InstallerBanner.bmp" />
+        <WixVariable Id="WixUIDialogBmp" Value="Resources\TableLoader3InstallerDialog.bmp"/>
+        <UI>
+            <UIRef Id="WixUI_InstallDir" />
+            <!-- skip licence dialog -->
+            <Publish Dialog="WelcomeDlg" Control="Next" Event="NewDialog" Value="InstallDirDlg" Order="2">1</Publish>
+            <Publish Dialog="InstallDirDlg" Control="Back" Event="NewDialog" Value="WelcomeDlg" Order="2">1</Publish>
+        </UI>
+
+        <!-- Set the Icon from the TableLoader3 Component as the installer icon -->
+        <Icon Id="TableLoader.ico" SourceFile="$(var.TableLoader3.ProjectDir)\Resources\TableLoader.ico"/>
+        <Property Id="ARPPRODUCTICON" Value="TableLoader.ico" />
+
+        <MajorUpgrade
+          AllowDowngrades="no"
+          AllowSameVersionUpgrades="no"
+          DowngradeErrorMessage="A newer version of [ProductName] is already installed."
+          Schedule="afterInstallValidate"
+      />
+        <MediaTemplate EmbedCab="yes" />
+    </Product>
+
+    <Fragment>
+        <!-- Getting SSIS Pipeline Components Path from Registry-->
+        <Property Id ="INSTALLFOLDER">
+            <RegistrySearch Id    = "RegDtsPath"
+                            Root  = "HKLM"
+                            Key   = "Software\Microsoft\Microsoft SQL Server\$(var.SsisVersionNo)\SSIS\Setup\DTSPath"
+                            Type  = "raw"
+                            Win64 ="no"
+                      />
+        </Property>
+        <Directory Id="TARGETDIR" Name="SourceDir">
+            <Directory Id="INSTALLFOLDER" Name="TableLoader3_Installer">
+                <Directory Id="PIPELINECOMPONENTS" Name ="Pipelinecomponents" />
+            </Directory>
+
+
+            <!-- GAC Directory only a Dummy for Deployment to GAC-->
+            <Directory Id="GAC" Name="GAC" />
+        </Directory>
+    </Fragment>
+
+    <Fragment>
+        <ComponentGroup Id="ProductComponents" Directory="PIPELINECOMPONENTS">
+            <Component Id="cmp_TableLoader3_dll" Guid="30F50FE7-0447-4853-A278-0203767EDE1E">
+                <File Id="fil_TableLoader3_dll" KeyPath="yes" Source="$(var.TableLoader3.TargetPath)"></File>
+            </Component>
+        </ComponentGroup>
+
+        <ComponentGroup Id="GacComponents" Directory="GAC">
+            <Component Id="cmp_gac_TableLoader3_dll" Guid="F792D383-B30B-4D97-8934-0DC915DA11B5">
+                <!-- Specifing the Assembly Property with .net assures installation to gac-->
+                <File Id="fil_gac_TableLoader3_dll" KeyPath="yes" Source="$(var.TableLoader3.TargetPath)" Assembly=".net"></File>
+            </Component>
+            <Component Id="cmp_gac_TableLoader3FW_dll" Guid="57C46A4D-9A14-4E9E-B9EB-743DD663C07B">
+                <!-- Specifing the Assembly Property with .net assures installation to gac-->
+                <File Id="fil_gac_TableLoader3FW_dll" KeyPath="yes" Source="$(var.TableLoader3FW.TargetPath)" Assembly=".net"></File>
+            </Component>
+        </ComponentGroup>
+    </Fragment>
+
+</Wix>
