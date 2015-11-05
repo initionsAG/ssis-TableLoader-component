@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
     <!-- Generate Installer Title Based on Build Configuration -->
-    <?if $(var.TableLoader3.Configuration) = Sql2012 ?>
+    <?if $(var.TableLoader3.Configuration) = Sql2012 Or $(var.TableLoader3.Configuration) = 2012Debug?>
     <?define ProductName   = TableLoader3 !(bind.FileVersion.fil_TableLoader3_dll) for Integration Services 2012 ?>
     <?define SsisVersion   = 2012 ?>
     <?define SsisVersionNo = 110 ?>
-    <?define UpgradeCode   = EFB559B2-B495-4582-AAFB-20499D372520 ?>
-    <?elseif $(var.TableLoader3.Configuration) = Sql2014 ?>
+    <?define UpgradeCode   = EFB559B2-B495-4582-AAFB-20499D372520?>
+    <?elseif $(var.TableLoader3.Configuration) = Sql2014  Or $(var.TableLoader3.Configuration) = 2014Debug?>
     <?define ProductName   = TableLoader3 !(bind.FileVersion.fil_TableLoader3_dll) for Integration Services 2014 ?>
     <?define SsisVersion   = 2014 ?>
     <?define SsisVersionNo = 120 ?>
     <?define UpgradeCode   = F3BFD12F-E169-4B07-88C2-C648DD5B3F22 ?>
-    <?elseif $(var.TableLoader3.Configuration) = Sql2016 ?>
+    <?elseif $(var.TableLoader3.Configuration) = Sql2016 Or $(var.TableLoader3.Configuration) = 2016Debug?>
     <?define ProductName   = TableLoader3 !(bind.FileVersion.fil_TableLoader3_dll) for Integration Services 2016 ?>
     <?define SsisVersion   = 2016 ?>
     <?define SsisVersionNo = 130 ?>
