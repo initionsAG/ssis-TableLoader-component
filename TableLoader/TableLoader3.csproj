@@ -275,26 +275,26 @@
     <Compile Include="SCD\SCDHelper.cs" />
     <Compile Include="SCD\SCDList.cs" />
     <Compile Include="SqlExecutor.cs" />
-    <Compile Include="ComponentFramework1\Gui\frmSelectVariable.cs">
+    <Compile Include="ComponentFramework\Gui\frmSelectVariable.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ComponentFramework1\Gui\frmSelectVariable.designer.cs">
+    <Compile Include="ComponentFramework\Gui\frmSelectVariable.designer.cs">
       <DependentUpon>frmSelectVariable.cs</DependentUpon>
     </Compile>
-    <Compile Include="ComponentFramework1\Gui\IsagConnectionManager.cs">
+    <Compile Include="ComponentFramework\Gui\IsagConnectionManager.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="ComponentFramework1\Gui\IsagConnectionManager.designer.cs">
+    <Compile Include="ComponentFramework\Gui\IsagConnectionManager.designer.cs">
       <DependentUpon>IsagConnectionManager.cs</DependentUpon>
     </Compile>
-    <Compile Include="ComponentFramework1\Gui\IsagVariableChooser.cs">
+    <Compile Include="ComponentFramework\Gui\IsagVariableChooser.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="ComponentFramework1\Gui\IsagVariableChooser.designer.cs">
+    <Compile Include="ComponentFramework\Gui\IsagVariableChooser.designer.cs">
       <DependentUpon>IsagVariableChooser.cs</DependentUpon>
     </Compile>
-    <Compile Include="ComponentFramework1\Mapping\LineageMapping.cs" />
-    <Compile Include="ComponentFramework1\SortableBindingList.cs" />
+    <Compile Include="ComponentFramework\Mapping\LineageMapping.cs" />
+    <Compile Include="ComponentFramework\SortableBindingList.cs" />
     <Compile Include="ComponentMetaDataTools.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="Log\Logging.cs" />
@@ -351,13 +351,13 @@
     <None Include="Resources\Help_Transaction.rtf" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="ComponentFramework1\Gui\frmSelectVariable.resx">
+    <EmbeddedResource Include="ComponentFramework\Gui\frmSelectVariable.resx">
       <DependentUpon>frmSelectVariable.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="ComponentFramework1\Gui\IsagConnectionManager.resx">
+    <EmbeddedResource Include="ComponentFramework\Gui\IsagConnectionManager.resx">
       <DependentUpon>IsagConnectionManager.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="ComponentFramework1\Gui\IsagVariableChooser.resx">
+    <EmbeddedResource Include="ComponentFramework\Gui\IsagVariableChooser.resx">
       <DependentUpon>IsagVariableChooser.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmCreateTable.resx">
