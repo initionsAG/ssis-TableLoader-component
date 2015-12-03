@@ -20,13 +20,11 @@ using TableLoader.Log;
 
 
 
-namespace TableLoader
-{
+namespace TableLoader {
     /// <summary>
     /// custom properties for this component
     /// </summary>
-    public class IsagCustomProperties: INotifyPropertyChanged
-    {
+    public class IsagCustomProperties: INotifyPropertyChanged {
         /// <summary>
         /// Property changed event
         /// (implements Interface of INotifyPropertyChanged)
@@ -66,7 +64,8 @@ namespace TableLoader
         {
             get
             {
-                if (_columnConfigList == null) _columnConfigList = new SortableBindingList<ColumnConfig>();
+                if (_columnConfigList == null)
+                    _columnConfigList = new SortableBindingList<ColumnConfig>();
                 return _columnConfigList;
             }
             set { _columnConfigList = value; }
@@ -134,13 +133,16 @@ namespace TableLoader
         {
             get
             {
-                if (_prefixInput == null) _prefixInput = "";
+                if (_prefixInput == null)
+                    _prefixInput = "";
                 return _prefixInput;
             }
             set
             {
-                if (value != null) _prefixInput = value;
-                else _prefixInput = "";
+                if (value != null)
+                    _prefixInput = value;
+                else
+                    _prefixInput = "";
             }
         }
 
@@ -156,13 +158,16 @@ namespace TableLoader
         {
             get
             {
-                if (_prefixOutput == null) _prefixOutput = "";
+                if (_prefixOutput == null)
+                    _prefixOutput = "";
                 return _prefixOutput;
             }
             set
             {
-                if (value != null) _prefixOutput = value;
-                else _prefixOutput = "";
+                if (value != null)
+                    _prefixOutput = value;
+                else
+                    _prefixOutput = "";
             }
         }
 
@@ -211,6 +216,27 @@ namespace TableLoader
         /// </summary>
         public bool DisableTablock { get; set; }
 
+        private bool _azureCompatible;
+        public bool AzureCompatible
+        {
+            get
+            {
+                return _azureCompatible;
+            }
+
+            set
+            {
+                _azureCompatible = value;
+                NotifyPropertyChanged("AzureCompatible");
+                NotifyPropertyChanged("IsTlTypeEditable");
+                if (_azureCompatible)
+                {
+                    TlType = TableLoaderType.TxAll;
+                    NotifyPropertyChanged("TlType");
+                }
+            }
+        }
+
         /// <summary>
         /// Transaction type
         /// </summary>
@@ -252,12 +278,14 @@ namespace TableLoader
         {
             get
             {
-                if (_standarConfiguration == null) _standarConfiguration = "";
+                if (_standarConfiguration == null)
+                    _standarConfiguration = "";
                 return _standarConfiguration;
             }
             set
             {
-                if (value == "") AutoUpdateStandardConfiguration = false;
+                if (value == "")
+                    AutoUpdateStandardConfiguration = false;
                 _standarConfiguration = value;
             }
         }
@@ -287,13 +315,15 @@ namespace TableLoader
         {
             get
             {
-                if (_logLevel == 0) _logLevel = 3; //Default 
+                if (_logLevel == 0)
+                    _logLevel = 3; //Default 
                 return _logLevel;
             }
             set
             {
                 _logLevel = value;
-                if (_logLevel < 1 || _logLevel > 3) _logLevel = 3; //Default          
+                if (_logLevel < 1 || _logLevel > 3)
+                    _logLevel = 3; //Default          
             }
         }
 
@@ -305,11 +335,13 @@ namespace TableLoader
         {
             get
             {
-                if (DbCommand != DbCommandType.Merge) return false;
+                if (DbCommand != DbCommandType.Merge)
+                    return false;
 
                 foreach (ColumnConfig config in _columnConfigList)
                 {
-                    if (config.HasScd) return true;
+                    if (config.HasScd)
+                        return true;
                 }
 
                 return false;
@@ -445,6 +477,16 @@ namespace TableLoader
             get { return MaxThreadCount != 0; }
         }
 
+        /// <summary>
+        /// Is user allowed to change TableLoader type?
+        /// </summary>
+        public bool IsTlTypeEditable
+        {
+            get
+            {
+                return !AutoUpdateStandardConfiguration && !AzureCompatible;
+            }
+        }
 
         #endregion
 
@@ -509,7 +551,8 @@ namespace TableLoader
             }
             catch (Exception ex)
             {
-                if (needsStandardConfiguration) throw new Exception("Cannot load Standard Configuration: " + ex.Message);
+                if (needsStandardConfiguration)
+                    throw new Exception("Cannot load Standard Configuration: " + ex.Message);
             }
 
 
@@ -548,7 +591,7 @@ namespace TableLoader
             XmlSerializer serializer = new XmlSerializer(typeof(IsagCustomProperties));
 
             StringReader reader = new StringReader(xml);
-            IsagCustomProperties result = (IsagCustomProperties)serializer.Deserialize(reader);
+            IsagCustomProperties result = (IsagCustomProperties) serializer.Deserialize(reader);
 
             return result;
         }
@@ -563,8 +606,7 @@ namespace TableLoader
         /// TableLoader type
         /// (Fastload with Multithreading, TxAll with transaction avialable)
         /// </summary>
-        public enum TableLoaderType
-        {
+        public enum TableLoaderType {
             FastLoad = 0,
             TxAll = 1
         }
@@ -573,8 +615,7 @@ namespace TableLoader
         /// Transaction type
         /// external: used connection has an open transaction (set in an Exec Sql Task)
         /// </summary>
-        public enum TransactionType
-        {
+        public enum TransactionType {
             Internal = 0,
             External = 1,
             None = 2
@@ -583,8 +624,7 @@ namespace TableLoader
         /// <summary>
         /// Database command type
         /// </summary>
-        public enum DbCommandType
-        {
+        public enum DbCommandType {
             Merge = 0,
             Merge2005 = 1,
             UpdateTblInsertRow = 2,
@@ -632,7 +672,8 @@ namespace TableLoader
 
             try
             {
-                if (con.State != ConnectionState.Open) con.Open();
+                if (con.State != ConnectionState.Open)
+                    con.Open();
 
                 DataTable schema;
                 SqlConnection sqlConnnection = con;
@@ -728,7 +769,8 @@ namespace TableLoader
             List<ColumnConfig> mappingsWithoutInputs = new List<ColumnConfig>();
             List<ColumnConfig> newMappings = new List<ColumnConfig>();
 
-            if (this.ContainsWrongUsageType(vInput.VirtualInputColumnCollection, events)) ComponentMetaDataTools.SetUsageTypeReadOnly(vInput);
+            if (this.ContainsWrongUsageType(vInput.VirtualInputColumnCollection, events))
+                ComponentMetaDataTools.SetUsageTypeReadOnly(vInput);
 
             //Writre existing mappings in 2 lists (one with input columns, one without)
             foreach (ColumnConfig config in this.ColumnConfigList)
@@ -736,7 +778,8 @@ namespace TableLoader
 
                 if (config.HasInput)
                     mappingsInput.Add(config.InputColumnId, config);
-                else mappingsWithoutInputs.Add(config);
+                else
+                    mappingsWithoutInputs.Add(config);
 
             }
 
@@ -762,8 +805,10 @@ namespace TableLoader
             //Add properties to the newly created mapping
             ColumnConfigList.Clear();
 
-            foreach (ColumnConfig config in newMappings) ColumnConfigList.Add(config);
-            foreach (ColumnConfig config in mappingsWithoutInputs) ColumnConfigList.Add(config);
+            foreach (ColumnConfig config in newMappings)
+                ColumnConfigList.Add(config);
+            foreach (ColumnConfig config in mappingsWithoutInputs)
+                ColumnConfigList.Add(config);
 
             this.Save(componentMetaData);
         }
@@ -779,7 +824,8 @@ namespace TableLoader
         {
             foreach (ColumnConfig config in ColumnConfigList)
             {
-                if (config.InputColumnName == inputColumnName) return config;
+                if (config.InputColumnName == inputColumnName)
+                    return config;
             }
 
             return null;
@@ -818,7 +864,8 @@ namespace TableLoader
 
             foreach (ColumnConfig config in ColumnConfigList)
             {
-                if (config.HasInput) result.Add(config.InputColumnName);
+                if (config.HasInput)
+                    result.Add(config.InputColumnName);
             }
 
             return result.ToArray();
@@ -834,7 +881,8 @@ namespace TableLoader
 
             foreach (ColumnConfig config in _columnConfigList)
             {
-                if (config.OutputColumnName == outputColumnName) return true;
+                if (config.OutputColumnName == outputColumnName)
+                    return true;
             }
 
             return false;
@@ -901,7 +949,8 @@ namespace TableLoader
                 result = new List<ColumnMapping>();
                 foreach (ColumnConfig config in ColumnConfigList)
                 {
-                    if (config.Insert) result.Add(new ColumnMapping(config.InputColumnName, config.OutputColumnName));
+                    if (config.Insert)
+                        result.Add(new ColumnMapping(config.InputColumnName, config.OutputColumnName));
                 }
             }
 
@@ -943,28 +992,35 @@ namespace TableLoader
             SCDList scdList = new SCDList(ColumnConfigList, DestinationTable);
 
             string message = "";
-            if (!scdList.IsValid(ref message)) events.Fire(IsagEvents.IsagEventType.Warning, message);
+            if (!scdList.IsValid(ref message))
+                events.Fire(IsagEvents.IsagEventType.Warning, message);
 
             bool isValid = true;
             foreach (ColumnConfig config in ColumnConfigList)
             {
-                if (config.IsScdColumn && config.IsScdValidFrom) isValid = false; 
+                if (config.IsScdColumn && config.IsScdValidFrom)
+                    isValid = false;
             }
-            if (!isValid) events.Fire(IsagEvents.IsagEventType.Warning, @"You have to choose ""SCD Column"" OR ""SCD ValidFrom"" for one column but not both!");
+            if (!isValid)
+                events.Fire(IsagEvents.IsagEventType.Warning, @"You have to choose ""SCD Column"" OR ""SCD ValidFrom"" for one column but not both!");
 
             isValid = true;
             foreach (ColumnConfig config in ColumnConfigList)
             {
-                if (string.IsNullOrEmpty(config.ScdTable) && (config.IsScdColumn || config.IsScdValidFrom)) isValid = false;
+                if (string.IsNullOrEmpty(config.ScdTable) && (config.IsScdColumn || config.IsScdValidFrom))
+                    isValid = false;
             }
-            if (!isValid) events.Fire(IsagEvents.IsagEventType.Warning, @"If choosing ""SCD Column"" or ""SCD ValidFrom"" you also have to fill out ""SCD Table"".");
+            if (!isValid)
+                events.Fire(IsagEvents.IsagEventType.Warning, @"If choosing ""SCD Column"" or ""SCD ValidFrom"" you also have to fill out ""SCD Table"".");
 
             isValid = true;
             foreach (ColumnConfig config in ColumnConfigList)
             {
-                if (!string.IsNullOrEmpty(config.ScdTable) && !config.IsScdColumn && !config.IsScdValidFrom) isValid = false;
+                if (!string.IsNullOrEmpty(config.ScdTable) && !config.IsScdColumn && !config.IsScdValidFrom)
+                    isValid = false;
             }
-            if (!isValid) events.Fire(IsagEvents.IsagEventType.Warning, @"If filling out ""SCD Table"" you have to choose ""SCD Column"" or ""SCD ValidFrom"".");
+            if (!isValid)
+                events.Fire(IsagEvents.IsagEventType.Warning, @"If filling out ""SCD Table"" you have to choose ""SCD Column"" or ""SCD ValidFrom"".");
         }
 
         /// <summary>
@@ -978,7 +1034,8 @@ namespace TableLoader
                 int keys = 0;
                 foreach (ColumnConfig config in ColumnConfigList)
                 {
-                    if (config.Key) keys++;
+                    if (config.Key)
+                        keys++;
                 }
 
                 if (keys > 1)
@@ -1097,10 +1154,12 @@ namespace TableLoader
             {
                 foreach (ColumnConfig config in ColumnConfigList)
                 {
-                    if (config.Key) return false;
+                    if (config.Key)
+                        return false;
                 }
             }
-            else return false;
+            else
+                return false;
 
             events.Fire(IsagEvents.IsagEventType.Error, @"No Key has been selected!");
 
@@ -1163,7 +1222,8 @@ namespace TableLoader
             {
                 object tempConn = componentMetaData.RuntimeConnectionCollection[Constants.CONNECTION_MANAGER_NAME_MAIN].ConnectionManager.AcquireConnection(null);
 
-                if (tempConn is SqlConnection) mainConn = (SqlConnection)tempConn;
+                if (tempConn is SqlConnection)
+                    mainConn = (SqlConnection) tempConn;
                 else
                 {
                     events.Fire(IsagEvents.IsagEventType.Error, "Only ADO.NET SQL Server connections are supported for the ADO.NET [Main] Connection.");
@@ -1174,7 +1234,8 @@ namespace TableLoader
             runtimeConn = null;
 
             //Bulk
-            if (!UseExternalTransaction && mainConn != null) bulkConn = mainConn;
+            if (!UseExternalTransaction && mainConn != null)
+                bulkConn = mainConn;
             else
             {
                 try
@@ -1192,7 +1253,8 @@ namespace TableLoader
                 {
                     object tempConn = componentMetaData.RuntimeConnectionCollection[Constants.CONNECTION_MANAGER_NAME_BULK].ConnectionManager.AcquireConnection(null);
 
-                    if (tempConn is SqlConnection) bulkConn = (SqlConnection)tempConn;
+                    if (tempConn is SqlConnection)
+                        bulkConn = (SqlConnection) tempConn;
                     else
                     {
                         events.Fire(IsagEvents.IsagEventType.Error, "Only ADO.NET SQL Server connections are supported for the ADO.NET [Bulk] Connection.");
@@ -1208,8 +1270,10 @@ namespace TableLoader
                 string mainConnectionServer = mainConn.DataSource;
                 string bulkConnectionServer = bulkConn.DataSource;
 
-                if (mainConnectionServer.StartsWith(".")) mainConnectionServer = "localhost" + mainConnectionServer.Substring(1);
-                if (bulkConnectionServer.StartsWith(".")) bulkConnectionServer = "localhost" + bulkConnectionServer.Substring(1);
+                if (mainConnectionServer.StartsWith("."))
+                    mainConnectionServer = "localhost" + mainConnectionServer.Substring(1);
+                if (bulkConnectionServer.StartsWith("."))
+                    bulkConnectionServer = "localhost" + bulkConnectionServer.Substring(1);
 
                 // Die Main Connection muss Zugriff auf die Temporäre Tabelle der Bulk Connection haben
                 if (mainConnectionServer != bulkConnectionServer)
@@ -1254,7 +1318,8 @@ namespace TableLoader
                         events.Fire(IsagEvents.IsagEventType.Error, "Please assign Outputcolumns only once.");
                         return true;
                     }
-                    else outputColumns.Add(config.OutputColumnName);
+                    else
+                        outputColumns.Add(config.OutputColumnName);
                 }
             }
 

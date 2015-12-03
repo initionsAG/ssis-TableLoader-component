@@ -210,6 +210,7 @@ namespace TableLoader {
             _checkExcludePreSqlFromTransaction.DataBindings.Add("Visible", _IsagCustomProperties, "IsTransactionUsed");
             lblExcludePreSqlFromTransaction.DataBindings.Add("Visible", _IsagCustomProperties, "IsTransactionUsed");
             checkDisableTablock.DataBindings.Add("Checked", _IsagCustomProperties, "DisableTablock");
+            checkAzureCompatible.DataBindings.Add("Checked", _IsagCustomProperties, "AzureCompatible", true, DataSourceUpdateMode.OnPropertyChanged);
             _checkUseCustomCommand.DataBindings.Add("Checked", _IsagCustomProperties, "UseCustomMergeCommand");
             tbCustomMergeCommand.DataBindings.Add("Enabled", _IsagCustomProperties, "UseCustomMergeCommand");
             tbCustomMergeCommand.DataBindings.Add("Text", _IsagCustomProperties, "CustomMergeCommand");
@@ -220,7 +221,7 @@ namespace TableLoader {
             btnInsertVarCustomCommand.DataBindings.Add("Enabled", _IsagCustomProperties, "UseCustomMergeCommand");
 
             cmbTableLoaderType.DataBindings.Add("SelectedItem", _IsagCustomProperties, "TlType");
-            cmbTableLoaderType.DataBindings.Add("Enabled", _IsagCustomProperties, "NoAutoUpdateStandardConfiguration");
+            cmbTableLoaderType.DataBindings.Add("Enabled", _IsagCustomProperties, "IsTlTypeEditable");
 
             imgHelpTransactions.DataBindings.Add("Visible", _IsagCustomProperties, "IsTransactionAvailable");
             lblTransaction.DataBindings.Add("Visible", _IsagCustomProperties, "IsTransactionAvailable");
@@ -229,8 +230,7 @@ namespace TableLoader {
             cmbTransaction.DataBindings.Add("Enabled", _IsagCustomProperties, "NoAutoUpdateStandardConfiguration");
 
             cmbDbCommand.DataBindings.Add("SelectedValue", _IsagCustomProperties, "DbCommand");
-            cmbDbCommand.DataBindings.Add("Enabled", _IsagCustomProperties, "NoAutoUpdateStandardConfiguration");
-            cmbDbCommand.DataBindings.DefaultDataSourceUpdateMode = DataSourceUpdateMode.OnPropertyChanged;
+            cmbDbCommand.DataBindings.Add("Enabled", _IsagCustomProperties, "NoAutoUpdateStandardConfiguration", true, DataSourceUpdateMode.OnPropertyChanged);
 
             lblMaxThreadCount.DataBindings.Add("Visible", _IsagCustomProperties, "UseMultiThreading");
             tbMaxThreadCount.DataBindings.Add("Visible", _IsagCustomProperties, "UseMultiThreading");
@@ -1750,6 +1750,11 @@ namespace TableLoader {
         {
             if (_configConnection != null && _configConnection.State == ConnectionState.Open)
                 _configConnection.Close();
+        }
+
+        private void checkAzureCompatible_CheckedChanged(object sender, EventArgs e)
+        {
+            
         }
 
 

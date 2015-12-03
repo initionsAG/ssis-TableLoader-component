@@ -303,7 +303,8 @@ namespace TableLoader
 
         /// <summary>
         /// Gets temporary table name
-        /// (destination table name if database command BulkInsert is used)
+        ///  - destination table name is used if database command is BulkInsert 
+        ///  - local temporary table is used if azure compatibility is set
         /// </summary>
         /// <returns>Table name for bulk insert</returns>
         public string GetTempTableName()
@@ -311,6 +312,8 @@ namespace TableLoader
 
             if (_IsagCustomProperties.UseBulkInsert)
                 return _IsagCustomProperties.DestinationTable;
+            else if (_IsagCustomProperties.AzureCompatible)
+                return _IsagCustomProperties.CreateTempTableName().Replace("##", "#"); //Azure does not support global temp tables
             else
                 return _IsagCustomProperties.CreateTempTableName();
         }
