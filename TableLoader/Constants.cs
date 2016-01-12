@@ -92,7 +92,7 @@ namespace TableLoader
         /// <summary>
         /// Sql create statement template for temporary tables
         /// </summary>
-        public static readonly string CREATE_INDEX = "CREATE NONCLUSTERED INDEX [idx_keys] ON <table> " +
+        public static readonly string CREATE_INDEX = "CREATE UNIQUE NONCLUSTERED INDEX [idx_keys] ON <table> " +
             "(<columns> " +
             ")WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, " +
             "ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]";
