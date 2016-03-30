@@ -474,7 +474,11 @@ namespace TableLoader {
 
                 if (col.IsUsed)
                 {
-                    object value = buffer[col.BufferIndex];
+                    object value;
+
+                    if (col.IsBlobColumn) value = GetBlobValue(buffer[col.BufferIndex], col);
+                    else value = buffer[col.BufferIndex];
+                    
                     if (value != null)
                         row[destIndex] = value;
                     destIndex++;
@@ -482,6 +486,19 @@ namespace TableLoader {
             }
 
             _dtBuffer.Rows.Add(row);
+        }
+
+        private object GetBlobValue(object value, ColumnInfo columnInfo)
+        {
+            BlobColumn blob = (BlobColumn) value;
+            if (columnInfo.IsNText)
+            {
+                return System.Text.Encoding.Unicode.GetString(blob.GetBlobData(0, (int) blob.Length));
+            } else if (columnInfo.IsText)
+            {
+                return System.Text.Encoding.GetEncoding(columnInfo.Codepage).GetString(blob.GetBlobData(0, (int) blob.Length));
+            }
+            else return value;
         }
 
         #endregion
@@ -547,7 +564,7 @@ namespace TableLoader {
                 ColumnConfig config = _IsagCustomProperties.GetColumnConfigByInputColumnName(col.Name);
                 _columnInfos.Add(new ColumnInfo(col.Name, col.DataType,
                     this.BufferManager.FindColumnByLineageID(input.Buffer, col.LineageID),
-                    col.Length, col.Precision, col.Scale, config.IsInputColumnUsed, config.OutputColumnName, config.Insert));
+                    col.Length, col.Precision, col.Scale, col.CodePage, config.IsInputColumnUsed, config.OutputColumnName, config.Insert));
             }
 
             if (_IsagCustomProperties.UseBulkInsert)
@@ -977,6 +994,26 @@ namespace TableLoader {
             private bool _insert = false;
 
             /// <summary>
+            /// Is column a blob column?
+            /// </summary>
+            private bool _isBlobColumn = false;
+
+            /// <summary>
+            /// Is column datatype NTEXT?
+            /// </summary>
+            private bool _isNText = false;
+
+            /// <summary>
+            /// Is column datatype TEXT?
+            /// </summary>
+            private bool _isText = false;
+            
+            /// <summary>
+            /// codepage for DT_TEXT
+            /// </summary>
+            private int _codepage;
+
+            /// <summary>
             /// constructor
             /// </summary>
             /// <param name="columnName">Input column name</param>
@@ -989,7 +1026,7 @@ namespace TableLoader {
             /// <param name="destColumnName">Destination column name</param>
             /// <param name="insert">Is column inserted?</param>
             public ColumnInfo(string columnName, DataType dataType, int bufferIndex,
-                              int length, int precision, int scale, bool isUsed, string destColumnName, bool insert)
+                              int length, int precision, int scale, int codepage, bool isUsed, string destColumnName, bool insert)
             {
                 _columnName = columnName;
                 _dataType = dataType;
@@ -1000,6 +1037,10 @@ namespace TableLoader {
                 _isUsed = isUsed;
                 _destColumnName = destColumnName;
                 _insert = insert;
+
+                _isText = _dataType == DataType.DT_TEXT;
+                _isNText = _dataType == DataType.DT_NTEXT;
+                _isBlobColumn = _isText || _isNText;
             }
 
 
@@ -1056,6 +1097,31 @@ namespace TableLoader {
             /// </summary>
             public bool Insert
             { get { return _insert; } }
+
+            /// <summary>
+            /// Is column a blob column?
+            /// </summary>
+            public bool IsBlobColumn
+            { get { return _insert; } }
+
+            /// <summary>
+            /// Is column datatype NTEXT?
+            /// </summary>
+            public bool IsNText
+            { get { return _isNText; } }
+
+            /// <summary>
+            /// Is column datatype TEXT?
+            /// </summary>
+            public bool IsText
+            { get { return _isText; } }
+
+            /// <summary>
+            /// codepage for DT_TEXT
+            /// </summary>
+            
+            public int Codepage
+            { get { return _codepage; } }
         }
     }
 }
