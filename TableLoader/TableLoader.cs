@@ -1102,7 +1102,7 @@ namespace TableLoader {
             /// Is column a blob column?
             /// </summary>
             public bool IsBlobColumn
-            { get { return _insert; } }
+            { get { return _isBlobColumn; } }
 
             /// <summary>
             /// Is column datatype NTEXT?
