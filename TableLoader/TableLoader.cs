@@ -37,6 +37,12 @@ namespace TableLoader {
       CurrentVersion = 1,
       IconResource = "TableLoader.Resources.TableLoader.ico",
       UITypeName = "TableLoader.TableLoaderUI, TableLoader5, Version=1.0.0.0, Culture=neutral, PublicKeyToken=d6e3dd235db59be7")]
+#elif   (SQL2016)
+    [DtsPipelineComponent(DisplayName = "TableLoader 3",
+      ComponentType = ComponentType.DestinationAdapter,
+      CurrentVersion = 1,
+      IconResource = "TableLoader.Resources.TableLoader.ico",
+      UITypeName = "TableLoader.TableLoaderUI, initions.Henry.SSIS.TableLoader2016, Version=1.0.0.0, Culture=neutral, PublicKeyToken=d6e3dd235db59be7")]
 #else
      [DtsPipelineComponent(DisplayName = "TableLoader 3",
         ComponentType = ComponentType.DestinationAdapter,
