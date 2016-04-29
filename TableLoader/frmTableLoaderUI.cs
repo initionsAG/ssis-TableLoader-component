@@ -193,6 +193,9 @@ namespace TableLoader {
             InitStandardConfig();
 
             this.Text += " " + _IsagCustomProperties.Version;
+
+            cmbLayoutMapping.Visible = false;
+            lblLayoutMapping.Visible = false;
         }
 
         #region Initialize
@@ -1729,19 +1732,6 @@ namespace TableLoader {
         }
 
         #endregion
-
-        /// <summary>
-        /// React on tab changed:
-        /// 
-        /// Adjust layout
-        /// </summary>
-        /// <param name="sender">event sender</param>
-        /// <param name="e">event arguments</param>
-        private void uTabConfig_TabIndexChanged(object sender, EventArgs e)
-        {
-            cmbLayoutMapping.Visible = (uTabConfig.SelectedTab == uTabMapping);
-            lblLayoutMapping.Visible = (uTabConfig.SelectedTab == uTabMapping);
-        }
         
         /// <summary>
         /// Close configuration connection
@@ -1752,9 +1742,18 @@ namespace TableLoader {
                 _configConnection.Close();
         }
 
-        private void checkAzureCompatible_CheckedChanged(object sender, EventArgs e)
+
+        /// <summary>
+        /// React on tab changed:
+        /// 
+        /// Adjust layout
+        /// </summary>
+        /// <param name="sender">event sender</param>
+        /// <param name="e">event arguments</param>
+        private void uTabConfig_Selected(object sender, TabControlEventArgs e)
         {
-            
+            cmbLayoutMapping.Visible = (e.TabPage == uTabMapping);
+            lblLayoutMapping.Visible = (e.TabPage == uTabMapping);
         }
 
 

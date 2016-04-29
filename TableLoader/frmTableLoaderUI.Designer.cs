@@ -66,6 +66,7 @@
             this.btnRemoveRow = new System.Windows.Forms.Button();
             this.btnAddRow = new System.Windows.Forms.Button();
             this.pnlDGV = new System.Windows.Forms.Panel();
+            this.dgvMapping = new ComponentFramework.Controls.IsagDataGridView();
             this.label5 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
             this.tbPreSql = new System.Windows.Forms.TextBox();
@@ -99,7 +100,11 @@
             this.cmbLayoutMapping = new System.Windows.Forms.ComboBox();
             this.uTabConfig = new System.Windows.Forms.TabControl();
             this.uTabConfiguration = new System.Windows.Forms.TabPage();
+            this.cmbTransaction = new ComponentFramework.Controls.IsagComboBox();
+            this.cmbTableLoaderType = new ComponentFramework.Controls.IsagComboBox();
             this._cmbStandardConfig = new System.Windows.Forms.ComboBox();
+            this.cmbDbCommand = new ComponentFramework.Controls.IsagComboBox();
+            this.cmbDestinationTable = new ComponentFramework.Controls.IsagComboBox();
             this.lblAzureCompatible = new System.Windows.Forms.Label();
             this.checkAzureCompatible = new System.Windows.Forms.CheckBox();
             this.uTabMapping = new System.Windows.Forms.TabPage();
@@ -108,15 +113,11 @@
             this.uTabSQLPreview = new System.Windows.Forms.TabPage();
             this.uTabCustomCommand = new System.Windows.Forms.TabPage();
             this.uTabLogging = new System.Windows.Forms.TabPage();
-            this.cmbTransaction = new ComponentFramework.Controls.IsagComboBox();
-            this.cmbTableLoaderType = new ComponentFramework.Controls.IsagComboBox();
-            this.cmbDbCommand = new ComponentFramework.Controls.IsagComboBox();
-            this.cmbDestinationTable = new ComponentFramework.Controls.IsagComboBox();
-            this.dgvMapping = new ComponentFramework.Controls.IsagDataGridView();
             ((System.ComponentModel.ISupportInitialize)(this.imgHelpStandardConfig)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.imgHelpChunkSize)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.imgHelpTransactions)).BeginInit();
             this.pnlDGV.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvMapping)).BeginInit();
             this.uTabConfig.SuspendLayout();
             this.uTabConfiguration.SuspendLayout();
             this.uTabMapping.SuspendLayout();
@@ -125,7 +126,6 @@
             this.uTabSQLPreview.SuspendLayout();
             this.uTabCustomCommand.SuspendLayout();
             this.uTabLogging.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvMapping)).BeginInit();
             this.SuspendLayout();
             // 
             // btnCreateTable
@@ -480,6 +480,18 @@
             this.pnlDGV.Size = new System.Drawing.Size(898, 333);
             this.pnlDGV.TabIndex = 0;
             // 
+            // dgvMapping
+            // 
+            this.dgvMapping.AllowUserToAddRows = false;
+            this.dgvMapping.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.dgvMapping.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvMapping.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dgvMapping.KeyColumnName = "InputColumnName";
+            this.dgvMapping.Location = new System.Drawing.Point(0, 0);
+            this.dgvMapping.Name = "dgvMapping";
+            this.dgvMapping.Size = new System.Drawing.Size(898, 333);
+            this.dgvMapping.TabIndex = 0;
+            // 
             // label5
             // 
             this.label5.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
@@ -826,7 +838,7 @@
             this.uTabConfig.Size = new System.Drawing.Size(917, 397);
             this.uTabConfig.TabIndex = 0;
             this.uTabConfig.TabStop = false;
-            this.uTabConfig.TabIndexChanged += new System.EventHandler(this.uTabConfig_TabIndexChanged);
+            this.uTabConfig.Selected += new System.Windows.Forms.TabControlEventHandler(this.uTabConfig_Selected);
             // 
             // uTabConfiguration
             // 
@@ -873,6 +885,26 @@
             this.uTabConfiguration.Text = "Configuration";
             this.uTabConfiguration.UseVisualStyleBackColor = true;
             // 
+            // cmbTransaction
+            // 
+            this.cmbTransaction.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbTransaction.FormattingEnabled = true;
+            this.cmbTransaction.Location = new System.Drawing.Point(653, 48);
+            this.cmbTransaction.Name = "cmbTransaction";
+            this.cmbTransaction.Size = new System.Drawing.Size(147, 21);
+            this.cmbTransaction.TabIndex = 35;
+            this.cmbTransaction.UpdateSelectedItemBindingOnSelectedIndexChanged = true;
+            // 
+            // cmbTableLoaderType
+            // 
+            this.cmbTableLoaderType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbTableLoaderType.FormattingEnabled = true;
+            this.cmbTableLoaderType.Location = new System.Drawing.Point(653, 21);
+            this.cmbTableLoaderType.Name = "cmbTableLoaderType";
+            this.cmbTableLoaderType.Size = new System.Drawing.Size(147, 21);
+            this.cmbTableLoaderType.TabIndex = 34;
+            this.cmbTableLoaderType.UpdateSelectedItemBindingOnSelectedIndexChanged = true;
+            // 
             // _cmbStandardConfig
             // 
             this._cmbStandardConfig.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
@@ -882,6 +914,28 @@
             this._cmbStandardConfig.Size = new System.Drawing.Size(363, 21);
             this._cmbStandardConfig.Sorted = true;
             this._cmbStandardConfig.TabIndex = 33;
+            // 
+            // cmbDbCommand
+            // 
+            this.cmbDbCommand.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbDbCommand.FormattingEnabled = true;
+            this.cmbDbCommand.Location = new System.Drawing.Point(171, 236);
+            this.cmbDbCommand.Name = "cmbDbCommand";
+            this.cmbDbCommand.Size = new System.Drawing.Size(363, 21);
+            this.cmbDbCommand.TabIndex = 31;
+            this.cmbDbCommand.UpdateSelectedItemBindingOnSelectedIndexChanged = false;
+            // 
+            // cmbDestinationTable
+            // 
+            this.cmbDestinationTable.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
+            this.cmbDestinationTable.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
+            this.cmbDestinationTable.FormattingEnabled = true;
+            this.cmbDestinationTable.Location = new System.Drawing.Point(171, 79);
+            this.cmbDestinationTable.Name = "cmbDestinationTable";
+            this.cmbDestinationTable.Size = new System.Drawing.Size(363, 21);
+            this.cmbDestinationTable.Sorted = true;
+            this.cmbDestinationTable.TabIndex = 30;
+            this.cmbDestinationTable.UpdateSelectedItemBindingOnSelectedIndexChanged = true;
             // 
             // lblAzureCompatible
             // 
@@ -901,7 +955,6 @@
             this.checkAzureCompatible.Size = new System.Drawing.Size(15, 14);
             this.checkAzureCompatible.TabIndex = 29;
             this.checkAzureCompatible.UseVisualStyleBackColor = true;
-            this.checkAzureCompatible.CheckedChanged += new System.EventHandler(this.checkAzureCompatible_CheckedChanged);
             // 
             // uTabMapping
             // 
@@ -992,59 +1045,6 @@
             this.uTabLogging.Text = "Logging";
             this.uTabLogging.UseVisualStyleBackColor = true;
             // 
-            // cmbTransaction
-            // 
-            this.cmbTransaction.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmbTransaction.FormattingEnabled = true;
-            this.cmbTransaction.Location = new System.Drawing.Point(653, 48);
-            this.cmbTransaction.Name = "cmbTransaction";
-            this.cmbTransaction.Size = new System.Drawing.Size(147, 21);
-            this.cmbTransaction.TabIndex = 35;
-            this.cmbTransaction.UpdateSelectedItemBindingOnSelectedIndexChanged = true;
-            // 
-            // cmbTableLoaderType
-            // 
-            this.cmbTableLoaderType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmbTableLoaderType.FormattingEnabled = true;
-            this.cmbTableLoaderType.Location = new System.Drawing.Point(653, 21);
-            this.cmbTableLoaderType.Name = "cmbTableLoaderType";
-            this.cmbTableLoaderType.Size = new System.Drawing.Size(147, 21);
-            this.cmbTableLoaderType.TabIndex = 34;
-            this.cmbTableLoaderType.UpdateSelectedItemBindingOnSelectedIndexChanged = true;
-            // 
-            // cmbDbCommand
-            // 
-            this.cmbDbCommand.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmbDbCommand.FormattingEnabled = true;
-            this.cmbDbCommand.Location = new System.Drawing.Point(171, 236);
-            this.cmbDbCommand.Name = "cmbDbCommand";
-            this.cmbDbCommand.Size = new System.Drawing.Size(363, 21);
-            this.cmbDbCommand.TabIndex = 31;
-            this.cmbDbCommand.UpdateSelectedItemBindingOnSelectedIndexChanged = false;
-            // 
-            // cmbDestinationTable
-            // 
-            this.cmbDestinationTable.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
-            this.cmbDestinationTable.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
-            this.cmbDestinationTable.FormattingEnabled = true;
-            this.cmbDestinationTable.Location = new System.Drawing.Point(171, 79);
-            this.cmbDestinationTable.Name = "cmbDestinationTable";
-            this.cmbDestinationTable.Size = new System.Drawing.Size(363, 21);
-            this.cmbDestinationTable.Sorted = true;
-            this.cmbDestinationTable.TabIndex = 30;
-            this.cmbDestinationTable.UpdateSelectedItemBindingOnSelectedIndexChanged = true;
-            // 
-            // dgvMapping
-            // 
-            this.dgvMapping.AllowUserToAddRows = false;
-            this.dgvMapping.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
-            this.dgvMapping.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvMapping.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dgvMapping.Location = new System.Drawing.Point(0, 0);
-            this.dgvMapping.Name = "dgvMapping";
-            this.dgvMapping.Size = new System.Drawing.Size(898, 333);
-            this.dgvMapping.TabIndex = 0;
-            // 
             // frmTableLoaderUI
             // 
             this.AcceptButton = this.btnOK;
@@ -1067,6 +1067,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.imgHelpChunkSize)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.imgHelpTransactions)).EndInit();
             this.pnlDGV.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.dgvMapping)).EndInit();
             this.uTabConfig.ResumeLayout(false);
             this.uTabConfiguration.ResumeLayout(false);
             this.uTabConfiguration.PerformLayout();
@@ -1082,7 +1083,6 @@
             this.uTabCustomCommand.PerformLayout();
             this.uTabLogging.ResumeLayout(false);
             this.uTabLogging.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvMapping)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
