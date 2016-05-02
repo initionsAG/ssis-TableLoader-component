@@ -1671,7 +1671,8 @@ namespace TableLoader {
         {
             foreach (DataGridViewColumn col in dgvMapping.Columns)
             {
-                ShowColumn(col);
+                if (col.Name != "OutputColumnName") //Bounded column that should never be visible
+                    ShowColumn(col);
             }
         }
 
@@ -1732,7 +1733,7 @@ namespace TableLoader {
         }
 
         #endregion
-        
+
         /// <summary>
         /// Close configuration connection
         /// </summary>
