@@ -1757,6 +1757,18 @@ namespace TableLoader {
             lblLayoutMapping.Visible = (e.TabPage == uTabMapping);
         }
 
+   
+        /// <summary>
+        /// Update colors (marking different input and output columns) when datagrid is shown the first time
+        /// </summary>
+        /// <param name="sender">event sender</param>
+        /// <param name="e">event arguments</param>
+        private void dgvMapping_VisibleChanged(object sender, EventArgs e)
+        {
+            MarkDifferentVarTypes();
+            dgvMapping.VisibleChanged -= dgvMapping_VisibleChanged;      
+        }
+
 
 
 
