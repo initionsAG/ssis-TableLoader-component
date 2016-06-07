@@ -626,7 +626,7 @@ namespace TableLoader {
                         _chunkCounterDbCommand = 1;
 
                         _txAll.ExecuteBulkCopy(_tempTableName);
-                        _txAll.ExecuteDbCommand(_tempTableName);
+                        _txAll.ExecuteDbCommand(_tempTableName, _IsagCustomProperties.Reattempts);
                         _txAll.TruncateTempTable(_tempTableName);
                         _dtBuffer.Clear();
                     }
@@ -707,7 +707,7 @@ namespace TableLoader {
 
                         if (!_IsagCustomProperties.UseBulkInsert)
                         {
-                            _txAll.ExecuteDbCommand(_tempTableName);
+                            _txAll.ExecuteDbCommand(_tempTableName, _IsagCustomProperties.Reattempts);
                             _txAll.DropTempTable(_tempTableName, IsagEvents.IsagEventType.TempTableDrop);
                         }
                     }

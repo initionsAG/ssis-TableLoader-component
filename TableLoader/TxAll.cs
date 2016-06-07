@@ -82,7 +82,7 @@ namespace TableLoader
         /// (data is written from temporary table to destination table)
         /// </summary>
         /// <param name="tempTableName">temporary table</param>
-        public void ExecuteDbCommand(string tempTableName)
+        public void ExecuteDbCommand(string tempTableName, int reattempts)
         {
             try
             {
@@ -99,23 +99,39 @@ namespace TableLoader
                     SqlCommand comm = _conn.CreateCommand();
                     comm.CommandTimeout = _IsagCustomProperties.TimeOutDb;
                     if (_dbTransaction != null) comm.Transaction = _dbTransaction;
-
                     for (int i = 0; i < sqlTemplate.Length; i++)
                     {
                         sql = sqlTemplate[i].Replace(Constants.TEMP_TABLE_PLACEHOLDER_BRACKETS, tempTableName)
                                              .Replace(Constants.TEMP_TABLE_PLACEHOLDER, tempTableName);
 
-                        try
+                        bool executeDbCommand = true;
+                        int attempt = 1;
+                        while (executeDbCommand)
                         {
-                            comm.CommandText = sql;
-                            rowsAffected = comm.ExecuteNonQuery();
-                        }
-                        catch (Exception ex)
-                        {
+                            try
+                            {
+                                comm.CommandText = sql;
+                                rowsAffected = comm.ExecuteNonQuery();
 
-                            _events.FireError(new string[] {string.Format("DbCommand failed. [{0}]: {1}",
+                                executeDbCommand = false;
+                            }
+                            catch (Exception ex)
+                            {
+                                if (!ex.Message.Contains("Timeout") || (attempt > reattempts && reattempts != 0))
+                                {
+                                    _events.FireError(new string[] {string.Format("DbCommand failed. [{0}]: {1}",
                                                                     DateTime.Now.ToString(), sql) + ex.ToString() });
-                            throw ex;
+
+                                    throw ex;
+                                }
+                                else
+                                {
+                                    attempt++;
+                                    _events.Fire(IsagEvents.IsagEventType.Sql, 
+                                        string.Format("DbCommand: Timeout...trying again... [{0}]", DateTime.Now.ToString()));
+                                }
+                                
+                            }
                         }
                     }
 
