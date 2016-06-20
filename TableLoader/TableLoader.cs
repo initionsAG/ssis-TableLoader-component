@@ -458,7 +458,7 @@ namespace TableLoader {
                 else
                     typeNet = Type.GetType(config.DataTypeOutputNet);
 
-                if (config.IsInputColumnUsed)
+                if (_IsagCustomProperties.IsColumnUsedForBulkCopy(config))
                     dt.Columns.Add(config.InputColumnName, typeNet);
             }
 
@@ -570,7 +570,7 @@ namespace TableLoader {
                 ColumnConfig config = _IsagCustomProperties.GetColumnConfigByInputColumnName(col.Name);
                 _columnInfos.Add(new ColumnInfo(col.Name, col.DataType,
                     this.BufferManager.FindColumnByLineageID(input.Buffer, col.LineageID),
-                    col.Length, col.Precision, col.Scale, col.CodePage, config.IsInputColumnUsed, config.OutputColumnName, config.Insert));
+                    col.Length, col.Precision, col.Scale, col.CodePage, _IsagCustomProperties.IsColumnUsedForBulkCopy(config), config.OutputColumnName, config.Insert));
             }
 
             if (_IsagCustomProperties.UseBulkInsert)

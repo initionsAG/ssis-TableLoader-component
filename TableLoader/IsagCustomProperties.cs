@@ -17,7 +17,7 @@ using System.Data;
 using TableLoader.Framework;
 using TableLoader.SCD;
 using TableLoader.Log;
-
+using System.Linq;
 
 
 namespace TableLoader {
@@ -79,10 +79,11 @@ namespace TableLoader {
             get
             {
                 BindingList<ColumnConfig> result = new BindingList<ColumnConfig>();
+                List<string> referencedByFunction = GetNeededColumnsReferenceByFunction();
 
                 foreach (ColumnConfig config in ColumnConfigList)
                 {
-                    if (config.Insert || config.Update || config.Key || config.IsScdValidFrom)
+                    if (config.Insert || config.Update || config.Key || config.IsScdValidFrom || referencedByFunction.Contains(config.InputColumnName))
                         result.Add(config);
                 }
 
@@ -751,6 +752,34 @@ namespace TableLoader {
             {
                 config.RemoveOutput();
             }
+        }
+
+        /// <summary>
+        /// Get input column names that are reference in functions
+        /// </summary>
+        /// <returns>list of input column names</returns>
+        public List<string> GetNeededColumnsReferenceByFunction()
+        {
+            List<string> result = new List<string>();
+
+            List<string> functionList = ColumnConfigList.Where(column => column.HasFunction)
+                .Select(col => col.Function).ToList();
+            result = ColumnConfigList.Where(column => functionList.Exists(funcs => funcs.Contains("@(" + column.BulkColumnName + ")")))
+                .Select(col => col.InputColumnName).ToList();
+
+            return result;
+        }
+
+        /// <summary>
+        /// Is column written to temporary table?
+        /// </summary>
+        /// <param name="column">column configuration</param>
+        /// <returns>Is column written to temporary table?</returns>
+        public bool IsColumnUsedForBulkCopy(ColumnConfig column)
+        {
+            List<string> referencedByFunction = GetNeededColumnsReferenceByFunction();
+
+            return column.IsInputColumnUsed || referencedByFunction.Contains(column.InputColumnName);
         }
 
         #endregion

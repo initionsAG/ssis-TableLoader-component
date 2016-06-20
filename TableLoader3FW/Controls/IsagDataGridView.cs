@@ -246,7 +246,7 @@ namespace ComponentFramework.Controls {
         /// <param name="e">event arguments</param>
         protected override void OnCellFormatting(DataGridViewCellFormattingEventArgs e)
         {
-            if (e.RowIndex != -1 && e.ColumnIndex != -1)
+            if (e.RowIndex != -1 && e.ColumnIndex != -1 && (e.CellStyle.BackColor != Color.LightCoral))
             {
                 bool readOnly = this.Rows[e.RowIndex].Cells[e.ColumnIndex].ReadOnly;
                 e.CellStyle.BackColor = readOnly ? Color.LightGray : Color.White;
