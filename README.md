@@ -19,14 +19,14 @@ In addition this component can automatically map Data Flow columns to target-tab
 *Input-data for initial run:*
 
 |pk|last_name|first_name|hobby|
-|--|---|---|---|
+|---|---|---|---|
 |1|Smith|John|Rodeo|
 |2|Miller|Max|Football|
   
 *Target-table after initial run, containing merged (inserted) data written by TableLoader:*
 
 |pk|last_name|first_name|hobby|
-|--|---|---|---|
+|---|---|---|---|
 |1|Smith|John|Rodeo|
 |2|Miller|Max|Football|
 
@@ -37,7 +37,7 @@ In addition this component can automatically map Data Flow columns to target-tab
 - New entry William Wilson
 
 |pk|last_name|first_name|hobby|
-|--|---|---|---|
+|---|---|---|---|
 |2|Miller|Max|*Tennis*|
 |3|Wilson|William|Volleyball|
   
@@ -47,7 +47,7 @@ In addition this component can automatically map Data Flow columns to target-tab
 - new William Wilson
 
 |pk|last_name|first_name|hobby|
-|--|---|---|---|
+|---|---|---|---|
 |1|Smith|John|Rodeo|
 |2|Miller|Max|Tennis|
 |3|Wilson|William|Volleyball|
