@@ -70,28 +70,28 @@ namespace TableLoader.SCD {
         /// Template for creating SCD table
         /// </summary>
         public static string TEMPLATE_CREATE_SCD_TABLE =
-           @"CREATE TABLE <tableName>(" + Environment.NewLine +
-           "   [ID] [int] IDENTITY(1,1) NOT NULL" + Environment.NewLine +
-           "   ,<FK_ID> INT NOT NULL" + Environment.NewLine +
-           "<bks>" +
-           "<attributes>" +
-           "  ,[VALID_FROM] [int] NOT NULL" + Environment.NewLine +
-           "  ,[VALID_TO] [int] NOT NULL" + Environment.NewLine +
-           "  ,[IsActive] [tinyint] NOT NULL" + Environment.NewLine +
-           "  ,[MergeAction] [nvarchar](255) NULL" + Environment.NewLine +
-           "  ,[isETL_DMR] [datetime] NULL" + Environment.NewLine +
-           "  ,[isETL_DCR] [datetime] NULL" + Environment.NewLine +
-           " CONSTRAINT [PK_<tableName>] PRIMARY KEY CLUSTERED ([ID])" + Environment.NewLine +
-           ")" + Environment.NewLine +
-           "GO" + Environment.NewLine + Environment.NewLine +
-           "ALTER TABLE <tableName> ADD  CONSTRAINT [DF_<tableName>_VALID_TO]  DEFAULT ((99999999)) FOR [VALID_TO]" + Environment.NewLine +
-           "GO" + Environment.NewLine + Environment.NewLine +
-           "ALTER TABLE <tableName> ADD  CONSTRAINT [DF_<tableName>_IsActive]  DEFAULT ((0)) FOR [IsActive]" + Environment.NewLine +
-           "GO" + Environment.NewLine + Environment.NewLine +
-           "ALTER TABLE <tableName> ADD  CONSTRAINT [DF_<tableName>_isETL_DMR]  DEFAULT (getdate()) FOR [isETL_DMR]" + Environment.NewLine +
-           "GO" + Environment.NewLine + Environment.NewLine +
-           "ALTER TABLE <tableName> ADD  CONSTRAINT [DF_<tableName>_isETL_DCR]  DEFAULT (getdate()) FOR [isETL_DCR]" + Environment.NewLine +
-           "GO";
+          @"CREATE TABLE <tableName>(" + Environment.NewLine +
+          "   [ID] [int] IDENTITY(1,1) NOT NULL" + Environment.NewLine +
+          "   ,<FK_ID> INT NOT NULL" + Environment.NewLine +
+          "<bks>" +
+          "<attributes>" +
+          "  ,[VALID_FROM] [int] NOT NULL" + Environment.NewLine +
+          "  ,[VALID_TO] [int] NOT NULL" + Environment.NewLine +
+          "  ,[IsActive] [tinyint] NOT NULL" + Environment.NewLine +
+          "  ,[MergeAction] [nvarchar](255) NULL" + Environment.NewLine +
+          "  ,[isETL_DMR] [datetime] NULL" + Environment.NewLine +
+          "  ,[isETL_DCR] [datetime] NULL" + Environment.NewLine +
+          " CONSTRAINT [PK_<tableName>] PRIMARY KEY CLUSTERED ([ID])" + Environment.NewLine +
+          ")" + Environment.NewLine +
+          "GO" + Environment.NewLine + Environment.NewLine +
+          "ALTER TABLE <tableName> ADD  CONSTRAINT [DF_<tableName>_VALID_TO]  DEFAULT ((<GranularityMaxValue>)) FOR [VALID_TO]" + Environment.NewLine +
+          "GO" + Environment.NewLine + Environment.NewLine +
+          "ALTER TABLE <tableName> ADD  CONSTRAINT [DF_<tableName>_IsActive]  DEFAULT ((0)) FOR [IsActive]" + Environment.NewLine +
+          "GO" + Environment.NewLine + Environment.NewLine +
+          "ALTER TABLE <tableName> ADD  CONSTRAINT [DF_<tableName>_isETL_DMR]  DEFAULT (getdate()) FOR [isETL_DMR]" + Environment.NewLine +
+          "GO" + Environment.NewLine + Environment.NewLine +
+          "ALTER TABLE <tableName> ADD  CONSTRAINT [DF_<tableName>_isETL_DCR]  DEFAULT (getdate()) FOR [isETL_DCR]" + Environment.NewLine +
+          "GO";
 
         /// <summary>
         /// Dictionary of table names (key) and SCDs (values)
@@ -149,7 +149,7 @@ namespace TableLoader.SCD {
                     for (int i = 0; i < scdTables.Length; i++)
                     {
                         string tableName = scdTables[i].Trim();
-                        SCDConfiguration scd = GetSCD(tableName);
+                        SCDConfiguration scd = GetSCD(tableName, config.ScdTimeStampGranularity);
 
                         scd.BkList = bkList;
                         scd.TableName = tableName;
@@ -211,6 +211,7 @@ namespace TableLoader.SCD {
 
 
                 string create = TEMPLATE_CREATE_SCD_TABLE.Replace("<tableName>", tableName);
+                create = create.Replace("<GranularityMaxValue>", scd.GranularityMaxValue);
                 create = create.Replace("<bks>", bks);
                 create = create.Replace("<attributes>", attributes);
                 create = create.Replace("<FK_ID>", _prefixFK + "ID");
@@ -226,13 +227,14 @@ namespace TableLoader.SCD {
         /// Get SCD configuration for a SCD table name
         /// </summary>
         /// <param name="tableName">SCD table name</param>
-        /// <returns></returns>
-        private SCDConfiguration GetSCD(string tableName)
+        /// <param name="timeStampGranularity">timeStampGranularity</param>
+        /// <returns>SCDConfiguration</returns>
+        private SCDConfiguration GetSCD(string tableName, ColumnConfig.ScdTimeStampGranularityType timeStampGranularity)
         {
             if (_scdList.ContainsKey(tableName))
                 return _scdList[tableName];
 
-            SCDConfiguration newScd = new SCDConfiguration();
+            SCDConfiguration newScd = new SCDConfiguration(timeStampGranularity);
             _scdList.Add(tableName, newScd);
 
             return newScd;

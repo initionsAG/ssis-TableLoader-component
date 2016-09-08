@@ -1,4 +1,5 @@
 ﻿using ComponentFramework;
+using ComponentFramework.Controls;
 using ComponentFramework.Gui;
 using Microsoft.SqlServer.Dts.Pipeline.Wrapper;
 using Microsoft.SqlServer.Dts.Runtime;
@@ -264,6 +265,8 @@ namespace TableLoader {
             //DestinationTable             
             cmbDestinationTable.DataBindings.Add("SelectedItem", _IsagCustomProperties, "DestinationTable");
             PopulateDestinationTableName();
+
+            dgvMapping.AddCellBoundedComboBox("ScdTimeStampGranularity", typeof(ColumnConfig.ScdTimeStampGranularityType), false);
         }
 
         /// <summary>
@@ -1671,7 +1674,7 @@ namespace TableLoader {
         {
             foreach (DataGridViewColumn col in dgvMapping.Columns)
             {
-                if (col.Name != "OutputColumnName") //Bounded column that should never be visible
+                if (col.Name != "OutputColumnName" && col.Name != "ScdTimeStampGranularity") //Bounded column that should never be visible
                     ShowColumn(col);
             }
         }
@@ -1692,6 +1695,7 @@ namespace TableLoader {
             HideColumn(columns["IsScdColumn"]);
             HideColumn(columns["ScdTable"]);
             HideColumn(columns["IsScdValidFrom"]);
+            HideColumn(columns[IsagDataGridView.CMB_COLUMN_PREFIX + "ScdTimeStampGranularity"]);
         }
 
         /// <summary>

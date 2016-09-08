@@ -3,14 +3,16 @@ using System.Collections.Generic;
 using System.Text;
 using System.ComponentModel;
 
-namespace TableLoader.SCD {
+namespace TableLoader.SCD
+{
 
 
 
     /// <summary>
     /// SCD (slowly changing dimensions) configuration
     /// </summary>
-    public class SCDConfiguration {
+    public class SCDConfiguration
+    {
         /// <summary>
         /// Postfix for source column
         /// </summary>
@@ -49,7 +51,7 @@ namespace TableLoader.SCD {
            "<bk_values>" +
            "<attributes_values>" +
            "  ,<valid_from_values>" + Environment.NewLine +
-           "  ,99999999" + Environment.NewLine +
+           "  ,<GranularityMaxValue>" + Environment.NewLine +
            "  ,1)" + Environment.NewLine +
            "WHEN MATCHED AND A.IsActive = 1" + Environment.NewLine +
            "AND (<attributes_wehre>) THEN" + Environment.NewLine +
@@ -60,7 +62,7 @@ namespace TableLoader.SCD {
            "<bk_values>" +
            "<attributes_output>" +
            "  ,<valid_from_output> VALID_FROM" + Environment.NewLine +
-           "  ,99999999 VALID_TO" + Environment.NewLine +
+           "  ,<GranularityMaxValue> VALID_TO" + Environment.NewLine +
            "  ,1 IsActive" + Environment.NewLine +
            ") AS MERGE_OUT" + Environment.NewLine +
            "WHERE MERGE_OUT.Action_Out = 'UPDATE'";
@@ -97,12 +99,35 @@ namespace TableLoader.SCD {
         public string PrefixFK { get; set; }
 
         /// <summary>
+        /// GranularityMaxValue (used for valid_to, means data is currentyl valid/used)
+        /// </summary>
+        public string GranularityMaxValue { get; set; }
+
+        /// <summary>
         /// constructor
         /// </summary>
-        public SCDConfiguration()
+        public SCDConfiguration(ColumnConfig.ScdTimeStampGranularityType timeStampGranularity)
         {
             AttributeList = new List<SCDColumn>();
             BkList = new List<SCDColumn>();
+            SetranularityMaxValue(timeStampGranularity);
+        }
+
+        /// <summary>
+        /// Set max value for timestamp granularity.
+        /// If granulartity is YYYYMMDD, it is set to 99999999 (= length(YYYYMMDD) nines)
+        /// </summary>
+        /// <param name="timeStampGranularity"></param>
+        private void SetranularityMaxValue(ColumnConfig.ScdTimeStampGranularityType timeStampGranularity)
+        {
+            GranularityMaxValue = string.Empty;
+            if (timeStampGranularity != ColumnConfig.ScdTimeStampGranularityType.None)
+            {
+                for (int i = 0; i < timeStampGranularity.ToString().Length; i++)
+                {
+                    GranularityMaxValue += "9";
+                }
+            }
         }
 
         /// <summary>
@@ -137,6 +162,7 @@ namespace TableLoader.SCD {
         private string GetInsertPart(string tempTableScd)
         {
             string result = SCDConfiguration.TEMPLATE_INSERT;
+            result = result.Replace("<GranularityMaxValue>", GranularityMaxValue);
             result = result.Replace("<scd_tablename>", TableName);
             result = result.Replace("<tempTableName_scd>", tempTableScd);
             result = result.Replace("<attributes_insert>", SCDHelper.GetSqlAttributeList(AttributeList, "", POSTFIX_COLUMN_QUELLE, 0));
@@ -155,7 +181,7 @@ namespace TableLoader.SCD {
 
             return result;
         }
-        
+
         /// <summary>
         /// Get SCD sql merge command
         /// </summary>
@@ -175,7 +201,7 @@ namespace TableLoader.SCD {
 
 
 
-   
+
 
 
 

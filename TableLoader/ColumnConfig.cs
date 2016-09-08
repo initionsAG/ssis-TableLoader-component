@@ -395,6 +395,49 @@ namespace TableLoader
         public bool IsScdValidFrom { get; set; }
 
         /// <summary>
+        /// Granularity Type for SCD valid_from/valid_to columns
+        /// </summary>
+        public enum ScdTimeStampGranularityType { None, YYYYMMDD, YYYYMMDDHH, YYYYMMDDHHMM, YYYYMMDDHHMMSS };
+
+        private ScdTimeStampGranularityType _scdTimeStampGranularity;
+
+        [DisplayName("SCD Granularity")]
+        /// <summary>
+        /// Granularity for SCD valid_from/valid_to columns
+        /// </summary>
+        public ScdTimeStampGranularityType ScdTimeStampGranularity
+        {
+            get
+            {
+                if (_scdTimeStampGranularity == ScdTimeStampGranularityType.None && IsScdValidFrom) _scdTimeStampGranularity = ScdTimeStampGranularityType.YYYYMMDD;
+                return _scdTimeStampGranularity;
+            }
+            set
+            {
+                _scdTimeStampGranularity = value;
+            }
+        }
+
+        /// <summary>
+        /// Sets ScdTimeStampGranularity by string
+        /// (used by PackageBuilder)
+        /// </summary>
+        /// <param name="value">scd timestamp grannualarity</param>
+        public void SetScdTimeStampGranularity(string value)
+        {
+            try
+            {
+                ScdTimeStampGranularity =
+                       (ScdTimeStampGranularityType)Enum.Parse(typeof(ScdTimeStampGranularityType), value);
+            }
+            catch (Exception)
+            {
+                value = (value == null) ? "NULL" : value;
+                throw new Exception(value + " is no valid scd timettamp granularity value!");
+            }
+        }
+
+        /// <summary>
         /// Is column used for a SCD?
         /// </summary>
         [XmlIgnore, BrowsableAttribute(false), ReadOnly(true)]
@@ -534,6 +577,15 @@ namespace TableLoader
                 ScdTable = reader.GetAttribute("ScdTable");
                 IsScdValidFrom = reader.GetAttribute("IsScdValidFrom") == "True";
 
+                try
+                {
+                    ScdTimeStampGranularity = (ScdTimeStampGranularityType)Enum.Parse(typeof(ScdTimeStampGranularityType), reader.GetAttribute("ScdTimeStampGranularity"));
+                }
+                catch (Exception)
+                {
+                    ScdTimeStampGranularity = IsScdValidFrom ? ScdTimeStampGranularityType.YYYYMMDD : ScdTimeStampGranularityType.None;
+                }
+
                 reader.Read();
 
             }
@@ -578,6 +630,7 @@ namespace TableLoader
             writer.WriteAttributeString("IsScdColumn", IsScdColumn.ToString());
             writer.WriteAttributeString("ScdTable", ScdTable);
             writer.WriteAttributeString("IsScdValidFrom", IsScdValidFrom.ToString());
+            writer.WriteAttributeString("ScdTimeStampGranularity", ScdTimeStampGranularity.ToString());
         }
 
         #endregion
