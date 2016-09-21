@@ -75,8 +75,8 @@ namespace TableLoader.SCD {
           "   ,<FK_ID> INT NOT NULL" + Environment.NewLine +
           "<bks>" +
           "<attributes>" +
-          "  ,[VALID_FROM] [int] NOT NULL" + Environment.NewLine +
-          "  ,[VALID_TO] [int] NOT NULL" + Environment.NewLine +
+          "  ,[VALID_FROM] [bigint] NOT NULL" + Environment.NewLine +
+          "  ,[VALID_TO] [bigint] NOT NULL" + Environment.NewLine +
           "  ,[IsActive] [tinyint] NOT NULL" + Environment.NewLine +
           "  ,[MergeAction] [nvarchar](255) NULL" + Environment.NewLine +
           "  ,[isETL_DMR] [datetime] NULL" + Environment.NewLine +
@@ -154,6 +154,8 @@ namespace TableLoader.SCD {
                         scd.BkList = bkList;
                         scd.TableName = tableName;
                         scd.PrefixFK = _prefixFK;
+
+                        if (config.IsScdValidFrom) scd.SetranularityMaxValue(config.ScdTimeStampGranularity);
 
                         if (config.IsScdColumn)
                         {

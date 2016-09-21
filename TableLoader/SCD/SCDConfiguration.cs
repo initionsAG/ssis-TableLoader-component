@@ -118,7 +118,7 @@ namespace TableLoader.SCD
         /// If granulartity is YYYYMMDD, it is set to 99999999 (= length(YYYYMMDD) nines)
         /// </summary>
         /// <param name="timeStampGranularity"></param>
-        private void SetranularityMaxValue(ColumnConfig.ScdTimeStampGranularityType timeStampGranularity)
+        public void SetranularityMaxValue(ColumnConfig.ScdTimeStampGranularityType timeStampGranularity)
         {
             GranularityMaxValue = string.Empty;
             if (timeStampGranularity != ColumnConfig.ScdTimeStampGranularityType.None)
