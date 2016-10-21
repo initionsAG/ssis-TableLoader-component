@@ -55,7 +55,7 @@ namespace TableLoader.SCD
            "  ,1)" + Environment.NewLine +
            "WHEN MATCHED AND A.IsActive = 1" + Environment.NewLine +
            "AND (<attributes_wehre>) THEN" + Environment.NewLine +
-           "UPDATE SET A.IsActive = 0, A.VALID_TO = convert(char(10), CAST(<valid_from_output> AS BIGINT)-1)" + Environment.NewLine +
+           "UPDATE SET A.IsActive = 0, A.VALID_TO = convert(char(255), CAST(<valid_from_output> AS BIGINT)-1)" + Environment.NewLine +
            "OUTPUT " + Environment.NewLine +
            "  $Action Action_Out" + Environment.NewLine +
            "  ,MR.<FK_ID>" + Environment.NewLine +
