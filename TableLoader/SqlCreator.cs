@@ -274,7 +274,7 @@ namespace TableLoader {
                 if (properties.HasScd)
                 {
                     SCDList scd = new SCDList(properties.ColumnConfigList, properties.DestinationTable);
-                    result = scd.InsertIntoMergeStatement(result, properties, tempTableName.Replace("#", "SCD_"));
+                    result = scd.InsertIntoMergeStatement(result, properties, tempTableName.Replace("#", "SCD_"), properties.DisableIndexOnSCD);
                 }
 
                 return result;

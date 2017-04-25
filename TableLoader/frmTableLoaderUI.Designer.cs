@@ -99,6 +99,8 @@
             this.cmbLayoutMapping = new System.Windows.Forms.ComboBox();
             this.uTabConfig = new System.Windows.Forms.TabControl();
             this.uTabConfiguration = new System.Windows.Forms.TabPage();
+            this.lblDisableScdIndex = new System.Windows.Forms.Label();
+            this.checkDisableScdIndex = new System.Windows.Forms.CheckBox();
             this._cmbStandardConfig = new System.Windows.Forms.ComboBox();
             this.lblAzureCompatible = new System.Windows.Forms.Label();
             this.checkAzureCompatible = new System.Windows.Forms.CheckBox();
@@ -830,6 +832,8 @@
             // 
             // uTabConfiguration
             // 
+            this.uTabConfiguration.Controls.Add(this.lblDisableScdIndex);
+            this.uTabConfiguration.Controls.Add(this.checkDisableScdIndex);
             this.uTabConfiguration.Controls.Add(this.cmbTransaction);
             this.uTabConfiguration.Controls.Add(this.cmbTableLoaderType);
             this.uTabConfiguration.Controls.Add(this._cmbStandardConfig);
@@ -872,6 +876,25 @@
             this.uTabConfiguration.TabIndex = 0;
             this.uTabConfiguration.Text = "Configuration";
             this.uTabConfiguration.UseVisualStyleBackColor = true;
+            // 
+            // lblDisableScdIndex
+            // 
+            this.lblDisableScdIndex.AutoSize = true;
+            this.lblDisableScdIndex.BackColor = System.Drawing.Color.Transparent;
+            this.lblDisableScdIndex.Location = new System.Drawing.Point(357, 343);
+            this.lblDisableScdIndex.Name = "lblDisableScdIndex";
+            this.lblDisableScdIndex.Size = new System.Drawing.Size(156, 13);
+            this.lblDisableScdIndex.TabIndex = 36;
+            this.lblDisableScdIndex.Text = "Disable Nonclusterd SCD Index";
+            // 
+            // checkDisableScdIndex
+            // 
+            this.checkDisableScdIndex.AutoSize = true;
+            this.checkDisableScdIndex.Location = new System.Drawing.Point(519, 343);
+            this.checkDisableScdIndex.Name = "checkDisableScdIndex";
+            this.checkDisableScdIndex.Size = new System.Drawing.Size(15, 14);
+            this.checkDisableScdIndex.TabIndex = 37;
+            this.checkDisableScdIndex.UseVisualStyleBackColor = true;
             // 
             // _cmbStandardConfig
             // 
@@ -1175,7 +1198,7 @@
         private ComponentFramework.Controls.IsagComboBox cmbTransaction;
         private System.Windows.Forms.Label lblAzureCompatible;
         private System.Windows.Forms.CheckBox checkAzureCompatible;
-  
-       
+        private System.Windows.Forms.Label lblDisableScdIndex;
+        private System.Windows.Forms.CheckBox checkDisableScdIndex;
     }
 }
