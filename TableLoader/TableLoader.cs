@@ -16,7 +16,8 @@ using System.Threading;
 using TableLoader.Framework.Mapping;
 using TableLoader.Log;
 
-namespace TableLoader {
+namespace TableLoader
+{
 
 
 #if     (SQL2008)
@@ -54,7 +55,8 @@ namespace TableLoader {
     /// <summary>
     /// the pipeline component TableLoader
     /// </summary>
-    public class TableLoader: PipelineComponent {
+    public class TableLoader : PipelineComponent
+    {
 
         #region Members & Properties
 
@@ -184,7 +186,7 @@ namespace TableLoader {
 
             //Set metadata version to DLL-Version
             DtsPipelineComponentAttribute componentAttr =
-                 (DtsPipelineComponentAttribute) Attribute.GetCustomAttribute(this.GetType(), typeof(DtsPipelineComponentAttribute), false);
+                 (DtsPipelineComponentAttribute)Attribute.GetCustomAttribute(this.GetType(), typeof(DtsPipelineComponentAttribute), false);
             int binaryVersion = componentAttr.CurrentVersion;
             ComponentMetaData.Version = binaryVersion;
 
@@ -303,7 +305,7 @@ namespace TableLoader {
                 object tempConn = this.ComponentMetaData.RuntimeConnectionCollection[Constants.CONNECTION_MANAGER_NAME_MAIN].ConnectionManager.AcquireConnection(transaction);
 
                 if (tempConn is SqlConnection)
-                    _mainConn = (SqlConnection) tempConn;
+                    _mainConn = (SqlConnection)tempConn;
                 else
                     _events.Fire(IsagEvents.IsagEventType.ErrorWrongConnection,
                     "Only ADO.NET SQL Server connections are supported for the ADO.NET [{0}] Connection.",
@@ -335,7 +337,7 @@ namespace TableLoader {
                     object tempConn = this.ComponentMetaData.RuntimeConnectionCollection[Constants.CONNECTION_MANAGER_NAME_BULK].ConnectionManager.AcquireConnection(transaction);
 
                     if (tempConn is SqlConnection)
-                        _bulkConn = (SqlConnection) tempConn;
+                        _bulkConn = (SqlConnection)tempConn;
                     else
                         _events.Fire(IsagEvents.IsagEventType.ErrorWrongConnection,
                         "Only ADO.NET SQL Server connections are supported for the ADO.NET [{0}] Connection.",
@@ -435,13 +437,13 @@ namespace TableLoader {
 
                 if (inputColumnName != outputColumnName && inputColumnName.ToUpper() != outputColumnName.ToUpper())
                     _events.Fire(IsagEvents.IsagEventType.Error, "Mapping Error: Cannot map input column " + inputColumnName + " to output column " + outputColumnName);
-            }           
+            }
 
             return dt;
         }
 
         /// <summary>
-        /// Creates ataTable according to properties
+        /// Creates dataTable according to properties
         /// (for all database commands except BulkInsert)
         /// </summary>
         /// <param name="input">SSIS input</param>
@@ -450,7 +452,30 @@ namespace TableLoader {
         {
             DataTable dt = new DataTable();
 
-            foreach (ColumnConfig config in _IsagCustomProperties.ColumnConfigList)
+            //foreach (ColumnInfo info in _columnInfos)
+            //{
+            //    ColumnConfig config = _IsagCustomProperties.GetColumnConfigByInputColumnName(info.ColumnName);
+
+            //    Type typeNet;
+            //    if (config.HasInput)
+            //        typeNet = SqlCreator.GetNetDataType(input.InputColumnCollection.GetObjectByID(config.InputColumnId).DataType);
+            //    else
+            //        typeNet = Type.GetType(config.DataTypeOutputNet);
+
+            //    if (_IsagCustomProperties.IsColumnUsedForBulkCopy(config))
+            //        dt.Columns.Add(config.InputColumnName, typeNet);
+            //}
+
+            Dictionary<string, ColumnInfo> colInfos = new Dictionary<string, ColumnInfo>();
+            foreach (ColumnInfo info in _columnInfos)
+            {
+                colInfos.Add(info.ColumnName, info);
+            }
+
+
+            _columnInfos = new List<ColumnInfo>();
+
+            foreach (ColumnConfig config in _IsagCustomProperties.BulkCopyColumnConfigLIst)
             {
                 Type typeNet;
                 if (config.HasInput)
@@ -458,8 +483,10 @@ namespace TableLoader {
                 else
                     typeNet = Type.GetType(config.DataTypeOutputNet);
 
-                if (_IsagCustomProperties.IsColumnUsedForBulkCopy(config))
-                    dt.Columns.Add(config.InputColumnName, typeNet);
+                //if (_IsagCustomProperties.IsColumnUsedForBulkCopy(config))
+                dt.Columns.Add(config.InputColumnName, typeNet);
+
+                _columnInfos.Add(colInfos[config.InputColumnName]);
             }
 
             return dt;
@@ -484,7 +511,7 @@ namespace TableLoader {
 
                     if (col.IsBlobColumn) value = GetBlobValue(buffer[col.BufferIndex], col);
                     else value = buffer[col.BufferIndex];
-                    
+
                     if (value != null)
                         row[destIndex] = value;
                     destIndex++;
@@ -496,13 +523,14 @@ namespace TableLoader {
 
         private object GetBlobValue(object value, ColumnInfo columnInfo)
         {
-            BlobColumn blob = (BlobColumn) value;
+            BlobColumn blob = (BlobColumn)value;
             if (columnInfo.IsNText)
             {
-                return System.Text.Encoding.Unicode.GetString(blob.GetBlobData(0, (int) blob.Length));
-            } else if (columnInfo.IsText)
+                return System.Text.Encoding.Unicode.GetString(blob.GetBlobData(0, (int)blob.Length));
+            }
+            else if (columnInfo.IsText)
             {
-                return System.Text.Encoding.GetEncoding(columnInfo.Codepage).GetString(blob.GetBlobData(0, (int) blob.Length));
+                return System.Text.Encoding.GetEncoding(columnInfo.Codepage).GetString(blob.GetBlobData(0, (int)blob.Length));
             }
             else return value;
         }
@@ -840,7 +868,7 @@ namespace TableLoader {
                     int rowsAffected = SqlExecutor.ExecSql(sql, Conn, _IsagCustomProperties.TimeOutDb, transaction);
                     _events.Fire(IsagEvents.IsagEventType.Sql,
                                               "[ExecSql:" + cmdType.ToString() + "]: {0} rows were affected by the Sql Command.",
-                                              new string[] { rowsAffected.ToString(), ((int) cmdType).ToString() });
+                                              new string[] { rowsAffected.ToString(), ((int)cmdType).ToString() });
                     _events.Fire(cmdType, cmdTypeName + " Statement has been executed.");
                 }
             }
@@ -899,7 +927,7 @@ namespace TableLoader {
                 }
 
                 DtsPipelineComponentAttribute attr =
-                    (DtsPipelineComponentAttribute) Attribute.GetCustomAttribute(this.GetType(), typeof(DtsPipelineComponentAttribute), false);
+                    (DtsPipelineComponentAttribute)Attribute.GetCustomAttribute(this.GetType(), typeof(DtsPipelineComponentAttribute), false);
                 ComponentMetaData.Version = attr.CurrentVersion;
             }
             catch (Exception ex)
@@ -953,7 +981,8 @@ namespace TableLoader {
         /// Data that is gathering in pre execute phase and used in process input phase
         /// (SSIS buffer mapping, column properties,...)
         /// </summary>
-        class ColumnInfo {
+        class ColumnInfo
+        {
             /// <summary>
             /// Input column name
             /// </summary>
@@ -1013,7 +1042,7 @@ namespace TableLoader {
             /// Is column datatype TEXT?
             /// </summary>
             private bool _isText = false;
-            
+
             /// <summary>
             /// codepage for DT_TEXT
             /// </summary>
@@ -1125,7 +1154,7 @@ namespace TableLoader {
             /// <summary>
             /// codepage for DT_TEXT
             /// </summary>
-            
+
             public int Codepage
             { get { return _codepage; } }
         }
