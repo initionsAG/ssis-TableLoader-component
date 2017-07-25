@@ -248,16 +248,16 @@ namespace TableLoader.SCD {
         /// <param name="merge">TableLoaders database (merge) command</param>
         /// <param name="properties">Components custom properties</param>
         /// <param name="tempTableName">TableLoader temporary table</param>
-        /// <param name="disableIndexOnSCD">Disable SCD temporary table nonclusterd index?</param>
+        /// <param name="enableIndexOnSCD">Enable SCD temporary table nonclusterd index?</param>
         /// <returns>TableLoaders database (merge) command with merge statement for SCD</returns>
-        public string InsertIntoMergeStatement(string merge, IsagCustomProperties properties, string tempTableName, bool disableIndexOnSCD)
+        public string InsertIntoMergeStatement(string merge, IsagCustomProperties properties, string tempTableName, bool enableIndexOnSCD)
         {
             string tempTableScd = "SCD_" + tempTableName;
 
             merge = merge.Trim();
             merge = merge.Substring(0, merge.Length - 1); //Semikolon entfernen
 
-            string result = GetCreateTempTable(tempTableScd, disableIndexOnSCD) + Environment.NewLine + Environment.NewLine;
+            string result = GetCreateTempTable(tempTableScd, enableIndexOnSCD) + Environment.NewLine + Environment.NewLine;
             result += merge + Environment.NewLine + Environment.NewLine;
             result += GetOutputPart(tempTableScd) + Environment.NewLine + Environment.NewLine;
             foreach (string scdTableName in _scdList.Keys)
@@ -286,9 +286,9 @@ namespace TableLoader.SCD {
         /// Get sql coomand for creating SCD temporary table
         /// </summary>
         /// <param name="tempTableName">SCD temporary table name</param>
-        /// <param name="disableIndexOnSCD">Disable SCD temporary table nonclusterd index?</param>
+        /// <param name="enableIndexOnSCD">Disable SCD temporary table nonclusterd index?</param>
         /// <returns>Sql coomand for creating SCD temporary table</returns>
-        private string GetCreateTempTable(string tempTableName, bool disableIndexOnSCD)
+        private string GetCreateTempTable(string tempTableName, bool enableIndexOnSCD)
         {
             string result = TEMPLATE_CREATE_TEMP_TABLE.Replace("<tempTableName_scd>", tempTableName);
             string indexBk = TEMPLATE_CREATE_CLUSTERD_INDEX_ON_TEMP_TABLE.Replace("<tempTableName_scd>", tempTableName);
@@ -310,7 +310,7 @@ namespace TableLoader.SCD {
             indexBk = indexBk.Replace("<index_columns>", "  " +
                 SCDHelper.GetSqlBkList(scdListBKs.ScdColumns, _prefixFK, "", 2).Substring(3)); //Substring(3):  Komma an 3. Stelle entfernen 
 
-            if (!disableIndexOnSCD)
+            if (enableIndexOnSCD)
             {
                 foreach (SCDColumn scdColumn in scdListAttributes.ScdColumns)
                 {

@@ -215,7 +215,7 @@ namespace TableLoader {
             lblExcludePreSqlFromTransaction.DataBindings.Add("Visible", _IsagCustomProperties, "IsTransactionUsed");
             checkDisableTablock.DataBindings.Add("Checked", _IsagCustomProperties, "DisableTablock");
             checkAzureCompatible.DataBindings.Add("Checked", _IsagCustomProperties, "AzureCompatible", true, DataSourceUpdateMode.OnPropertyChanged);
-            checkDisableScdIndex.DataBindings.Add("Checked", _IsagCustomProperties, "DisableIndexOnSCD");
+            checkEnableScdIndex.DataBindings.Add("Checked", _IsagCustomProperties, "EnableIndexOnSCD");
             _checkUseCustomCommand.DataBindings.Add("Checked", _IsagCustomProperties, "UseCustomMergeCommand");
             tbCustomMergeCommand.DataBindings.Add("Enabled", _IsagCustomProperties, "UseCustomMergeCommand");
             tbCustomMergeCommand.DataBindings.Add("Text", _IsagCustomProperties, "CustomMergeCommand");

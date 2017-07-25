@@ -240,7 +240,7 @@ namespace TableLoader {
         /// <summary>
         /// Disable Nonculsterd index on SCD tables?
         /// </summary>
-        public bool DisableIndexOnSCD { get; set; }
+        public bool EnableIndexOnSCD { get; set; }
 
         /// <summary>
         /// Transaction type

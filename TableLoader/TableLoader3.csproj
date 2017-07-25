@@ -398,7 +398,7 @@
     <PostBuildEvent>"C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\Bin\gacutil.exe" /if "$(TargetPath)"</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == '2012Debug|AnyCPU' Or '$(Configuration)|$(Platform)' == '2014Debug|AnyCPU' Or '$(Configuration)|$(Platform)' == '2016Debug|AnyCPU'">
-    <PostBuildEvent>"C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\Bin\NETFX 4.0 Tools\gacutil.exe" /if "$(TargetPath)"</PostBuildEvent>
+    <PostBuildEvent>"C:\Program Files (x86)\Microsoft SDKs\Windows\v10.0A\bin\NETFX 4.6.1 Tools\gacutil.exe" /if "$(TargetPath)"</PostBuildEvent>
   </PropertyGroup>
   <!--PostBuildEvents (end)-->
 </Project>
