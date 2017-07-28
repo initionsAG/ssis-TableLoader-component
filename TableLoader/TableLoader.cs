@@ -524,7 +524,11 @@ namespace TableLoader
         private object GetBlobValue(object value, ColumnInfo columnInfo)
         {
             BlobColumn blob = (BlobColumn)value;
-            if (columnInfo.IsNText)
+            if (columnInfo.IsGeometry)
+            {
+                return blob.IsNull ? null : blob.GetBlobData(0, (int)blob.Length);
+            }
+            else if (columnInfo.IsNText)
             {
                 return System.Text.Encoding.Unicode.GetString(blob.GetBlobData(0, (int)blob.Length));
             }
@@ -598,7 +602,8 @@ namespace TableLoader
                 ColumnConfig config = _IsagCustomProperties.GetColumnConfigByInputColumnName(col.Name);
                 _columnInfos.Add(new ColumnInfo(col.Name, col.DataType,
                     this.BufferManager.FindColumnByLineageID(input.Buffer, col.LineageID),
-                    col.Length, col.Precision, col.Scale, col.CodePage, _IsagCustomProperties.IsColumnUsedForBulkCopy(config), config.OutputColumnName, config.Insert));
+                    col.Length, col.Precision, col.Scale, col.CodePage, _IsagCustomProperties.IsColumnUsedForBulkCopy(config), config.OutputColumnName, config.Insert, config.IsGeometryDataType)                    
+                    );
             }
 
             if (_IsagCustomProperties.UseBulkInsert)
@@ -1049,6 +1054,11 @@ namespace TableLoader
             private int _codepage;
 
             /// <summary>
+            /// Is sql datatype Geometry?
+            /// </summary>
+            private bool _isGeometry;
+
+            /// <summary>
             /// constructor
             /// </summary>
             /// <param name="columnName">Input column name</param>
@@ -1061,7 +1071,7 @@ namespace TableLoader
             /// <param name="destColumnName">Destination column name</param>
             /// <param name="insert">Is column inserted?</param>
             public ColumnInfo(string columnName, DataType dataType, int bufferIndex,
-                              int length, int precision, int scale, int codepage, bool isUsed, string destColumnName, bool insert)
+                              int length, int precision, int scale, int codepage, bool isUsed, string destColumnName, bool insert, bool isGeometry)
             {
                 _columnName = columnName;
                 _dataType = dataType;
@@ -1075,7 +1085,8 @@ namespace TableLoader
 
                 _isText = _dataType == DataType.DT_TEXT;
                 _isNText = _dataType == DataType.DT_NTEXT;
-                _isBlobColumn = _isText || _isNText;
+                _isGeometry = isGeometry;
+                _isBlobColumn = _isText || _isNText || _isGeometry;
             }
 
 
@@ -1157,6 +1168,12 @@ namespace TableLoader
 
             public int Codepage
             { get { return _codepage; } }
+
+            /// <summary>
+            /// Is column datatype Geometry?
+            /// </summary>
+            public bool IsGeometry
+            { get { return _isGeometry; } }
         }
     }
 }

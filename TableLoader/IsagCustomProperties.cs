@@ -20,11 +20,13 @@ using TableLoader.Log;
 using System.Linq;
 
 
-namespace TableLoader {
+namespace TableLoader
+{
     /// <summary>
     /// custom properties for this component
     /// </summary>
-    public class IsagCustomProperties: INotifyPropertyChanged {
+    public class IsagCustomProperties : INotifyPropertyChanged
+    {
         /// <summary>
         /// Property changed event
         /// (implements Interface of INotifyPropertyChanged)
@@ -596,7 +598,7 @@ namespace TableLoader {
             XmlSerializer serializer = new XmlSerializer(typeof(IsagCustomProperties));
 
             StringReader reader = new StringReader(xml);
-            IsagCustomProperties result = (IsagCustomProperties) serializer.Deserialize(reader);
+            IsagCustomProperties result = (IsagCustomProperties)serializer.Deserialize(reader);
 
             return result;
         }
@@ -611,7 +613,8 @@ namespace TableLoader {
         /// TableLoader type
         /// (Fastload with Multithreading, TxAll with transaction avialable)
         /// </summary>
-        public enum TableLoaderType {
+        public enum TableLoaderType
+        {
             FastLoad = 0,
             TxAll = 1
         }
@@ -620,7 +623,8 @@ namespace TableLoader {
         /// Transaction type
         /// external: used connection has an open transaction (set in an Exec Sql Task)
         /// </summary>
-        public enum TransactionType {
+        public enum TransactionType
+        {
             Internal = 0,
             External = 1,
             None = 2
@@ -629,7 +633,8 @@ namespace TableLoader {
         /// <summary>
         /// Database command type
         /// </summary>
-        public enum DbCommandType {
+        public enum DbCommandType
+        {
             Merge = 0,
             Merge2005 = 1,
             UpdateTblInsertRow = 2,
@@ -825,11 +830,11 @@ namespace TableLoader {
                 {
                     config = mappingsInput[inputCol.ID];
                     config.InputColumnName = inputCol.Name;
-                    config.DataTypeInput = SqlCreator.GetSQLServerDataTypeFromInput(inputCol);
+                    config.DataTypeInput = SqlCreator.GetSQLServerDataTypeFromInput(inputCol, config.IsGeometryDataType);
                 }
                 else
                 {
-                    config = new ColumnConfig(inputCol.Name, SqlCreator.GetSQLServerDataTypeFromInput(inputCol), inputCol);
+                    config = new ColumnConfig(inputCol.Name, SqlCreator.GetSQLServerDataTypeFromInput(inputCol, isGeometry: false), inputCol);
                 }
 
                 newMappings.Add(config);
@@ -1103,8 +1108,7 @@ namespace TableLoader {
                         return false;
                     }
 
-
-                    if (inputColumn.Name != config.InputColumnName || config.DataTypeInput != SqlCreator.GetSQLServerDataTypeFromInput(inputColumn))
+                    if (inputColumn.Name != config.InputColumnName || config.DataTypeInput != SqlCreator.GetSQLServerDataTypeFromInput(inputColumn, config.IsGeometryDataType))
                     {
                         events.Fire(IsagEvents.IsagEventType.Error, "The Mapping contains at least one column with a name or datatype differing from the assigned input column!");
 
@@ -1256,7 +1260,7 @@ namespace TableLoader {
                 object tempConn = componentMetaData.RuntimeConnectionCollection[Constants.CONNECTION_MANAGER_NAME_MAIN].ConnectionManager.AcquireConnection(null);
 
                 if (tempConn is SqlConnection)
-                    mainConn = (SqlConnection) tempConn;
+                    mainConn = (SqlConnection)tempConn;
                 else
                 {
                     events.Fire(IsagEvents.IsagEventType.Error, "Only ADO.NET SQL Server connections are supported for the ADO.NET [Main] Connection.");
@@ -1287,7 +1291,7 @@ namespace TableLoader {
                     object tempConn = componentMetaData.RuntimeConnectionCollection[Constants.CONNECTION_MANAGER_NAME_BULK].ConnectionManager.AcquireConnection(null);
 
                     if (tempConn is SqlConnection)
-                        bulkConn = (SqlConnection) tempConn;
+                        bulkConn = (SqlConnection)tempConn;
                     else
                     {
                         events.Fire(IsagEvents.IsagEventType.Error, "Only ADO.NET SQL Server connections are supported for the ADO.NET [Bulk] Connection.");

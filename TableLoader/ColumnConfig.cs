@@ -325,17 +325,32 @@ namespace TableLoader
         }
 
         /// <summary>
-        /// Dattype for bulk copy
+        /// Datatype for bulk copy
         /// </summary>
         [XmlIgnore, BrowsableAttribute(false)]
         public string BulkDataType
         {
             get
             {
-                if (HasInput)
+                if (IsGeometryDataType)
+                    //Workaround: No geometry datatype in .NET Verion -> write to varbinary(max) column in temp table. Sql command (like merge) can write it to sql geometry column
+                    return "varbinary(max)";
+                else if (HasInput)
                     return DataTypeInput;
                 else
                     return DataTypeOutput;
+            }
+        }
+
+        /// <summary>
+        /// Is geometry datatype?
+        /// </summary>
+        [XmlIgnore, BrowsableAttribute(false)]
+        public bool IsGeometryDataType
+        {
+            get
+            {
+                return HasInput && DataTypeOutput.ToUpper().Contains("GEOMETRY");
             }
         }
 
@@ -657,6 +672,8 @@ namespace TableLoader
                 this.IsOutputPrimaryKey = _sqlColumns[this.OutputColumnName].IsPrimaryKey;
                 this.IsOutputAutoId = _sqlColumns[this.OutputColumnName].IsAutoId;
                 this.AllowOutputDbNull = _sqlColumns[this.OutputColumnName].AllowsDbNull;
+
+                if (IsGeometryDataType) this.DataTypeInput = "varbinary(max)";
             }
             else
             {
@@ -665,6 +682,8 @@ namespace TableLoader
                 this.IsOutputAutoId = false;
                 this.AllowOutputDbNull = false;
             }
+
+            
         }
 
         /// <summary>

@@ -776,10 +776,10 @@ namespace TableLoader {
         /// </summary>
         /// <param name="inputCol">SSIS input column</param>
         /// <returns>sql datatype for an SSIS input column</returns>
-        public static string GetSQLServerDataTypeFromInput(IDTSInputColumn100 inputCol)
+        public static string GetSQLServerDataTypeFromInput(IDTSInputColumn100 inputCol, bool isGeometry)
         {
             return GetSQLServerDataTypeFromInput(inputCol.DataType, inputCol.Length.ToString(),
-                                        inputCol.Precision.ToString(), inputCol.Scale.ToString());
+                                        inputCol.Precision.ToString(), inputCol.Scale.ToString(), isGeometry);
         }
 
         /// <summary>
@@ -791,8 +791,11 @@ namespace TableLoader {
         /// <param name="NumericScale">numeric scale</param>
         /// <returns>sql datatype for SSIS input columns datatype porperties</returns>
         public static string GetSQLServerDataTypeFromInput(DataType dataType, string ColumnSize,
-                                         string NumericPrecision, string NumericScale)
+                                         string NumericPrecision, string NumericScale,bool isGeometry)
         {
+            //Workaround: No geometry datatype in .NET Verion -> write to varbinary(max) column in temp table. Sql command (like merge) can write it to sql geometry column
+            if (isGeometry) return "varbinary(max)"; 
+
             switch (dataType)
             {
                 case DataType.DT_BOOL:

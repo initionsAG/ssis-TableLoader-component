@@ -25,7 +25,7 @@ namespace TableLoader
         /// <param name="allowsDbNUll">Are null values allowed</param>
         public void Add(string columnName, string dataType, string dataTypeNet, int columnSize, int numericPrecision, int numericScale, 
                         bool isPrimaryKey, bool isAutoId, bool allowsDbNUll) 
-        { 
+        {
             this.Add(columnName, 
                      new SqlColumn() 
                      {
