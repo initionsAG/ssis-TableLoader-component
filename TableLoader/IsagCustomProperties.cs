@@ -85,8 +85,9 @@ namespace TableLoader
 
                 foreach (ColumnConfig config in ColumnConfigList)
                 {
-                    if (config.Insert || config.Update || config.Key || config.IsScdValidFrom || referencedByFunction.Contains(config.InputColumnName))
-                        result.Add(config);
+                    if (config.InputColumnName != "")
+                        if (config.Insert || config.Update || config.Key || config.IsScdValidFrom || referencedByFunction.Contains(config.InputColumnName))
+                            result.Add(config);
                 }
 
                 return result;
