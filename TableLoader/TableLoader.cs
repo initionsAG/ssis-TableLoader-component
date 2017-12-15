@@ -282,67 +282,91 @@ namespace TableLoader
         /// <param name="transaction">transaction</param>
         public override void AcquireConnections(object transaction)
         {
-            InitProperties(true);
-
-
-            IDTSRuntimeConnection100 runtimeConn = null;
-
-            //Main
             try
             {
-                runtimeConn = this.ComponentMetaData.RuntimeConnectionCollection[Constants.CONNECTION_MANAGER_NAME_MAIN];
-            }
-            catch (Exception) { }
 
-            if (runtimeConn == null || runtimeConn.ConnectionManager == null)
-            {
-                _events.Fire(IsagEvents.IsagEventType.ErrorConnectionNotInitialized,
-                             "ADO.NET [{0}] DB Connection Manager has not been initialized.",
-                             Constants.CONNECTION_MANAGER_NAME_MAIN);
-            }
-            else
-            {
-                object tempConn = this.ComponentMetaData.RuntimeConnectionCollection[Constants.CONNECTION_MANAGER_NAME_MAIN].ConnectionManager.AcquireConnection(transaction);
 
-                if (tempConn is SqlConnection)
-                    _mainConn = (SqlConnection)tempConn;
-                else
-                    _events.Fire(IsagEvents.IsagEventType.ErrorWrongConnection,
-                    "Only ADO.NET SQL Server connections are supported for the ADO.NET [{0}] Connection.",
-                    Constants.CONNECTION_MANAGER_NAME_MAIN);
-            }
+                InitProperties(true);
 
-            runtimeConn = null;
 
-            //Bulk
-            if (!_IsagCustomProperties.UseExternalTransaction && _mainConn != null)
-                _bulkConn = _mainConn;
-            else
-            {
+                IDTSRuntimeConnection100 runtimeConn = null;
+
+                //Main
                 try
                 {
-                    runtimeConn = this.ComponentMetaData.RuntimeConnectionCollection[Constants.CONNECTION_MANAGER_NAME_BULK];
+                    runtimeConn = this.ComponentMetaData.RuntimeConnectionCollection[Constants.CONNECTION_MANAGER_NAME_MAIN];
                 }
-                catch (Exception) { }
+                catch (Exception ex)
+                {
+                    string error = "Error (Get runtime connection), Con Name: " + Constants.CONNECTION_MANAGER_NAME_MAIN + Environment.NewLine + ex.ToString();
+                    throw new Exception(error);
+                }
 
                 if (runtimeConn == null || runtimeConn.ConnectionManager == null)
                 {
                     _events.Fire(IsagEvents.IsagEventType.ErrorConnectionNotInitialized,
-                    "ADO.NET [{0}] DB Connection Manager has not been initialized.",
-                    Constants.CONNECTION_MANAGER_NAME_BULK);
-                    //Events.Fire(ComponentMetaData, Events.Type.Error, "ADO.NET [Bulk] Connection Manager has not been initialized.");
+                                 "ADO.NET [{0}] DB Connection Manager has not been initialized.",
+                                 Constants.CONNECTION_MANAGER_NAME_MAIN);
                 }
                 else
                 {
-                    object tempConn = this.ComponentMetaData.RuntimeConnectionCollection[Constants.CONNECTION_MANAGER_NAME_BULK].ConnectionManager.AcquireConnection(transaction);
+                    try
+                    {
+                        object tempConn = this.ComponentMetaData.RuntimeConnectionCollection[Constants.CONNECTION_MANAGER_NAME_MAIN].ConnectionManager.AcquireConnection(transaction);
 
-                    if (tempConn is SqlConnection)
-                        _bulkConn = (SqlConnection)tempConn;
-                    else
-                        _events.Fire(IsagEvents.IsagEventType.ErrorWrongConnection,
-                        "Only ADO.NET SQL Server connections are supported for the ADO.NET [{0}] Connection.",
-                        Constants.CONNECTION_MANAGER_NAME_BULK);
+                        if (tempConn is SqlConnection)
+                            _mainConn = (SqlConnection)tempConn;
+                        else
+                            _events.Fire(IsagEvents.IsagEventType.ErrorWrongConnection,
+                            "Only ADO.NET SQL Server connections are supported for the ADO.NET [{0}] Connection.",
+                            Constants.CONNECTION_MANAGER_NAME_MAIN);
+                    }
+                    catch (Exception ex)
+                    {
+                        string error = "Error (check if ado connection)" + Environment.NewLine + ex.ToString();
+                        throw new Exception(error);
+                    }
+
                 }
+
+                runtimeConn = null;
+
+                //Bulk
+                if (!_IsagCustomProperties.UseExternalTransaction && _mainConn != null)
+                    _bulkConn = _mainConn;
+                else
+                {
+                    try
+                    {
+                        runtimeConn = this.ComponentMetaData.RuntimeConnectionCollection[Constants.CONNECTION_MANAGER_NAME_BULK];
+                    }
+                    catch (Exception) { }
+
+                    if (runtimeConn == null || runtimeConn.ConnectionManager == null)
+                    {
+                        _events.Fire(IsagEvents.IsagEventType.ErrorConnectionNotInitialized,
+                        "ADO.NET [{0}] DB Connection Manager has not been initialized.",
+                        Constants.CONNECTION_MANAGER_NAME_BULK);
+                        //Events.Fire(ComponentMetaData, Events.Type.Error, "ADO.NET [Bulk] Connection Manager has not been initialized.");
+                    }
+                    else
+                    {
+                        object tempConn = this.ComponentMetaData.RuntimeConnectionCollection[Constants.CONNECTION_MANAGER_NAME_BULK].ConnectionManager.AcquireConnection(transaction);
+
+                        if (tempConn is SqlConnection)
+                            _bulkConn = (SqlConnection)tempConn;
+                        else
+                            _events.Fire(IsagEvents.IsagEventType.ErrorWrongConnection,
+                            "Only ADO.NET SQL Server connections are supported for the ADO.NET [{0}] Connection.",
+                            Constants.CONNECTION_MANAGER_NAME_BULK);
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception("Error (AcquireConnections)" + Environment.NewLine + ex.ToString());
             }
 
         }
@@ -602,7 +626,7 @@ namespace TableLoader
                 ColumnConfig config = _IsagCustomProperties.GetColumnConfigByInputColumnName(col.Name);
                 _columnInfos.Add(new ColumnInfo(col.Name, col.DataType,
                     this.BufferManager.FindColumnByLineageID(input.Buffer, col.LineageID),
-                    col.Length, col.Precision, col.Scale, col.CodePage, _IsagCustomProperties.IsColumnUsedForBulkCopy(config), config.OutputColumnName, config.Insert, config.IsGeometryDataType)                    
+                    col.Length, col.Precision, col.Scale, col.CodePage, _IsagCustomProperties.IsColumnUsedForBulkCopy(config), config.OutputColumnName, config.Insert, config.IsGeometryDataType)
                     );
             }
 

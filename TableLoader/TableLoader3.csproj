@@ -226,10 +226,16 @@
         </Reference>
         <Reference Include="Microsoft.SQLServer.DTSRuntimeWrap, Version=13.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=x64">
           <SpecificVersion>True</SpecificVersion>
-          <EmbedInteropTypes>True</EmbedInteropTypes>
+          <EmbedInteropTypes>False</EmbedInteropTypes>
           <Private>False</Private>
           <HintPath>..\packages\Microsoft.SqlServer.DTS.13.0.0\lib\Microsoft.SQLServer.DTSRuntimeWrap.dll</HintPath>
         </Reference>
+        <!--<Reference Include="Microsoft.SQLServer.DTSRuntimeWrap, Version=13.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=x86">
+          <SpecificVersion>True</SpecificVersion>
+          <EmbedInteropTypes>True</EmbedInteropTypes>
+          <Private>False</Private>
+          <HintPath>C:\Windows\Microsoft.NET\assembly\GAC_32\Microsoft.SqlServer.DTSRuntimeWrap\v4.0_13.0.0.0__89845dcd8080cc91\Microsoft.SQLServer.DTSRuntimeWrap.dll</HintPath>
+        </Reference>-->
         <Reference Include="Microsoft.SQLServer.ManagedDTS, Version=13.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
           <SpecificVersion>True</SpecificVersion>
           <EmbedInteropTypes>False</EmbedInteropTypes>
