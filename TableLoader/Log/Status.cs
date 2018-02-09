@@ -19,7 +19,7 @@ namespace TableLoader.Log
             preExecStarted,
             preExecFinished,
             processInputStarted,
-            processInpitFinished,
+            processInputFinished,
             postExecStarted,
             postExecFinished
         }
@@ -246,14 +246,14 @@ namespace TableLoader.Log
                 case TableLoaderStatusType.processInputStarted:
                     message = "TableLoader Process Input started";
                     break;
-                case TableLoaderStatusType.processInpitFinished:
+                case TableLoaderStatusType.processInputFinished:
                     message = "TableLoader Process Input finished";
                     break;
                 case TableLoaderStatusType.postExecStarted:
                     message = "TableLoader Post Execution Phase started";
                     break;
                 case TableLoaderStatusType.postExecFinished:
-                    message = "TableLoader Post Execution Phase finieshed";
+                    message = "TableLoader Post Execution Phase finished";
                     break;
                 default:
                     break;

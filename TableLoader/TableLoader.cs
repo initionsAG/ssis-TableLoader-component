@@ -716,7 +716,7 @@ namespace TableLoader
                 throw ex;
             }
 
-            _status.AddTableLoaderStatus(Status.TableLoaderStatusType.processInpitFinished);
+            _status.AddTableLoaderStatus(Status.TableLoaderStatusType.processInputFinished);
         }
 
         #region PostExecute
